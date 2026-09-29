@@ -8,7 +8,7 @@ import { BotaoLista } from './BotaoLista'
 import { BOTAO_PRIMARIO, CONTEUDO } from './estilos'
 import { IconeInfo } from './Icones'
 
-const INTERVALO_MS = 7000
+const INTERVALO_MS = 3000
 const DISTANCIA_MINIMA_DESLIZE = 50
 
 export function BannerDestaque({ filmes }: { filmes: MovieSummary[] }) {

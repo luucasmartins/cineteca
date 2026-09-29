@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 import { irPeloMenu } from './ajudantes'
 
 test('mostra o banner destaque com um filme em alta', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }) // banner parado: sem troca automática durante o teste
   await page.goto('/')
   const destaque = page.getByRole('region', { name: 'Destaque' })
   await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1001' })).toBeVisible()
@@ -9,17 +10,18 @@ test('mostra o banner destaque com um filme em alta', async ({ page }) => {
   await expect(destaque.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute('href', '/filme/1001')
 })
 
-test('o banner troca sozinho de filme a cada 7 segundos', async ({ page }) => {
+test('o banner troca sozinho de filme a cada 3 segundos', async ({ page }) => {
   await page.clock.install()
   await page.goto('/')
   const destaque = page.getByRole('region', { name: 'Destaque' })
   await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1001' })).toBeVisible()
-  await page.clock.fastForward(7000)
+  await page.clock.fastForward(3000)
   await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1002' })).toBeVisible()
   await expect(destaque.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute('href', '/filme/1002')
 })
 
 test('os indicadores do banner mostram até 6 filmes e permitem escolher um', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }) // banner parado: sem troca automática durante o teste
   await page.goto('/')
   const destaque = page.getByRole('region', { name: 'Destaque' })
   const indicadores = destaque.getByRole('group', { name: 'Escolher filme em destaque' }).getByRole('button')
@@ -42,6 +44,7 @@ test('o banner pausa enquanto o mouse está sobre ele', async ({ page, isMobile 
 
 test('deslizar o dedo no banner troca de filme', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'gesto de toque só no celular')
+  await page.emulateMedia({ reducedMotion: 'reduce' }) // banner parado: sem troca automática durante o teste
   await page.goto('/')
   const destaque = page.getByRole('region', { name: 'Destaque' })
   const caixa = (await destaque.boundingBox())!
@@ -70,6 +73,7 @@ test('uma fileira com erro não derruba as outras', async ({ page }) => {
 })
 
 test('+ Minha lista do banner salva o filme', async ({ page, isMobile }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }) // banner parado: sem troca automática durante o teste
   await page.goto('/')
   const botao = page.getByRole('region', { name: 'Destaque' }).getByRole('button', { name: 'Salvar para assistir' })
   await botao.click()
