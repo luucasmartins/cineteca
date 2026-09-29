@@ -9,6 +9,48 @@ test('mostra o banner destaque com um filme em alta', async ({ page }) => {
   await expect(destaque.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute('href', '/filme/1001')
 })
 
+test('o banner troca sozinho de filme a cada 7 segundos', async ({ page }) => {
+  await page.clock.install()
+  await page.goto('/')
+  const destaque = page.getByRole('region', { name: 'Destaque' })
+  await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1001' })).toBeVisible()
+  await page.clock.fastForward(7000)
+  await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1002' })).toBeVisible()
+  await expect(destaque.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute('href', '/filme/1002')
+})
+
+test('os indicadores do banner mostram até 6 filmes e permitem escolher um', async ({ page }) => {
+  await page.goto('/')
+  const destaque = page.getByRole('region', { name: 'Destaque' })
+  const indicadores = destaque.getByRole('group', { name: 'Escolher filme em destaque' }).getByRole('button')
+  await expect(indicadores).toHaveCount(6)
+  await destaque.getByRole('button', { name: 'Mostrar Filme Teste 1004' }).click()
+  await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1004' })).toBeVisible()
+  await expect(destaque.getByRole('button', { name: 'Mostrar Filme Teste 1004' })).toHaveAttribute('aria-current', 'true')
+  await expect(destaque.getByRole('link', { name: 'Ver detalhes' })).toHaveAttribute('href', '/filme/1004')
+})
+
+test('o banner pausa enquanto o mouse está sobre ele', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'hover só existe no desktop')
+  await page.clock.install()
+  await page.goto('/')
+  const destaque = page.getByRole('region', { name: 'Destaque' })
+  await destaque.hover()
+  await page.clock.fastForward(15000)
+  await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1001' })).toBeVisible()
+})
+
+test('deslizar o dedo no banner troca de filme', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'gesto de toque só no celular')
+  await page.goto('/')
+  const destaque = page.getByRole('region', { name: 'Destaque' })
+  const caixa = (await destaque.boundingBox())!
+  const y = caixa.y + caixa.height / 3
+  await destaque.dispatchEvent('touchstart', { touches: [{ identifier: 1, clientX: caixa.x + caixa.width * 0.8, clientY: y }] })
+  await destaque.dispatchEvent('touchend', { changedTouches: [{ identifier: 1, clientX: caixa.x + caixa.width * 0.2, clientY: y }] })
+  await expect(destaque.getByRole('heading', { level: 1, name: 'Filme Teste 1002' })).toBeVisible()
+})
+
 test('mostra as fileiras da página inicial', async ({ page }) => {
   await page.goto('/')
   for (const titulo of ['Em alta hoje', 'Populares', 'Em cartaz nos cinemas', 'Mais bem avaliados', 'Ação', 'Comédia', 'Terror', 'Animação']) {

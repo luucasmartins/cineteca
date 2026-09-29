@@ -2,8 +2,8 @@ import { Suspense } from 'react'
 import { BannerDestaque } from '@/components/BannerDestaque'
 import { FileiraEsqueleto } from '@/components/Esqueletos'
 import { FileiraAssincrona } from '@/components/FileiraAssincrona'
+import { escolherDestaques } from '@/lib/destaques'
 import { discoverByGenre, getNowPlaying, getPopular, getTopRated, getTrending } from '@/lib/tmdb/filmes'
-import { SINOPSE_INDISPONIVEL } from '@/lib/tmdb/normalizar'
 import type { PaginaFilmes } from '@/lib/tmdb/tipos'
 
 const GENEROS_INICIO = [
@@ -27,14 +27,15 @@ const FILEIRAS: { titulo: string; carregar: () => Promise<PaginaFilmes>; verMais
 ]
 
 export default async function Inicio() {
-  const destaque = await getTrending()
-    .then((p) => p.results.find((f) => f.backdropUrl && f.overview !== SINOPSE_INDISPONIVEL) ?? null)
-    .catch(() => null)
+  const destaques = await getTrending()
+    .then((p) => escolherDestaques(p.results))
+    .catch(() => [])
+  const temBanner = destaques.length > 0
 
   return (
     <>
-      {destaque ? <BannerDestaque filme={destaque} /> : <div className="h-24" />}
-      <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${destaque ? '-mt-24 md:-mt-40' : ''}`}>
+      {temBanner ? <BannerDestaque filmes={destaques} /> : <div className="h-24" />}
+      <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${temBanner ? '-mt-24 md:-mt-40' : ''}`}>
         {FILEIRAS.map((fileira) => (
           <Suspense key={fileira.titulo} fallback={<FileiraEsqueleto titulo={fileira.titulo} />}>
             <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} />
