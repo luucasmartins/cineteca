@@ -10,14 +10,17 @@ function respostaJson(corpo: unknown, status = 200) {
 
 describe('tmdbFetch', () => {
   const fetchMock = vi.fn()
+  let erroSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
+    erroSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     fetchMock.mockReset()
     vi.stubGlobal('fetch', fetchMock)
     vi.stubEnv('TMDB_READ_TOKEN', 'token-teste')
   })
 
   afterEach(() => {
+    erroSpy.mockRestore()
     vi.unstubAllGlobals()
     vi.unstubAllEnvs()
   })
@@ -78,5 +81,49 @@ describe('tmdbFetch', () => {
     vi.stubEnv('TMDB_READ_TOKEN', '')
     await expect(tmdbFetch('/movie/1', {}, 60)).rejects.toThrow('TMDB_READ_TOKEN')
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('registra o status e o caminho quando o TMDB responde 500', async () => {
+    fetchMock.mockResolvedValue(respostaJson({}, 500))
+    await expect(tmdbFetch('/movie/9', {}, 60)).rejects.toMatchObject({ status: 500 })
+    expect(erroSpy).toHaveBeenCalledTimes(1)
+    expect(erroSpy).toHaveBeenCalledWith('[CineTeca] TMDB respondeu', 500, 'em', '/movie/9')
+  })
+
+  it('registra a dica de token inválido quando o TMDB responde 401', async () => {
+    fetchMock.mockResolvedValue(respostaJson({}, 401))
+    await expect(tmdbFetch('/movie/9', {}, 60)).rejects.toMatchObject({ status: 401 })
+    const textos = erroSpy.mock.calls.map((c) => c.join(' ')).join(' | ')
+    expect(textos).toContain('Token do TMDB inválido')
+  })
+
+  it('não registra nada quando o TMDB responde 404', async () => {
+    fetchMock.mockResolvedValue(respostaJson({}, 404))
+    await expect(tmdbFetch('/movie/9', {}, 60)).rejects.toMatchObject({ status: 404 })
+    expect(erroSpy).not.toHaveBeenCalled()
+  })
+
+  it('registra falhas de rede', async () => {
+    fetchMock.mockRejectedValue(new Error('sem rede'))
+    await expect(tmdbFetch('/movie/9', {}, 60)).rejects.toBeInstanceOf(TmdbError)
+    expect(erroSpy).toHaveBeenCalledWith('[CineTeca] Falha ao contatar o TMDB em', '/movie/9', '-', 'sem rede')
+  })
+
+  it('remove espaços e aspas do token', async () => {
+    vi.stubEnv('TMDB_READ_TOKEN', '  "token-teste"  ')
+    fetchMock.mockResolvedValue(respostaJson({}))
+    await tmdbFetch('/movie/1', {}, 60)
+    expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer token-teste')
+  })
+
+  it('nunca registra o token', async () => {
+    fetchMock.mockResolvedValueOnce(respostaJson({}, 401))
+    await tmdbFetch('/movie/1', {}, 60).catch(() => {})
+    fetchMock.mockRejectedValueOnce(new Error('falhou'))
+    await tmdbFetch('/movie/1', {}, 60).catch(() => {})
+    expect(erroSpy).toHaveBeenCalled()
+    for (const chamada of erroSpy.mock.calls) {
+      expect(chamada.some((arg) => String(arg).includes('token-teste'))).toBe(false)
+    }
   })
 })
