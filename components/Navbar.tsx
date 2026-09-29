@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Genero } from '@/lib/tmdb/tipos'
+import { CampoBusca } from './CampoBusca'
 import { CONTEUDO } from './estilos'
 import { IconeChevronBaixo, IconeFechar, IconeMenu } from './Icones'
 
@@ -101,6 +102,9 @@ export function Navbar({ generos }: { generos: Genero[] }) {
           </ul>
 
           <div className="ml-auto flex items-center gap-2">
+            <Suspense fallback={null}>
+              <CampoBusca />
+            </Suspense>
             <button
               type="button"
               className="rounded p-2 md:hidden"
