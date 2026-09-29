@@ -1,7 +1,7 @@
 # CineTeca — Fase 1 (Front-end do catálogo) — Design
 
 **Data:** 2026-09-29
-**Status:** aguardando revisão
+**Status:** aprovada
 
 ## 1. Contexto e objetivo
 

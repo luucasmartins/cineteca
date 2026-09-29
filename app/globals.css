@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fundo: #0b0b0f;
+  --color-superficie: #16161d;
+  --color-destaque: #d7263d;
+  --color-destaque-escuro: #b01e32;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+}
+
+html {
+  background-color: var(--color-fundo);
+  color: #fff;
+  color-scheme: dark;
+}
+
+.sem-scrollbar {
+  scrollbar-width: none;
+}
+.sem-scrollbar::-webkit-scrollbar {
+  display: none;
+}
