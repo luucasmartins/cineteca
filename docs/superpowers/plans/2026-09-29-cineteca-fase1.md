@@ -730,7 +730,9 @@ function chamadaPara(caminho: string) {
   return { params: chamada[1], revalidate: chamada[2] }
 }
 
-beforeEach(() => tmdbFetchMock.mockReset())
+beforeEach(() => {
+  tmdbFetchMock.mockReset()
+})
 
 describe('getGenres', () => {
   it('busca a lista de gêneros com cache de 24 h', async () => {
@@ -999,7 +1001,9 @@ function responderCom(detalhe: unknown) {
   }) as typeof tmdbFetch)
 }
 
-beforeEach(() => tmdbFetchMock.mockReset())
+beforeEach(() => {
+  tmdbFetchMock.mockReset()
+})
 
 describe('getMovieDetails', () => {
   it('pede tudo numa única chamada com append_to_response', async () => {
