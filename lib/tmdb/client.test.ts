@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import { tmdbFetch, TmdbError } from './client'
 
 function respostaJson(corpo: unknown, status = 200) {
@@ -10,7 +10,7 @@ function respostaJson(corpo: unknown, status = 200) {
 
 describe('tmdbFetch', () => {
   const fetchMock = vi.fn()
-  let erroSpy: ReturnType<typeof vi.spyOn>
+  let erroSpy: MockInstance<typeof console.error>
 
   beforeEach(() => {
     erroSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
