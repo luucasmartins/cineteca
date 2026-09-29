@@ -1,0 +1,162 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import type { Genero } from '@/lib/tmdb/tipos'
+import { CONTEUDO } from './estilos'
+import { IconeChevronBaixo, IconeFechar, IconeMenu } from './Icones'
+
+export function Navbar({ generos }: { generos: Genero[] }) {
+  const pathname = usePathname()
+  const [rolou, setRolou] = useState(false)
+  const [menuAberto, setMenuAberto] = useState(false)
+  const [generosAberto, setGenerosAberto] = useState(false)
+  const generosRef = useRef<HTMLLIElement>(null)
+
+  useEffect(() => {
+    const aoRolar = () => setRolou(window.scrollY > 16)
+    aoRolar()
+    window.addEventListener('scroll', aoRolar, { passive: true })
+    return () => window.removeEventListener('scroll', aoRolar)
+  }, [])
+
+  useEffect(() => {
+    setMenuAberto(false)
+    setGenerosAberto(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!generosAberto) return
+    const aoClicarFora = (e: MouseEvent) => {
+      if (!generosRef.current?.contains(e.target as Node)) setGenerosAberto(false)
+    }
+    const aoTeclar = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setGenerosAberto(false)
+    }
+    document.addEventListener('mousedown', aoClicarFora)
+    document.addEventListener('keydown', aoTeclar)
+    return () => {
+      document.removeEventListener('mousedown', aoClicarFora)
+      document.removeEventListener('keydown', aoTeclar)
+    }
+  }, [generosAberto])
+
+  const solida = rolou || menuAberto
+  const fecharMenu = () => setMenuAberto(false)
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-200 ${
+        solida ? 'bg-fundo/95 shadow-lg shadow-black/40 backdrop-blur' : 'bg-gradient-to-b from-black/80 to-transparent'
+      }`}
+    >
+      <nav aria-label="Principal">
+        <div className={`${CONTEUDO} flex h-16 items-center gap-6`}>
+          <Link href="/" className="text-2xl font-extrabold tracking-tight">
+            CineTeca
+          </Link>
+
+          <ul className="hidden items-center gap-6 text-sm font-semibold md:flex">
+            <li>
+              <LinkNav href="/" ativo={pathname === '/'}>
+                Início
+              </LinkNav>
+            </li>
+            {generos.length > 0 && (
+              <li ref={generosRef} className="relative">
+                <button
+                  type="button"
+                  aria-expanded={generosAberto}
+                  aria-controls="menu-generos"
+                  onClick={() => setGenerosAberto((v) => !v)}
+                  className="flex items-center gap-1 text-white/80 transition-colors hover:text-white"
+                >
+                  Gêneros <IconeChevronBaixo className="h-4 w-4" />
+                </button>
+                {generosAberto && (
+                  <ul
+                    id="menu-generos"
+                    className="absolute left-0 top-full mt-3 grid w-[28rem] grid-cols-2 gap-1 rounded-md bg-superficie/95 p-3 shadow-xl ring-1 ring-white/10 backdrop-blur"
+                  >
+                    {generos.map((g) => (
+                      <li key={g.id}>
+                        <Link
+                          href={`/genero/${g.id}`}
+                          className="block rounded px-3 py-2 text-white/80 hover:bg-white/10 hover:text-white"
+                        >
+                          {g.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            )}
+            <li>
+              <LinkNav href="/minha-lista" ativo={pathname === '/minha-lista'}>
+                Minha lista
+              </LinkNav>
+            </li>
+          </ul>
+
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              className="rounded p-2 md:hidden"
+              aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+              aria-expanded={menuAberto}
+              aria-controls="menu-celular"
+              onClick={() => setMenuAberto((v) => !v)}
+            >
+              {menuAberto ? <IconeFechar className="h-6 w-6" /> : <IconeMenu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {menuAberto && (
+          <div id="menu-celular" className="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-white/10 bg-fundo px-4 pb-6 md:hidden">
+            <ul className="flex flex-col py-2 text-lg font-semibold">
+              <li>
+                <Link href="/" onClick={fecharMenu} className="block py-3">
+                  Início
+                </Link>
+              </li>
+              <li>
+                <Link href="/minha-lista" onClick={fecharMenu} className="block py-3">
+                  Minha lista
+                </Link>
+              </li>
+            </ul>
+            {generos.length > 0 && (
+              <>
+                <p className="mt-2 text-xs font-bold uppercase tracking-widest text-white/50">Gêneros</p>
+                <ul className="mt-2 grid grid-cols-2 gap-1">
+                  {generos.map((g) => (
+                    <li key={g.id}>
+                      <Link href={`/genero/${g.id}`} onClick={fecharMenu} className="block rounded py-2 text-white/80">
+                        {g.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        )}
+      </nav>
+    </header>
+  )
+}
+
+function LinkNav({ href, ativo, children }: { href: string; ativo: boolean; children: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      aria-current={ativo ? 'page' : undefined}
+      className={`transition-colors hover:text-white ${ativo ? 'text-white' : 'text-white/80'}`}
+    >
+      {children}
+    </Link>
+  )
+}
