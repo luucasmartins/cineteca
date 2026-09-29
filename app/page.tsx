@@ -1,7 +1,46 @@
-export default function Inicio() {
+import { Suspense } from 'react'
+import { BannerDestaque } from '@/components/BannerDestaque'
+import { FileiraEsqueleto } from '@/components/Esqueletos'
+import { FileiraAssincrona } from '@/components/FileiraAssincrona'
+import { discoverByGenre, getNowPlaying, getPopular, getTopRated, getTrending } from '@/lib/tmdb/filmes'
+import { SINOPSE_INDISPONIVEL } from '@/lib/tmdb/normalizar'
+import type { PaginaFilmes } from '@/lib/tmdb/tipos'
+
+const GENEROS_INICIO = [
+  { id: 28, nome: 'Ação' },
+  { id: 35, nome: 'Comédia' },
+  { id: 27, nome: 'Terror' },
+  { id: 16, nome: 'Animação' },
+  { id: 878, nome: 'Ficção científica' },
+]
+
+const FILEIRAS: { titulo: string; carregar: () => Promise<PaginaFilmes>; verMaisHref?: string }[] = [
+  { titulo: 'Em alta hoje', carregar: () => getTrending() },
+  { titulo: 'Populares', carregar: () => getPopular() },
+  { titulo: 'Em cartaz nos cinemas', carregar: () => getNowPlaying() },
+  { titulo: 'Mais bem avaliados', carregar: () => getTopRated() },
+  ...GENEROS_INICIO.map((g) => ({
+    titulo: g.nome,
+    carregar: () => discoverByGenre(g.id, 'popularidade'),
+    verMaisHref: `/genero/${g.id}`,
+  })),
+]
+
+export default async function Inicio() {
+  const destaque = await getTrending()
+    .then((p) => p.results.find((f) => f.backdropUrl && f.overview !== SINOPSE_INDISPONIVEL) ?? null)
+    .catch(() => null)
+
   return (
-    <div className="px-4 pt-24 md:px-10">
-      <h1 className="text-3xl font-extrabold">CineTeca</h1>
-    </div>
+    <>
+      {destaque ? <BannerDestaque filme={destaque} /> : <div className="h-24" />}
+      <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${destaque ? '-mt-24 md:-mt-40' : ''}`}>
+        {FILEIRAS.map((fileira) => (
+          <Suspense key={fileira.titulo} fallback={<FileiraEsqueleto titulo={fileira.titulo} />}>
+            <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} />
+          </Suspense>
+        ))}
+      </div>
+    </>
   )
 }
