@@ -49,9 +49,22 @@ describe('GET /api/filmes', () => {
   })
 
   it('responde 502 quando o TMDB falha', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.mocked(searchMovies).mockRejectedValue(new Error('fora do ar'))
     const resposta = await chamar('tipo=busca&q=matrix')
     expect(resposta.status).toBe(502)
     expect(await resposta.json()).toEqual({ erro: 'Não foi possível carregar' })
+    expect(log).toHaveBeenCalled()
+    log.mockRestore()
+  })
+
+  it('responde 502 quando o discoverByGenre falha', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.mocked(discoverByGenre).mockRejectedValue(new Error('fora do ar'))
+    const resposta = await chamar('tipo=genero&id=28')
+    expect(resposta.status).toBe(502)
+    expect(await resposta.json()).toEqual({ erro: 'Não foi possível carregar' })
+    expect(log).toHaveBeenCalled()
+    log.mockRestore()
   })
 })

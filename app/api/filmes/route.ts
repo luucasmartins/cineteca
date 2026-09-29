@@ -37,7 +37,8 @@ export async function GET(request: Request) {
 
   try {
     return sucesso(await carregar())
-  } catch {
+  } catch (falha) {
+    console.error('[CineTeca] /api/filmes falhou:', falha)
     return erro('Não foi possível carregar', 502)
   }
 }
