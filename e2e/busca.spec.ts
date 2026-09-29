@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test'
 import { irPeloMenu } from './ajudantes'
 
+// Enquanto o Next transmite a página, o conteúdo novo existe numa cópia escondida
+// antes de ser trocado; por isso as buscas por texto consideram só o que está visível.
+
 test('buscar mostra resultados enquanto digita', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Buscar' }).click()
@@ -13,18 +16,18 @@ test('buscar mostra resultados enquanto digita', async ({ page }) => {
 
 test('busca sem resultados', async ({ page }) => {
   await page.goto('/busca?q=xyz')
-  await expect(page.getByText('Nenhum filme encontrado para "xyz"')).toBeVisible()
+  await expect(page.getByText('Nenhum filme encontrado para "xyz"').filter({ visible: true })).toBeVisible()
 })
 
 test('busca vazia pede um termo', async ({ page }) => {
   await page.goto('/busca')
-  await expect(page.getByText('Digite o nome de um filme')).toBeVisible()
+  await expect(page.getByText('Digite o nome de um filme').filter({ visible: true })).toBeVisible()
 })
 
 test('acentos e símbolos chegam intactos', async ({ page }) => {
   await page.goto(`/busca?q=${encodeURIComponent('Amélie & cia?')}`)
   await expect(page.getByRole('heading', { level: 1, name: 'Resultados para "Amélie & cia?"' })).toBeVisible()
-  await expect(page.getByText('Nenhum filme encontrado para "Amélie & cia?"')).toBeVisible()
+  await expect(page.getByText('Nenhum filme encontrado para "Amélie & cia?"').filter({ visible: true })).toBeVisible()
 })
 
 test('o campo reabre com o termo atual na página de busca', async ({ page }) => {
