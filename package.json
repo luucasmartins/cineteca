@@ -8,9 +8,12 @@
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:supabase": "vitest run --config vitest.integracao.config.mts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
     "next": "^16.3.7",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

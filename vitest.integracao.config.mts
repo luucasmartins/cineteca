@@ -1,5 +1,9 @@
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
+
+// Testes de integração rodam contra o projeto Supabase de testes (nunca o de produção).
+if (existsSync('.env.test.local')) process.loadEnvFile('.env.test.local')
 
 const raiz = fileURLToPath(new URL('.', import.meta.url))
 
@@ -12,7 +16,8 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['**/*.test.ts'],
-    exclude: ['node_modules/**', '.next/**', 'e2e/**', 'testes-integracao/**'],
+    include: ['testes-integracao/**/*.test.ts'],
+    testTimeout: 30_000,
+    hookTimeout: 60_000,
   },
 })
