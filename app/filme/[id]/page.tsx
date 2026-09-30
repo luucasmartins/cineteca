@@ -8,6 +8,7 @@ import { CONTEUDO } from '@/components/estilos'
 import { ImagemComReserva } from '@/components/ImagemComReserva'
 import { MensagemErro } from '@/components/MensagemErro'
 import { OndeAssistir } from '@/components/OndeAssistir'
+import { TrailerFundo } from '@/components/TrailerFundo'
 import { formatarDuracao } from '@/lib/formatar'
 import { paraFilmeSalvo } from '@/lib/lista/tipos'
 import { lerIdPositivo } from '@/lib/parametros'
@@ -52,6 +53,7 @@ export default async function PaginaFilme({ params }: Props) {
     <article>
       <section aria-labelledby="titulo-filme" className="relative min-h-[70vh]">
         {filme.backdropUrl && <img src={filme.backdropUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />}
+        {filme.trailerKey && <TrailerFundo chave={filme.trailerKey} />}
         <div className="absolute inset-0 bg-gradient-to-r from-fundo via-fundo/80 to-fundo/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-fundo via-transparent to-transparent" />
         <div className={`${CONTEUDO} relative flex flex-col gap-8 pb-12 pt-28 md:flex-row md:items-end`}>
