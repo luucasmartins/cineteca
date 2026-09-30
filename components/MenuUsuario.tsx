@@ -34,14 +34,23 @@ export function MenuUsuario({ usuario }: { usuario: Usuario | null }) {
   }, [aberto])
 
   if (!usuario) {
-    // No celular, "Entrar" fica no menu recolhível.
+    // No celular, "Entrar" e "Criar conta" ficam no menu recolhível.
+    const voltar = encodeURIComponent(pathname || '/')
     return (
-      <Link
-        href={`/entrar?voltar=${encodeURIComponent(pathname || '/')}`}
-        className="hidden rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:inline-flex"
-      >
-        Entrar
-      </Link>
+      <div className="hidden items-center gap-2 md:flex">
+        <Link
+          href={`/entrar?voltar=${voltar}`}
+          className="rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        >
+          Entrar
+        </Link>
+        <Link
+          href={`/cadastro?voltar=${voltar}`}
+          className="rounded-md bg-destaque px-3 py-1.5 text-sm font-bold text-white transition-colors hover:bg-destaque-escuro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        >
+          Criar conta
+        </Link>
+      </div>
     )
   }
 

@@ -1,12 +1,22 @@
 import { apagarPorEmail, entrarPelaTela, novoEmail, sairPeloMenu } from './conta/ajudantes'
 import { expect, test } from './conta/fixtures'
 
-test('sem login, a barra mostra Entrar', async ({ page, isMobile }) => {
+test('sem login, a barra mostra Entrar e Criar conta', async ({ page, isMobile }) => {
   await page.goto('/')
   if (isMobile) await page.getByRole('button', { name: 'Abrir menu' }).click()
-  await expect(
-    page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Entrar', exact: true }),
-  ).toBeVisible()
+  const barra = page.getByRole('navigation', { name: 'Principal' })
+  await expect(barra.getByRole('link', { name: 'Entrar', exact: true })).toBeVisible()
+  await expect(barra.getByRole('link', { name: 'Criar conta', exact: true })).toBeVisible()
+})
+
+test('Criar conta da barra leva de volta para a página onde a pessoa estava', async ({ page, isMobile }) => {
+  await page.goto('/filme/1001')
+  if (isMobile) await page.getByRole('button', { name: 'Abrir menu' }).click()
+  await page
+    .getByRole('navigation', { name: 'Principal' })
+    .getByRole('link', { name: 'Criar conta', exact: true })
+    .click()
+  await expect(page).toHaveURL(/\/cadastro\?voltar=%2Ffilme%2F1001$/)
 })
 
 test('criar conta leva de volta para onde a pessoa estava, já logada', async ({ page }) => {
@@ -68,6 +78,14 @@ test('sair mostra o Entrar de novo', async ({ page, logado, isMobile }) => {
   await expect(
     page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Entrar', exact: true }),
   ).toBeVisible()
+})
+
+test('logado, a barra não mostra mais Entrar nem Criar conta', async ({ page, logado, isMobile }) => {
+  await page.goto('/')
+  if (isMobile) await page.getByRole('button', { name: 'Abrir menu' }).click()
+  const barra = page.getByRole('navigation', { name: 'Principal' })
+  await expect(barra.getByRole('link', { name: 'Entrar', exact: true })).toHaveCount(0)
+  await expect(barra.getByRole('link', { name: 'Criar conta', exact: true })).toHaveCount(0)
 })
 
 test('quem já está logado e abre /entrar volta para o início', async ({ page, logado }) => {

@@ -151,15 +151,26 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                   </li>
                 </>
               ) : (
-                <li>
-                  <Link
-                    href={`/entrar?voltar=${encodeURIComponent(pathname || '/')}`}
-                    onClick={fecharMenu}
-                    className="block py-3"
-                  >
-                    Entrar
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link
+                      href={`/entrar?voltar=${encodeURIComponent(pathname || '/')}`}
+                      onClick={fecharMenu}
+                      className="block py-3"
+                    >
+                      Entrar
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/cadastro?voltar=${encodeURIComponent(pathname || '/')}`}
+                      onClick={fecharMenu}
+                      className="block py-3 text-destaque"
+                    >
+                      Criar conta
+                    </Link>
+                  </li>
+                </>
               )}
             </ul>
             {generos.length > 0 && (
