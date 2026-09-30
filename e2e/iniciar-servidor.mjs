@@ -1,6 +1,14 @@
 // Sobe o TMDB simulado, compila o site e o inicia apontando para o simulador.
 import { spawn, spawnSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { iniciarMockTmdb, TOKEN_E2E } from './mock-tmdb/servidor.mjs'
+
+if (!existsSync('.env.test.local')) {
+  console.error('[e2e] Falta o arquivo .env.test.local com as chaves do projeto Supabase "cineteca-testes".')
+  process.exit(1)
+}
+// Variáveis já presentes no processo têm prioridade sobre o .env.local (produção) que o Next carrega.
+process.loadEnvFile('.env.test.local')
 
 const PORTA_MOCK = 4010
 const PORTA_APP = 3100

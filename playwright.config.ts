@@ -1,4 +1,8 @@
+import { existsSync } from 'node:fs'
 import { defineConfig, devices } from '@playwright/test'
+
+// Os ajudantes dos testes usam a chave secreta do projeto de testes para criar e apagar contas.
+if (existsSync('.env.test.local')) process.loadEnvFile('.env.test.local')
 
 export default defineConfig({
   testDir: './e2e',

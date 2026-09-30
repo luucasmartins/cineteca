@@ -3,6 +3,8 @@ import { Manrope } from 'next/font/google'
 import { ListasProvider } from '@/components/ListasProvider'
 import { Navbar } from '@/components/Navbar'
 import { Rodape } from '@/components/Rodape'
+import { SessaoProvider } from '@/components/SessaoProvider'
+import { obterUsuario } from '@/lib/auth/sessao'
 import { getGenres } from '@/lib/tmdb/filmes'
 import type { Genero } from '@/lib/tmdb/tipos'
 import './globals.css'
@@ -18,16 +20,18 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const generos = await getGenres().catch((): Genero[] => [])
+  const [generos, usuario] = await Promise.all([getGenres().catch((): Genero[] => []), obterUsuario()])
 
   return (
     <html lang="pt-BR" className={manrope.variable}>
       <body className="min-h-screen bg-fundo font-sans text-white antialiased">
-        <ListasProvider>
-          <Navbar generos={generos} />
-          <main className="min-h-screen">{children}</main>
-          <Rodape />
-        </ListasProvider>
+        <SessaoProvider usuario={usuario}>
+          <ListasProvider>
+            <Navbar generos={generos} usuario={usuario} />
+            <main className="min-h-screen">{children}</main>
+            <Rodape />
+          </ListasProvider>
+        </SessaoProvider>
       </body>
     </html>
   )
