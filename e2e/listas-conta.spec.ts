@@ -1,4 +1,4 @@
-import { apagarPorEmail, apagarUsuarioTeste, entrarPelaTela, novoEmail } from './conta/ajudantes'
+import { apagarPorEmail, apagarUsuarioTeste, entrarPelaTela, esperarNaConta, novoEmail } from './conta/ajudantes'
 import { expect, test } from './conta/fixtures'
 
 test('favoritar sem login abre a janela e, depois de criar conta, o filme já está salvo', async ({ page }) => {
@@ -62,8 +62,8 @@ test('duplo clique rápido não duplica nem desfaz', async ({ page, logado }) =>
   const botao = page.getByRole('region', { name: 'Filme Teste 1001' }).getByRole('button', { name: 'Favoritar' })
   await botao.dblclick()
   await expect(botao).toHaveAttribute('aria-pressed', 'true')
-  // Espera a gravação terminar: sair da página antes disso cancela o pedido.
-  await expect(page.getByText('"Filme Teste 1001" adicionado aos favoritos')).toBeVisible()
+  // Espera a gravação chegar ao banco: sair da página antes disso cancela o pedido.
+  await esperarNaConta(logado, 'favoritos', 1001)
   await page.goto('/minha-lista')
   await expect(page.getByRole('tab', { name: 'Favoritos (1)' })).toBeVisible()
 })

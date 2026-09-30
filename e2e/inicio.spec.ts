@@ -1,4 +1,5 @@
 import { expect, test } from './conta/fixtures'
+import { esperarNaConta } from './conta/ajudantes'
 import { irPeloMenu } from './ajudantes'
 
 test('mostra o banner destaque com um filme em alta', async ({ page }) => {
@@ -78,8 +79,8 @@ test('+ Minha lista do banner salva o filme', async ({ page, logado, isMobile })
   const botao = page.getByRole('region', { name: 'Destaque' }).getByRole('button', { name: 'Salvar para assistir' })
   await botao.click()
   await expect(botao).toHaveAttribute('aria-pressed', 'true')
-  // Espera a gravacao na conta terminar: sair da pagina antes disso cancela o pedido.
-  await expect(page.getByText('"Filme Teste 1001" adicionado aos salvos')).toBeVisible()
+  // Espera a gravacao chegar ao banco: sair da pagina antes disso cancela o pedido.
+  await esperarNaConta(logado, 'salvos', 1001)
 
   await irPeloMenu(page, isMobile, 'Minha lista')
   await page.getByRole('tab', { name: /Salvos para assistir/ }).click()

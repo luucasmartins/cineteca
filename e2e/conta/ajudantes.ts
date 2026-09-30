@@ -56,6 +56,28 @@ export async function sairPeloMenu(page: Page): Promise<void> {
   await expect(page.getByRole('button', { name: 'Menu da conta' })).toBeHidden()
 }
 
+// Espera a gravação chegar ao banco. O toast dura só 3s, curto demais para servir de sinal.
+export async function esperarNaConta(
+  u: Pick<UsuarioTeste, 'id'>,
+  tipo: 'favoritos' | 'salvos',
+  filmeId: number,
+): Promise<void> {
+  await expect
+    .poll(
+      async () => {
+        const { data } = await clienteAdmin()
+          .from('filmes_lista')
+          .select('filme_id')
+          .eq('usuario_id', u.id)
+          .eq('tipo', tipo)
+          .eq('filme_id', filmeId)
+        return data?.length ?? 0
+      },
+      { timeout: 15_000 },
+    )
+    .toBe(1)
+}
+
 export async function inserirFilmes(
   u: Pick<UsuarioTeste, 'id'>,
   tipo: 'favoritos' | 'salvos',

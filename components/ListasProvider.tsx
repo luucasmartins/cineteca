@@ -2,6 +2,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { lerAcaoPendente, limparAcaoPendente, obterArmazenamentoDaSessao } from '@/lib/lista/acao-pendente'
+import { importarListasDoNavegador } from '@/lib/lista/importacao'
+import { obterArmazenamentoSeguro } from '@/lib/lista/local'
 import { criarListaSupabase, ErroLista } from '@/lib/lista/supabase'
 import type { FilmeSalvo, ListaStore, Listas, TipoLista } from '@/lib/lista/tipos'
 import { obterClienteNavegador } from '@/lib/supabase/navegador'
@@ -23,6 +25,9 @@ const TEXTOS: Record<TipoLista, { adicionado: string; removido: string }> = {
 }
 const ERRO_AO_SALVAR = 'Não foi possível salvar. Tente de novo.'
 const vazias = (): Listas => ({ favoritos: [], salvos: [] })
+
+const textoImportacao = (n: number) =>
+  `Trouxemos ${n} ${n === 1 ? 'filme' : 'filmes'} que você tinha salvo neste navegador`
 
 const ContextoListas = createContext<ValorListas | null>(null)
 
@@ -109,6 +114,17 @@ export function ListasProvider({ children }: { children: ReactNode }) {
     void (async () => {
       await recarregar(loja)
       if (cancelado) return
+      // Listas que a Fase 1 guardava no navegador.
+      try {
+        const trazidos = await importarListasDoNavegador(obterArmazenamentoSeguro(), loja)
+        if (trazidos > 0 && !cancelado) {
+          await recarregar(loja)
+          mostrar(textoImportacao(trazidos))
+        }
+      } catch (erro) {
+        console.error('[CineTeca] Falha ao importar as listas do navegador:', (erro as Error).message)
+      }
+      if (cancelado) return
       // Filme que a pessoa tentou salvar antes de entrar.
       const armazenamento = obterArmazenamentoDaSessao()
       const acao = lerAcaoPendente(armazenamento)
@@ -121,7 +137,7 @@ export function ListasProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelado = true
     }
-  }, [usuarioId, recarregar, aplicar])
+  }, [usuarioId, recarregar, aplicar, mostrar])
 
   const contem = useCallback((tipo: TipoLista, id: number) => listas[tipo].some((f) => f.id === id), [listas])
 

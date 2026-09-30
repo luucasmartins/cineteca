@@ -1,4 +1,5 @@
 import { expect, test } from './conta/fixtures'
+import { esperarNaConta } from './conta/ajudantes'
 import { irPeloMenu } from './ajudantes'
 
 test('mostra os detalhes completos do filme', async ({ page }) => {
@@ -44,8 +45,8 @@ test('fluxo completo: início → filme → favoritar e salvar → Minha lista �
   await expect(favoritar).toHaveAttribute('aria-pressed', 'true')
   await expect(salvar).toHaveAttribute('aria-pressed', 'true')
   // Espera as duas gravações na conta terminarem antes de sair da página.
-  await expect(page.getByText('"Filme Teste 1002" adicionado aos favoritos')).toBeVisible()
-  await expect(page.getByText('"Filme Teste 1002" adicionado aos salvos')).toBeVisible()
+  await esperarNaConta(logado, 'favoritos', 1002)
+  await esperarNaConta(logado, 'salvos', 1002)
 
   await irPeloMenu(page, isMobile, 'Minha lista')
   // Sem esperar a navegação, o link "Filme Teste 1002" ainda casa com os semelhantes (1002xx) da página do filme.
