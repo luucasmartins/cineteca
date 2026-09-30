@@ -8,6 +8,33 @@ Catálogo público de filmes em pt-BR, com dados do TMDB e visual escuro no esti
 - **Repositório:** github.com/luucasmartins/cineteca (privado).
 - **Dono:** não programa. Fale com ele em português, com passos de clique em clique nos painéis (Vercel, Supabase, Google). **Nunca peça segredos no chat:** diga exatamente em qual arquivo ou campo do painel ele deve colar.
 
+## Como trabalhar com o dono
+
+- **Seja direto.** Entregue o resultado, sem repetir o pedido nem enrolar.
+- **Terminal é seu trabalho.** Rode você mesmo instalação, testes, typecheck, build e scripts. Só peça ação manual quando for impossível por ferramenta: login em painel, 2FA, clique em UI externa ou enviar ao GitHub.
+- **Opções sempre com recomendação:** qual e por quê, em uma linha. Em decisão técnica relevante, prós e contras por opção. Pergunta simples não vira análise gigante.
+- **Decisões no final.** O que depender dele fica num bloco separado no fim da resposta:
+
+  ```
+  ---
+  Preciso de você:
+  - <pergunta ou decisão, com recomendação em uma linha>
+  ---
+  ```
+
+- **Não declare "pronto" sem verificar.** Rode os testes e, quando a mudança for visível, confira no site local.
+- **Se faltar variável de ambiente**, diga qual e em qual arquivo ou painel ela entra. Não invente valor.
+
+## Mudanças no código
+
+- Menor diff que resolve. Siga o estilo existente e não refatore código vizinho sem pedido.
+- Comentários só para lógica não óbvia.
+- Crie e edite só dentro do projeto. Temporários ficam fora do repositório (pasta de rascunho da sessão).
+- Não apague arquivos que você não criou nesta sessão.
+- **Git:** commit só quando o dono pedir, ou por tarefa ao executar um plano aprovado (como o da Fase 2). Uma mudança lógica por commit, mensagem dizendo o que mudou e por quê. Nunca `push --force` no `master`.
+- **Tarefas longas:** siga o checklist do plano em `docs/superpowers/plans/` e marque o que foi feito. Se a conversa ficar longa com trabalho pendente, grave um handoff (estado atual + próximo passo) num `.md` no projeto.
+- Mantenha este arquivo enxuto: procedimentos longos vão para `docs/` ou skills.
+
 ## Fases
 
 - **Fase 1 — concluída e no ar.** Catálogo, busca, gênero, detalhes, Minha lista no `localStorage`.
