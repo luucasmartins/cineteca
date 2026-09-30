@@ -1,7 +1,7 @@
 # CineTeca — Fase 2 (Contas e listas na conta) — Design
 
 **Data:** 2026-09-29
-**Status:** aguardando revisão
+**Status:** aprovada
 **Depende de:** Fase 1 (`docs/superpowers/specs/2026-09-29-catalogo-filmes-fase1-design.md`), no ar em https://cineteca-gules.vercel.app
 
 ## 1. Objetivo

@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './conta/fixtures'
+import { esperarNaConta } from './conta/ajudantes'
 import { irPeloMenu } from './ajudantes'
 
 test('mostra os detalhes completos do filme', async ({ page }) => {
@@ -31,7 +32,24 @@ test('abre e fecha o trailer', async ({ page }) => {
   await expect(modal).toBeHidden()
 })
 
-test('fluxo completo: início → filme → favoritar e salvar → Minha lista → recarregar', async ({ page, isMobile }) => {
+test('trailer toca sem som no fundo do cabeçalho, só no computador', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'no celular o fundo fica só com a imagem')
+  await page.goto('/filme/1001')
+  const fundo = page.getByTestId('trailer-fundo')
+  await expect(fundo).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/trailer-teste\?.*mute=1/)
+  await expect(fundo).toHaveAttribute('src', /loop=1&playlist=trailer-teste/)
+})
+
+test('sem trailer no fundo no celular ou com movimento reduzido', async ({ page, isMobile }) => {
+  if (!isMobile) await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/filme/1001')
+  // O modal só abre depois da hidratação, quando o fundo já teria decidido se toca.
+  await page.getByRole('region', { name: 'Filme Teste 1001' }).getByRole('button', { name: 'Trailer' }).click()
+  await expect(page.getByRole('dialog', { name: 'Trailer de Filme Teste 1001' })).toBeVisible()
+  await expect(page.getByTestId('trailer-fundo')).toHaveCount(0)
+})
+
+test('fluxo completo: início → filme → favoritar e salvar → Minha lista → recarregar', async ({ page, logado, isMobile }) => {
   await page.goto('/')
   await page.getByRole('region', { name: 'Em alta hoje' }).getByRole('link', { name: 'Filme Teste 1002' }).click()
   await expect(page).toHaveURL(/\/filme\/1002$/)
@@ -43,6 +61,9 @@ test('fluxo completo: início → filme → favoritar e salvar → Minha lista �
   await salvar.click()
   await expect(favoritar).toHaveAttribute('aria-pressed', 'true')
   await expect(salvar).toHaveAttribute('aria-pressed', 'true')
+  // Espera as duas gravações na conta terminarem antes de sair da página.
+  await esperarNaConta(logado, 'favoritos', 1002)
+  await esperarNaConta(logado, 'salvos', 1002)
 
   await irPeloMenu(page, isMobile, 'Minha lista')
   // Sem esperar a navegação, o link "Filme Teste 1002" ainda casa com os semelhantes (1002xx) da página do filme.

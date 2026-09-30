@@ -3,12 +3,15 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { sair } from '@/lib/auth/acoes'
+import type { Usuario } from '@/lib/auth/usuario'
 import type { Genero } from '@/lib/tmdb/tipos'
 import { CampoBusca } from './CampoBusca'
 import { CONTEUDO } from './estilos'
 import { IconeChevronBaixo, IconeFechar, IconeMenu } from './Icones'
+import { MenuUsuario } from './MenuUsuario'
 
-export function Navbar({ generos }: { generos: Genero[] }) {
+export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuario | null }) {
   const pathname = usePathname()
   const [rolou, setRolou] = useState(false)
   const [menuAberto, setMenuAberto] = useState(false)
@@ -105,6 +108,7 @@ export function Navbar({ generos }: { generos: Genero[] }) {
             <Suspense fallback={null}>
               <CampoBusca />
             </Suspense>
+            <MenuUsuario usuario={usuario} />
             <button
               type="button"
               className="rounded p-2 md:hidden"
@@ -131,6 +135,32 @@ export function Navbar({ generos }: { generos: Genero[] }) {
                   Minha lista
                 </Link>
               </li>
+              {usuario ? (
+                <>
+                  <li>
+                    <Link href="/conta" onClick={fecharMenu} className="block py-3">
+                      Minha conta
+                    </Link>
+                  </li>
+                  <li>
+                    <form action={sair}>
+                      <button type="submit" className="block w-full py-3 text-left">
+                        Sair
+                      </button>
+                    </form>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <Link
+                    href={`/entrar?voltar=${encodeURIComponent(pathname || '/')}`}
+                    onClick={fecharMenu}
+                    className="block py-3"
+                  >
+                    Entrar
+                  </Link>
+                </li>
+              )}
             </ul>
             {generos.length > 0 && (
               <>

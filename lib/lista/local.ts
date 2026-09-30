@@ -4,7 +4,7 @@ export const CHAVE_LISTAS = 'cineteca:listas:v1'
 
 export type ArmazenamentoSimples = Pick<Storage, 'getItem' | 'setItem'>
 
-export function obterArmazenamentoSeguro(): ArmazenamentoSimples | null {
+export function obterArmazenamentoSeguro(): Storage | null {
   try {
     if (typeof window === 'undefined') return null
     const armazenamento = window.localStorage
@@ -21,7 +21,7 @@ function listasVazias(): Listas {
   return { favoritos: [], salvos: [] }
 }
 
-function ehFilmeSalvo(valor: unknown): valor is FilmeSalvo {
+export function ehFilmeSalvo(valor: unknown): valor is FilmeSalvo {
   if (!valor || typeof valor !== 'object') return false
   const f = valor as Record<string, unknown>
   return (
@@ -37,7 +37,7 @@ function lerLista(valor: unknown): FilmeSalvo[] {
   return Array.isArray(valor) ? valor.filter(ehFilmeSalvo) : []
 }
 
-function lerListas(armazenamento: ArmazenamentoSimples): Listas {
+export function lerListas(armazenamento: Pick<Storage, 'getItem'>): Listas {
   try {
     const bruto = armazenamento.getItem(CHAVE_LISTAS)
     if (!bruto) return listasVazias()

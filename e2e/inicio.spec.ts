@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './conta/fixtures'
+import { esperarNaConta } from './conta/ajudantes'
 import { irPeloMenu } from './ajudantes'
 
 test('mostra o banner destaque com um filme em alta', async ({ page }) => {
@@ -72,19 +73,21 @@ test('uma fileira com erro não derruba as outras', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Terror' }).getByTestId('movie-card').first()).toBeVisible()
 })
 
-test('+ Minha lista do banner salva o filme', async ({ page, isMobile }) => {
+test('+ Minha lista do banner salva o filme', async ({ page, logado, isMobile }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' }) // banner parado: sem troca automática durante o teste
   await page.goto('/')
   const botao = page.getByRole('region', { name: 'Destaque' }).getByRole('button', { name: 'Salvar para assistir' })
   await botao.click()
   await expect(botao).toHaveAttribute('aria-pressed', 'true')
+  // Espera a gravacao chegar ao banco: sair da pagina antes disso cancela o pedido.
+  await esperarNaConta(logado, 'salvos', 1001)
 
   await irPeloMenu(page, isMobile, 'Minha lista')
   await page.getByRole('tab', { name: /Salvos para assistir/ }).click()
   await expect(page.getByRole('link', { name: 'Filme Teste 1001' })).toBeVisible()
 })
 
-test('favoritar pelo cartão ao passar o mouse', async ({ page, isMobile }) => {
+test('favoritar pelo cartão ao passar o mouse', async ({ page, logado, isMobile }) => {
   test.skip(isMobile, 'hover só existe no desktop')
   await page.goto('/')
   const cartao = page.getByRole('region', { name: 'Populares' }).getByTestId('movie-card').first()
