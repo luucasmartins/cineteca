@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { TIPOS_LISTA, type TipoLista } from '@/lib/lista/tipos'
 import { GradeEsqueleto } from './Esqueletos'
-import { BOTAO_PRIMARIO } from './estilos'
+import { BOTAO_PRIMARIO, BOTAO_SECUNDARIO } from './estilos'
 import { GradeFilmes } from './GradeFilmes'
 import { useListas } from './ListasProvider'
 
@@ -15,9 +15,25 @@ const VAZIO: Record<TipoLista, string> = {
 }
 
 export function MinhaLista() {
-  const { carregado, listas } = useListas()
+  const { carregado, logado, listas } = useListas()
   const [aba, setAba] = useState<TipoLista>('favoritos')
   const filmes = listas[aba]
+
+  if (carregado && !logado) {
+    return (
+      <div className="flex flex-col items-start gap-4 py-10">
+        <p className="text-lg text-white/70">Entre para ver seus favoritos e filmes salvos</p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/entrar?voltar=%2Fminha-lista" className={BOTAO_PRIMARIO}>
+            Entrar
+          </Link>
+          <Link href="/cadastro?voltar=%2Fminha-lista" className={BOTAO_SECUNDARIO}>
+            Criar conta
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

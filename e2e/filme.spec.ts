@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './conta/fixtures'
 import { irPeloMenu } from './ajudantes'
 
 test('mostra os detalhes completos do filme', async ({ page }) => {
@@ -31,7 +31,7 @@ test('abre e fecha o trailer', async ({ page }) => {
   await expect(modal).toBeHidden()
 })
 
-test('fluxo completo: início → filme → favoritar e salvar → Minha lista → recarregar', async ({ page, isMobile }) => {
+test('fluxo completo: início → filme → favoritar e salvar → Minha lista → recarregar', async ({ page, logado, isMobile }) => {
   await page.goto('/')
   await page.getByRole('region', { name: 'Em alta hoje' }).getByRole('link', { name: 'Filme Teste 1002' }).click()
   await expect(page).toHaveURL(/\/filme\/1002$/)
@@ -43,6 +43,9 @@ test('fluxo completo: início → filme → favoritar e salvar → Minha lista �
   await salvar.click()
   await expect(favoritar).toHaveAttribute('aria-pressed', 'true')
   await expect(salvar).toHaveAttribute('aria-pressed', 'true')
+  // Espera as duas gravações na conta terminarem antes de sair da página.
+  await expect(page.getByText('"Filme Teste 1002" adicionado aos favoritos')).toBeVisible()
+  await expect(page.getByText('"Filme Teste 1002" adicionado aos salvos')).toBeVisible()
 
   await irPeloMenu(page, isMobile, 'Minha lista')
   // Sem esperar a navegação, o link "Filme Teste 1002" ainda casa com os semelhantes (1002xx) da página do filme.
