@@ -82,6 +82,20 @@ test('se o banco recusar, a tela desfaz e avisa', async ({ page, logado }) => {
   await expect(botao).toHaveAttribute('aria-pressed', 'false')
 })
 
+test('se a lista não carregar, avisa em vez de dizer que está vazia', async ({ page, logado }) => {
+  const rota = '**/rest/v1/filmes_lista*'
+  await page.route(rota, (r) =>
+    r.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"fora do ar"}' }),
+  )
+  await page.goto('/minha-lista')
+  await expect(page.getByText('Não foi possível carregar suas listas.')).toBeVisible()
+  await expect(page.getByText('Sua lista de favoritos está vazia.')).toHaveCount(0)
+
+  await page.unroute(rota)
+  await page.getByRole('button', { name: 'Tentar de novo' }).click()
+  await expect(page.getByText('Sua lista de favoritos está vazia.')).toBeVisible()
+})
+
 test('Minha lista sem login convida a entrar', async ({ page }) => {
   await page.goto('/minha-lista')
   await expect(page.getByText('Entre para ver seus favoritos e filmes salvos')).toBeVisible()

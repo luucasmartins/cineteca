@@ -15,7 +15,7 @@ const VAZIO: Record<TipoLista, string> = {
 }
 
 export function MinhaLista() {
-  const { carregado, logado, listas } = useListas()
+  const { carregado, logado, erroAoCarregar, listas, tentarDeNovo } = useListas()
   const [aba, setAba] = useState<TipoLista>('favoritos')
   const filmes = listas[aba]
 
@@ -59,6 +59,13 @@ export function MinhaLista() {
       <div role="tabpanel" id="painel-lista" aria-labelledby={`aba-${aba}`}>
         {!carregado ? (
           <GradeEsqueleto quantidade={6} />
+        ) : erroAoCarregar ? (
+          <div className="flex flex-col items-start gap-4 py-10">
+            <p className="text-lg text-white/70">Não foi possível carregar suas listas.</p>
+            <button type="button" onClick={tentarDeNovo} className={BOTAO_SECUNDARIO}>
+              Tentar de novo
+            </button>
+          </div>
         ) : filmes.length === 0 ? (
           <div className="flex flex-col items-start gap-4 py-10">
             <p className="text-lg text-white/70">{VAZIO[aba]}</p>

@@ -6,6 +6,7 @@ import { criarClienteAdmin } from '@/lib/supabase/admin'
 import { lerUrlSite } from '@/lib/supabase/config'
 import { criarClienteServidor } from '@/lib/supabase/servidor'
 import { MENSAGENS, mensagemDoErroAuth } from './erros'
+import { enderecoDeRetornoDaRecuperacao } from './rotas'
 import { caminhoDeRetorno, validarConfirmacao, validarEmail, validarNome, validarSenha } from './validacao'
 
 export type EstadoFormulario = { erro: string | null; sucesso?: string | null; email?: string; nome?: string }
@@ -99,7 +100,7 @@ export async function recuperarSenha(_estado: EstadoRecuperacao, formData: FormD
 
   const supabase = await criarClienteServidor()
   const { error } = await supabase.auth.resetPasswordForEmail(email.valor, {
-    redirectTo: `${lerUrlSite()}/redefinir-senha`,
+    redirectTo: enderecoDeRetornoDaRecuperacao(lerUrlSite()),
   })
   if (error) {
     const mensagem = mensagemDoErroAuth(error)
@@ -139,9 +140,10 @@ export async function atualizarNome(_estado: EstadoFormulario, formData: FormDat
   if (!nome.ok) return { erro: nome.erro, nome: digitado }
 
   const { supabase, usuario } = await usuarioObrigatorio()
-  const { error } = await supabase.from('perfis').update({ nome: nome.valor }).eq('id', usuario.id)
-  if (error) {
-    console.error('[CineTeca] atualizarNome falhou:', error.code)
+  // O select é o que revela uma gravação que não pegou: sem ele, atualizar zero linhas não dá erro.
+  const { data, error } = await supabase.from('perfis').update({ nome: nome.valor }).eq('id', usuario.id).select('id')
+  if (error || (data ?? []).length === 0) {
+    console.error('[CineTeca] atualizarNome falhou:', error?.code ?? 'nenhuma linha atualizada')
     return { erro: MENSAGENS.generico, nome: nome.valor }
   }
   revalidatePath('/', 'layout')

@@ -14,9 +14,11 @@ import { useUsuario } from './SessaoProvider'
 type ValorListas = {
   carregado: boolean
   logado: boolean
+  erroAoCarregar: boolean
   listas: Listas
   contem(tipo: TipoLista, id: number): boolean
   alternar(tipo: TipoLista, filme: FilmeSalvo): void
+  tentarDeNovo(): void
 }
 
 const TEXTOS: Record<TipoLista, { adicionado: string; removido: string }> = {
@@ -43,6 +45,7 @@ export function ListasProvider({ children }: { children: ReactNode }) {
   const [listas, setListas] = useState<Listas>(vazias)
   const listasRef = useRef<Listas>(listas)
   const [carregado, setCarregado] = useState(false)
+  const [erroAoCarregar, setErroAoCarregar] = useState(false)
   const [janela, setJanela] = useState<{ tipo: TipoLista; filme: FilmeSalvo } | null>(null)
 
   useEffect(() => {
@@ -55,7 +58,10 @@ export function ListasProvider({ children }: { children: ReactNode }) {
       const [favoritos, salvos] = await Promise.all([loja.listar('favoritos'), loja.listar('salvos')])
       // Se a pessoa mexeu na lista enquanto a leitura corria, o que está na tela é mais novo.
       if (versaoRef.current === versaoAoIniciar) setListas({ favoritos, salvos })
+      setErroAoCarregar(false)
     } catch (erro) {
+      // Nunca deixe uma leitura que falhou parecer uma lista vazia: a tela avisa e oferece tentar de novo.
+      setErroAoCarregar(true)
       console.error('[CineTeca] Falha ao carregar as listas:', (erro as Error).message)
     } finally {
       setCarregado(true)
@@ -155,9 +161,14 @@ export function ListasProvider({ children }: { children: ReactNode }) {
 
   const fecharJanela = useCallback(() => setJanela(null), [])
 
+  const tentarDeNovo = useCallback(() => {
+    const loja = lojaRef.current
+    if (loja) void recarregar(loja)
+  }, [recarregar])
+
   const valor = useMemo(
-    () => ({ carregado, logado: usuarioId !== null, listas, contem, alternar }),
-    [carregado, usuarioId, listas, contem, alternar],
+    () => ({ carregado, logado: usuarioId !== null, erroAoCarregar, listas, contem, alternar, tentarDeNovo }),
+    [carregado, usuarioId, erroAoCarregar, listas, contem, alternar, tentarDeNovo],
   )
 
   return (

@@ -6,7 +6,10 @@ if (existsSync('.env.test.local')) process.loadEnvFile('.env.test.local')
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30_000,
+  timeout: 60_000,
+  // O padrão de 5s é curto: as páginas falam com o Supabase remoto, e os avisos na tela
+  // só aparecem depois da hidratação. Com a máquina carregada isso passa de 5s.
+  expect: { timeout: 15_000 },
   fullyParallel: true,
   retries: 0,
   use: {

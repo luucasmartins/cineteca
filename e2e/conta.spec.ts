@@ -1,4 +1,4 @@
-import { entrarPelaTela, sairPeloMenu } from './conta/ajudantes'
+import { clienteAdmin, entrarPelaTela, sairPeloMenu } from './conta/ajudantes'
 import { expect, test } from './conta/fixtures'
 
 test('/conta sem login leva para entrar', async ({ page }) => {
@@ -28,6 +28,18 @@ test('nome vazio mostra mensagem', async ({ page, logado }) => {
   await page.getByLabel('Nome').fill('   ')
   await page.getByRole('button', { name: 'Salvar', exact: true }).click()
   await expect(page.getByText('Digite seu nome')).toBeVisible()
+})
+
+test('se o nome não for gravado, avisa em vez de dizer que deu certo', async ({ page, logado }) => {
+  // Sem a linha de perfil, o update não casa nenhuma linha e o Supabase não devolve erro.
+  const { error } = await clienteAdmin().from('perfis').delete().eq('id', logado.id)
+  expect(error).toBeNull()
+
+  await page.goto('/conta')
+  await page.getByLabel('Nome').fill('Carla Dias')
+  await page.getByRole('button', { name: 'Salvar', exact: true }).click()
+  await expect(page.getByText('Algo deu errado. Tente de novo.')).toBeVisible()
+  await expect(page.getByText('Nome atualizado')).toHaveCount(0)
 })
 
 test('trocar a senha e entrar com a nova', async ({ page, logado }) => {
