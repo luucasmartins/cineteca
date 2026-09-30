@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { lerUrlSite } from '@/lib/supabase/config'
 import { criarClienteServidor } from '@/lib/supabase/servidor'
 import { MENSAGENS, mensagemDoErroAuth } from './erros'
-import { caminhoDeRetorno, validarEmail, validarNome, validarSenha } from './validacao'
+import { caminhoDeRetorno, validarConfirmacao, validarEmail, validarNome, validarSenha } from './validacao'
 
 export type EstadoFormulario = { erro: string | null; sucesso?: string | null; email?: string; nome?: string }
 
@@ -88,4 +88,39 @@ export async function sair(): Promise<void> {
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
   redirect('/')
+}
+
+export type EstadoRecuperacao = { erro: string | null; enviado: boolean }
+
+export async function recuperarSenha(_estado: EstadoRecuperacao, formData: FormData): Promise<EstadoRecuperacao> {
+  const email = validarEmail(campo(formData, 'email'))
+  if (!email.ok) return { erro: email.erro, enviado: false }
+
+  const supabase = await criarClienteServidor()
+  const { error } = await supabase.auth.resetPasswordForEmail(email.valor, {
+    redirectTo: `${lerUrlSite()}/redefinir-senha`,
+  })
+  if (error) {
+    const mensagem = mensagemDoErroAuth(error)
+    if (mensagem === MENSAGENS.limite) return { erro: mensagem, enviado: false }
+    // Outros erros não aparecem para não revelar quem tem conta.
+    registrar('recuperarSenha', error)
+  }
+  return { erro: null, enviado: true }
+}
+
+export async function redefinirSenha(_estado: EstadoFormulario, formData: FormData): Promise<EstadoFormulario> {
+  const senha = validarSenha(campo(formData, 'senha'))
+  if (!senha.ok) return { erro: senha.erro }
+  const confirmacao = validarConfirmacao(senha.valor, campo(formData, 'confirmacao'))
+  if (!confirmacao.ok) return { erro: confirmacao.erro }
+
+  const supabase = await criarClienteServidor()
+  const { data } = await supabase.auth.getUser()
+  if (!data.user) return { erro: MENSAGENS.linkExpirado }
+  const { error } = await supabase.auth.updateUser({ password: senha.valor })
+  if (error) return { erro: falhaAuth('redefinirSenha', error) }
+
+  revalidatePath('/', 'layout')
+  redirect('/?aviso=senha-alterada')
 }
