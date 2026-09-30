@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { criarClienteAdmin } from '@/lib/supabase/admin'
 import { lerUrlSite } from '@/lib/supabase/config'
 import { criarClienteServidor } from '@/lib/supabase/servidor'
 import { MENSAGENS, mensagemDoErroAuth } from './erros'
@@ -123,4 +124,53 @@ export async function redefinirSenha(_estado: EstadoFormulario, formData: FormDa
 
   revalidatePath('/', 'layout')
   redirect('/?aviso=senha-alterada')
+}
+
+async function usuarioObrigatorio() {
+  const supabase = await criarClienteServidor()
+  const { data } = await supabase.auth.getUser()
+  if (!data.user) redirect('/entrar?voltar=%2Fconta')
+  return { supabase, usuario: data.user }
+}
+
+export async function atualizarNome(_estado: EstadoFormulario, formData: FormData): Promise<EstadoFormulario> {
+  const digitado = campo(formData, 'nome')
+  const nome = validarNome(digitado)
+  if (!nome.ok) return { erro: nome.erro, nome: digitado }
+
+  const { supabase, usuario } = await usuarioObrigatorio()
+  const { error } = await supabase.from('perfis').update({ nome: nome.valor }).eq('id', usuario.id)
+  if (error) {
+    console.error('[CineTeca] atualizarNome falhou:', error.code)
+    return { erro: MENSAGENS.generico, nome: nome.valor }
+  }
+  revalidatePath('/', 'layout')
+  return { erro: null, sucesso: 'Nome atualizado', nome: nome.valor }
+}
+
+export async function trocarSenha(_estado: EstadoFormulario, formData: FormData): Promise<EstadoFormulario> {
+  const senha = validarSenha(campo(formData, 'senha'))
+  if (!senha.ok) return { erro: senha.erro }
+  const confirmacao = validarConfirmacao(senha.valor, campo(formData, 'confirmacao'))
+  if (!confirmacao.ok) return { erro: confirmacao.erro }
+
+  const { supabase } = await usuarioObrigatorio()
+  const { error } = await supabase.auth.updateUser({ password: senha.valor })
+  if (error) return { erro: falhaAuth('trocarSenha', error) }
+  return { erro: null, sucesso: 'Senha alterada' }
+}
+
+export async function excluirConta(_estado: EstadoFormulario, formData: FormData): Promise<EstadoFormulario> {
+  if (campo(formData, 'confirmacao') !== 'EXCLUIR') return { erro: 'Digite EXCLUIR para confirmar' }
+
+  const { supabase, usuario } = await usuarioObrigatorio()
+  const { error } = await criarClienteAdmin().auth.admin.deleteUser(usuario.id)
+  if (error) {
+    registrar('excluirConta', error)
+    return { erro: MENSAGENS.generico }
+  }
+  // A conta já não existe; só limpa os cookies desta sessão.
+  await supabase.auth.signOut({ scope: 'local' })
+  revalidatePath('/', 'layout')
+  redirect('/?aviso=conta-excluida')
 }

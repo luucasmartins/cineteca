@@ -51,7 +51,8 @@ export async function entrarPelaTela(page: Page, u: Pick<UsuarioTeste, 'email' |
 
 export async function sairPeloMenu(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Menu da conta' }).click()
-  await page.getByRole('button', { name: 'Sair' }).click()
+  // Escopado à barra superior: a página /conta também tem um botão "Sair".
+  await page.getByRole('navigation', { name: 'Principal' }).getByRole('button', { name: 'Sair' }).click()
   await expect(page.getByRole('button', { name: 'Menu da conta' })).toBeHidden()
 }
 
