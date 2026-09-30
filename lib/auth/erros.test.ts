@@ -10,6 +10,7 @@ describe('mensagemDoErroAuth', () => {
     ['over_request_rate_limit', 'Muitas tentativas. Espere um pouco e tente de novo.'],
     ['over_email_send_rate_limit', 'Muitas tentativas. Espere um pouco e tente de novo.'],
     ['same_password', 'A nova senha precisa ser diferente da atual'],
+    ['reauthentication_needed', 'Por segurança, entre de novo antes de trocar a senha.'],
     ['otp_expired', 'Este link expirou. Peça um novo.'],
     ['flow_state_expired', 'Este link expirou. Peça um novo.'],
   ])('código %s', (code, mensagem) => {
