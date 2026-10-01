@@ -113,6 +113,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - **Supabase (painel):**
   - "Confirm email" fica no **topo** de Authentication → Sign In / Providers, na seção "User Signups" — não dentro do provedor Email.
   - Editar modelos de e-mail exige SMTP próprio. Sem SMTP, o envio só alcança os donos do projeto, 2 por hora.
+  - `42501` numa chamada de `criarClienteAdmin()` em produção = a `SUPABASE_SECRET_KEY` da Vercel não é a secreta. Em 2026-10-01 estava com uma chave sem poder de admin; o dono colou a `sb_secret_` e republicou. Só produção acusa: o `.env.local` tem a chave certa.
   - O **Project URL** fica em Settings → **Data API**, não em API Keys. Copie só o domínio: `https://xxx.supabase.co`, **sem** `/rest/v1` no fim. Esse erro derruba o login inteiro.
 - **Vercel:** o plano Hobby bloqueia deploy quando a conta do GitHub que envia não é a ligada à Vercel e o repositório é privado. Resolvido tornando o repositório público. Republicar um deploy bloqueado não adianta — só um commit novo é reavaliado.
 - **Windows:** PowerShell 5.1 (sem `&&`) ou Git Bash. O caminho do projeto tem espaço e acento: use aspas. O "Acesso controlado a pastas" do Defender já bloqueou o `.git`.
