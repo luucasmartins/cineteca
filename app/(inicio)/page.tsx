@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { BannerDestaque } from '@/components/BannerDestaque'
 import { FileiraEsqueleto } from '@/components/Esqueletos'
 import { FileiraAssincrona } from '@/components/FileiraAssincrona'
+import { FileiraRanking } from '@/components/FileiraRanking'
 import { escolherDestaques } from '@/lib/destaques'
 import { discoverByGenre, getNowPlaying, getPopular, getTopRated, getTrending } from '@/lib/tmdb/filmes'
 import type { PaginaFilmes } from '@/lib/tmdb/tipos'
@@ -36,6 +37,9 @@ export default async function Inicio() {
     <>
       {temBanner ? <BannerDestaque filmes={destaques} /> : <div className="h-24" />}
       <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${temBanner ? '-mt-24 md:-mt-40' : ''}`}>
+        <Suspense fallback={null}>
+          <FileiraRanking />
+        </Suspense>
         {FILEIRAS.map((fileira) => (
           <Suspense key={fileira.titulo} fallback={<FileiraEsqueleto titulo={fileira.titulo} />}>
             <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} automatico={fileira.automatico} />

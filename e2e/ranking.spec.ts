@@ -56,6 +56,33 @@ test.describe('ranking com votos no banco', () => {
       for (const u of usuarios) await apagarUsuarioTeste(u)
     }
   })
+
+  test('a home não mostra a fileira quando há poucos filmes qualificados', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('region', { name: 'Mais curtidos na CineTeca' })).toHaveCount(0)
+  })
+
+  test('a home mostra a fileira com 3 filmes qualificados', async ({ page }) => {
+    const usuarios = [await criarUsuarioTeste(), await criarUsuarioTeste(), await criarUsuarioTeste()]
+    const filmes = [FILME, FILME + 1, FILME + 2]
+    try {
+      for (const filmeId of filmes) {
+        await clienteAdmin()
+          .from('filmes_avaliados')
+          .upsert({ filme_id: filmeId, titulo: `${TITULO} ${filmeId}`, poster_url: null, ano: '2024' })
+        const { error } = await clienteAdmin()
+          .from('avaliacoes')
+          .insert(usuarios.map((u) => ({ usuario_id: u.id, filme_id: filmeId, curtiu: true })))
+        if (error) throw error
+      }
+      await page.goto('/')
+      const fileira = page.getByRole('region', { name: 'Mais curtidos na CineTeca' })
+      await expect(fileira).toBeVisible()
+      await expect(fileira.getByRole('link', { name: /Ver tudo/ })).toHaveAttribute('href', '/mais-curtidos')
+    } finally {
+      for (const u of usuarios) await apagarUsuarioTeste(u)
+    }
+  })
 })
 
 test('o menu leva para a página de ranking', async ({ page, isMobile }) => {
