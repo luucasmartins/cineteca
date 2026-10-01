@@ -38,5 +38,6 @@ Os dois últimos precisam de `.env.test.local`, com as chaves do projeto `cinete
 - `lib/auth/` — validações, mensagens e as ações de entrar, criar conta e mexer na conta.
 - `lib/lista/` — Favoritos e Salvos, guardados na conta do usuário.
 - `lib/avaliacoes/` — curtidas dos usuários e o ranking dos mais curtidos.
+- `lib/tmdb/equipe.ts` e `lib/tmdb/joia.ts` — equipe da Visão & Construção e o sorteio do Fure a bolha.
 - `components/` — peças visuais do site.
 - `app/` — páginas.

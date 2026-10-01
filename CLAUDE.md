@@ -48,11 +48,11 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - Spec: `docs/superpowers/specs/2026-09-30-cineteca-fase3-avaliacoes-design.md`
   - Plano: `docs/superpowers/plans/2026-09-30-cineteca-fase3.md`
   - O voto é gravado com update e, se não existir, insert: `upsert` leva 42501, porque o banco só libera update em `curtiu` e `atualizado_em`.
-- **Fase 4 — próxima, sem spec ainda.** Decidido com o dono em 2026-10-01, só com dados do TMDB:
-  - "Visão & Construção" na página do filme: direção, fotografia, roteiro e direção de arte.
-  - Galeria de imagens do filme (só exibir; "clipar" para o perfil fica para depois).
-  - Botão "Fure a bolha": sugestão surpresa de filme bem avaliado, com mínimo de votos no TMDB.
-  - Ficaram de fora por enquanto: sessão dupla, tags de vibe, diário/dashboard, paleta de cores. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
+- **Fase 4 — concluída.** Visão & Construção, galeria de imagens em mosaico e Fure a bolha (home e menu).
+  - Spec: `docs/superpowers/specs/2026-10-01-cineteca-fase4-olhar-de-cinefilo-design.md`
+  - Plano: `docs/superpowers/plans/2026-10-01-cineteca-fase4.md`
+  - Ficaram para depois: sessão dupla, tags de vibe, diário/dashboard, paleta de cores, "clipar" imagens. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
+  - Ajustes menores vistos na revisão e não feitos: imagem 404 no mosaico mostra ícone quebrado; contador da tela cheia não é anunciado; falha só na busca do país descarta a sugestão; respostas fora de ordem no sorteio sem guarda; janela do Fure a bolha não trava a rolagem.
 
 ## Pendências abertas
 
