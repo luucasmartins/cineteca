@@ -46,7 +46,7 @@
 **Interfaces:**
 - Produces: o arquivo servido em `/som/trilha.mp3`, que as Tasks 3–5 usam.
 
-- [ ] **Step 1: Instalar dependências e copiar os arquivos de ambiente (sem ler)**
+- [x] **Step 1: Instalar dependências e copiar os arquivos de ambiente (sem ler)**
 
 Run (Git Bash, a partir do worktree):
 ```bash
@@ -58,12 +58,12 @@ test -f .env.local && test -f .env.test.local && echo copiados
 ```
 Expected: `npm install` termina sem erro e aparece `copiados`.
 
-- [ ] **Step 2: Conferir que a base está verde**
+- [x] **Step 2: Conferir que a base está verde**
 
 Run: `npm test && npm run typecheck`
 Expected: tudo PASS.
 
-- [ ] **Step 3: Escolher a faixa na Pixabay Music**
+- [x] **Step 3: Escolher a faixa na Pixabay Music**
   - Use `WebSearch` e `WebFetch` em `https://pixabay.com/music/search/cinematic%20orchestral/`, com termos alternativos como "epic cinematic", "movie trailer orchestral" e "cinematic intro".
   - Critérios, em ordem:
     - (a) orquestral/cinematográfico, sem vocal;
@@ -136,7 +136,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   - `lerSomDesligado(armazenamento: Pick<Storage, 'getItem'> | null): boolean`;
   - `gravarSomDesligado(armazenamento: Pick<Storage, 'setItem' | 'removeItem'> | null, desligado: boolean): void`.
 
-- [ ] **Step 1: Escrever os testes que falham**
+- [x] **Step 1: Escrever os testes que falham**
 
 `lib/som/preferencia.test.ts`:
 ```ts
@@ -202,12 +202,12 @@ describe('preferência de som', () => {
 })
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx vitest run lib/som/preferencia.test.ts`
 Expected: FAIL, porque não encontra `./preferencia`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `lib/som/preferencia.ts`:
 ```ts
@@ -235,12 +235,12 @@ export function gravarSomDesligado(
 }
 ```
 
-- [ ] **Step 4: Rodar e ver passar**
+- [x] **Step 4: Rodar e ver passar**
 
 Run: `npx vitest run lib/som/preferencia.test.ts`
 Expected: PASS (5 testes).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/som/preferencia.ts lib/som/preferencia.test.ts
@@ -268,7 +268,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   - o elemento `<audio data-testid="trilha-sonora">`;
   - o contrato de que eventos cujo alvo está dentro de `[data-botao-som]` não iniciam a trilha (usado pela Task 4).
 
-- [ ] **Step 1: Escrever os testes e2e que falham**
+- [x] **Step 1: Escrever os testes e2e que falham**
 
 `e2e/trilha-sonora.spec.ts`:
 ```ts
@@ -325,14 +325,14 @@ test('se o arquivo da trilha falhar, o site segue normal', async ({ page }) => {
 })
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Primeiro confira as portas (veja o Step 1 da Task 6). Depois:
 
 Run: `npx playwright test e2e/trilha-sonora.spec.ts`
 Expected: FAIL. O `getByTestId('trilha-sonora')` não encontra elemento.
 
-- [ ] **Step 3: Implementar o provider**
+- [x] **Step 3: Implementar o provider**
 
 `components/TrilhaSonoraProvider.tsx`:
 ```tsx
@@ -452,7 +452,7 @@ export function useTrilhaSonora(): ValorTrilha {
 }
 ```
 
-- [ ] **Step 4: Colocar o provider no layout raiz**
+- [x] **Step 4: Colocar o provider no layout raiz**
 
 Em `app/layout.tsx`, adicione o import junto dos outros providers:
 ```tsx
@@ -469,19 +469,19 @@ E troque o miolo do `ListasProvider` por:
             </ListasProvider>
 ```
 
-- [ ] **Step 5: Rodar e ver passar**
+- [x] **Step 5: Rodar e ver passar**
 
 Run: `npx playwright test e2e/trilha-sonora.spec.ts`
 Expected: PASS (3 testes × desktop e celular).
 
 **Se "continua tocando" falhar porque `currentTime` fica em 0:** o Chromium do Playwright pode não estar decodificando o MP3. Confira com `trilha(page).evaluate(a => a.error?.code)`. Não enfraqueça o teste; reporte o problema.
 
-- [ ] **Step 6: Typecheck e unitários**
+- [x] **Step 6: Typecheck e unitários**
 
 Run: `npm run typecheck && npm test`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add components/TrilhaSonoraProvider.tsx app/layout.tsx e2e/trilha-sonora.spec.ts
@@ -508,7 +508,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   - `BotaoSom()`, sem props;
   - `IconeSom` e `IconeSomDesligado` (`{ className?: string }`).
 
-- [ ] **Step 1: Escrever os testes que falham**
+- [x] **Step 1: Escrever os testes que falham**
 
 Acrescente ao fim de `e2e/trilha-sonora.spec.ts`:
 ```ts
@@ -538,12 +538,12 @@ test('clicar primeiro no botão desliga sem tocar, e a escolha vale depois de re
 })
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx playwright test e2e/trilha-sonora.spec.ts -g "botão"`
 Expected: FAIL, porque não existe botão "Desligar trilha sonora".
 
-- [ ] **Step 3: Adicionar os ícones**
+- [x] **Step 3: Adicionar os ícones**
 
 Fim de `components/Icones.tsx`:
 ```tsx
@@ -562,7 +562,7 @@ export const IconeSomDesligado = ({ className }: Props) => (
 )
 ```
 
-- [ ] **Step 4: Criar o botão**
+- [x] **Step 4: Criar o botão**
 
 `components/BotaoSom.tsx`:
 ```tsx
@@ -589,7 +589,7 @@ export function BotaoSom() {
 }
 ```
 
-- [ ] **Step 5: Colocar na Navbar**
+- [x] **Step 5: Colocar na Navbar**
 
 Em `components/Navbar.tsx`:
 - adicione `import { BotaoSom } from './BotaoSom'` em ordem alfabética, antes de `import { CampoBusca } from './CampoBusca'`;
@@ -598,17 +598,17 @@ Em `components/Navbar.tsx`:
             <BotaoSom />
 ```
 
-- [ ] **Step 6: Rodar e ver passar**
+- [x] **Step 6: Rodar e ver passar**
 
 Run: `npx playwright test e2e/trilha-sonora.spec.ts`
 Expected: PASS (5 testes × desktop e celular).
 
-- [ ] **Step 7: Typecheck**
+- [x] **Step 7: Typecheck**
 
 Run: `npm run typecheck`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add components/BotaoSom.tsx components/Icones.tsx components/Navbar.tsx e2e/trilha-sonora.spec.ts
@@ -629,7 +629,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Consumes: `useTrilhaSonora().pausar` e `useTrilhaSonora().retomar` (Task 3).
 - Produces: nada novo.
 
-- [ ] **Step 1: Escrever os testes que falham**
+- [x] **Step 1: Escrever os testes que falham**
 
 Acrescente ao fim de `e2e/trilha-sonora.spec.ts`:
 ```ts
@@ -669,12 +669,12 @@ test('com o som desligado, abrir e fechar o trailer não religa a trilha', async
 })
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npx playwright test e2e/trilha-sonora.spec.ts -g "trailer"`
 Expected: os dois primeiros FAIL, porque a trilha continua tocando com o modal aberto. O terceiro pode passar já agora; ele protege contra regressão.
 
-- [ ] **Step 3: Pausar e retomar no modal**
+- [x] **Step 3: Pausar e retomar no modal**
 
 Em `components/BotaoTrailer.tsx`:
 - adicione `import { useTrilhaSonora } from './TrilhaSonoraProvider'` depois do import de `./Icones`;
@@ -688,12 +688,12 @@ Em `components/BotaoTrailer.tsx`:
   }, [pausar, retomar])
 ```
 
-- [ ] **Step 4: Rodar e ver passar**
+- [x] **Step 4: Rodar e ver passar**
 
 Run: `npx playwright test e2e/trilha-sonora.spec.ts e2e/filme.spec.ts`
 Expected: PASS (todos, desktop e celular).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add components/BotaoTrailer.tsx e2e/trilha-sonora.spec.ts
@@ -708,17 +708,17 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** nenhum novo. Só corrija o que a verificação apontar.
 
-- [ ] **Step 1: Conferir que as portas do e2e estão livres**
+- [x] **Step 1: Conferir que as portas do e2e estão livres**
 
 Run (Git Bash): `netstat -ano | grep -E ':(3100|4010) ' | grep LISTENING || echo livres`
 Expected: `livres`. Se estiverem ocupadas, a outra sessão está rodando e2e: espere e confira de novo. Não mate processos que não são seus.
 
-- [ ] **Step 2: Suíte completa**
+- [x] **Step 2: Suíte completa**
 
 Run: `npm test && npm run typecheck && npm run test:e2e`
 Expected: tudo PASS. Se um teste antigo quebrar por causa do botão novo na barra (por exemplo, um `getByRole('button')` ambíguo), corrija o teste com um seletor mais específico e explique no commit.
 
-- [ ] **Step 3: Conferir no site local**
+- [x] **Step 3: Conferir no site local**
 
 - Suba `npx next dev -p 3005` em segundo plano. A porta 3000 pode ser da outra sessão.
 - Com um script Playwright na pasta de rascunho da sessão, tire capturas da barra superior em 1280×800 e em 412×915 (celular).
@@ -728,7 +728,7 @@ Expected: tudo PASS. Se um teste antigo quebrar por causa do botão novo na barr
 - Clique na página e confirme `!audio.paused`.
 - Encerre o servidor.
 
-- [ ] **Step 4: Commit das correções (se houver)**
+- [x] **Step 4: Commit das correções (se houver)**
 
 ```bash
 git add <arquivos corrigidos>
@@ -737,7 +737,7 @@ git commit -m "fix: <o que foi ajustado e por quê>
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ```
 
-- [ ] **Step 5: Entregar ao dono**
+- [x] **Step 5: Entregar ao dono**
 
 - Não faça merge no `master`. Informe o dono:
   - qual faixa foi escolhida, com o link da página;
