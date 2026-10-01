@@ -72,7 +72,7 @@ Expected: tudo PASS.
     - (d) emenda bem em repetição: prefira faixas descritas como "loop" ou que terminam suavemente.
   - Confira a licença atual em `https://pixabay.com/service/license-summary/`. Ela precisa continuar permitindo uso comercial sem crédito.
 
-- [ ] **Step 4: Baixar a faixa**
+- [x] **Step 4: Baixar a faixa**
 
 Run:
 ```bash
@@ -93,7 +93,7 @@ Expected: o início do arquivo é `I D 3` ou começa com o byte `377` (0xFF), ou
 
 **Se o arquivo passar de 3,5 MB:** escolha outra faixa mais curta. Não reencode o arquivo.
 
-- [ ] **Step 5: Registrar origem e licença**
+- [x] **Step 5: Registrar origem e licença**
 
 Crie `docs/trilha-sonora.md` com os dados reais da faixa baixada:
 ```markdown
@@ -112,7 +112,7 @@ Crie `docs/trilha-sonora.md` com os dados reais da faixa baixada:
 3. Atualize os dados acima.
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add public/som/trilha.mp3 docs/trilha-sonora.md
