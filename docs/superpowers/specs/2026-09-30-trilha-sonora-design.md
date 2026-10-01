@@ -29,15 +29,15 @@ O site ganha uma identidade sonora: uma trilha no clima de cinema toca enquanto 
 ## 3. Comportamento
 
 1. **Ao carregar:**
-   - Se a preferência for "desligada", o tocador não cria o áudio nem baixa o arquivo.
-   - Caso contrário, o tocador cria o elemento de áudio depois do evento `load` da janela (`preload="auto"`) e fica esperando o primeiro gesto.
-2. **Primeiro gesto:** `pointerdown` ou `keydown` no `document` chama `play()`.
+   - O tocador renderiza um único `<audio loop>` com `preload="none"`, que não baixa o arquivo.
+   - Se a preferência não for "desligada", ele troca para `preload="auto"` depois do evento `load` da janela e fica esperando o primeiro gesto. Quem desligou só baixa o arquivo se religar.
+2. **Primeiro gesto:** `pointerdown` ou `keydown` no `document` chama `play()`, mesmo que a página ainda não tenha terminado de carregar.
    - Se `play()` for rejeitado, por exemplo por causa de uma tecla que o navegador não conta como gesto, o tocador espera o próximo gesto.
-   - Depois que a trilha começa a tocar, os ouvintes de gesto são removidos.
-3. **Primeiro gesto no botão de som:** não inicia a trilha. O botão marca seu `pointerdown` e o ouvinte global ignora esse evento. O clique segue o fluxo normal do botão.
+   - Quando o áudio dispara o evento `play`, os ouvintes de gesto são removidos.
+3. **Primeiro gesto no botão de som:** não inicia a trilha. O botão tem o atributo `data-botao-som`, e o ouvinte global ignora eventos cujo alvo está dentro dele. O clique segue o fluxo normal do botão.
 4. **Botão de som:**
    - **Ligada → desligada:** pausa a trilha e grava "desligada".
-   - **Desligada → ligada:** apaga a preferência e dá `play()` na hora, porque o próprio clique já conta como gesto. Se o áudio ainda não existir, ele é criado nesse momento.
+   - **Desligada → ligada:** apaga a preferência e dá `play()` na hora, porque o próprio clique já conta como gesto.
 5. **Pausa temporária (trailer):**
    - `pausar()` só pausa se estiver tocando e guarda que a pausa foi temporária.
    - `retomar()` só volta a tocar se a pausa foi temporária e o som continua ligado.
@@ -52,16 +52,17 @@ O site ganha uma identidade sonora: uma trilha no clima de cinema toca enquanto 
 - **`public/som/trilha.mp3`:** a faixa, com até cerca de 3 MB (MP3 a 128 kbps).
 - **`docs/trilha-sonora.md`:** título, autor, link da página na Pixabay, data do download e licença. Explica também como trocar a faixa.
 - **`lib/som/preferencia.ts`:** gerencia a preferência de som no navegador.
-  - `somDesligado(): boolean`.
-  - `gravarSomDesligado(desligado: boolean): void`.
+  - `lerSomDesligado(armazenamento): boolean`.
+  - `gravarSomDesligado(armazenamento, desligado: boolean): void`.
+  - Recebem o armazenamento de `obterArmazenamentoSeguro()` (`lib/lista/local.ts`), ou `null`.
   - Chave: `cineteca:som`, com valor `desligado`.
   - Leitura e escrita ficam em `try/catch`, no mesmo padrão de `lib/lista/local.ts`.
 - **`components/TrilhaSonoraProvider.tsx`** (`'use client'`):
   - É dono do único `HTMLAudioElement` e dos ouvintes de gesto.
-  - Expõe pelo contexto `{ ligada, alternar, pausar, retomar, marcarGestoDoBotao }` e o hook `useTrilhaSonora()`.
+  - Expõe pelo contexto `{ ligada, alternar, pausar, retomar }` e o hook `useTrilhaSonora()`.
 - **`components/BotaoSom.tsx`:**
   - Mostra um ícone de alto-falante, com som ou cortado. Os ícones novos entram em `components/Icones.tsx`.
-  - `aria-pressed` reflete se o som está ligado.
+  - Não usa `aria-pressed`: com um nome que muda, o leitor de tela anunciaria um estado contraditório.
   - `aria-label` alterna entre "Desligar trilha sonora" e "Ligar trilha sonora".
 
 **Alteradas:**
