@@ -74,3 +74,38 @@ test('clicar primeiro no botão desliga sem tocar, e a escolha vale depois de re
   await page.waitForTimeout(500)
   expect(await tocando(page)).toBe(false)
 })
+
+const botaoTrailer = (page: Page) =>
+  page.getByRole('region', { name: 'Filme Teste 1001' }).getByRole('button', { name: 'Trailer' })
+
+test('o trailer pausa a trilha, e ela volta ao fechar', async ({ page }) => {
+  await page.goto('/filme/1001')
+  await iniciarTrilha(page)
+  await botaoTrailer(page).click()
+  await expect.poll(() => tocando(page)).toBe(false)
+  await page.getByRole('button', { name: 'Fechar trailer' }).click()
+  await expect.poll(() => tocando(page)).toBe(true)
+})
+
+test('se o primeiro gesto é abrir o trailer, a trilha só começa ao fechar', async ({ page }) => {
+  await page.goto('/filme/1001')
+  await expect(async () => {
+    await botaoTrailer(page).click({ timeout: 1000 })
+    await expect(page.getByRole('dialog', { name: 'Trailer de Filme Teste 1001' })).toBeVisible({ timeout: 1000 })
+  }).toPass()
+  await expect.poll(() => tocando(page)).toBe(false)
+  await page.getByRole('button', { name: 'Fechar trailer' }).click()
+  await expect.poll(() => tocando(page)).toBe(true)
+})
+
+test('com o som desligado, abrir e fechar o trailer não religa a trilha', async ({ page }) => {
+  await page.goto('/filme/1001')
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Desligar trilha sonora' }).click({ timeout: 1000 })
+    await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible({ timeout: 1000 })
+  }).toPass()
+  await botaoTrailer(page).click()
+  await page.getByRole('button', { name: 'Fechar trailer' }).click()
+  await page.waitForTimeout(500)
+  expect(await tocando(page)).toBe(false)
+})
