@@ -28,6 +28,8 @@ export function pagina(base, numero, totalPaginas) {
 }
 
 export function detalhes(id) {
+  // Filme sem equipe nem imagens: as seções Visão & Construção e Imagens não aparecem.
+  const semBastidores = id === 1005
   return {
     ...filme(id),
     runtime: 136,
@@ -44,6 +46,17 @@ export function detalhes(id) {
         profile_path: null,
         order: i,
       })),
+      crew: semBastidores
+        ? []
+        : [
+            // A foto não existe no servidor de imagens: o cartão tem de cair nas iniciais.
+            { id: 900, name: 'Diretora Teste', job: 'Director', profile_path: '/diretora-inexistente.jpg' },
+            { id: 900, name: 'Diretora Teste', job: 'Screenplay', profile_path: '/diretora-inexistente.jpg' },
+            { id: 901, name: 'Roteirista Dois', job: 'Writer', profile_path: null },
+            { id: 902, name: 'Fotógrafo Teste', job: 'Director of Photography', profile_path: null },
+            { id: 903, name: 'Montador', job: 'Editor', profile_path: null },
+            { id: 904, name: 'Figurinista Teste', job: 'Costume Design', profile_path: null },
+          ],
     },
     recommendations: pagina(id * 100, 1, 1),
     'watch/providers': {

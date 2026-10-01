@@ -39,6 +39,12 @@ const COMPLETO = {
       profile_path: i === 0 ? '/ator.jpg' : null,
       order: 19 - i,
     })),
+    crew: [
+      { id: 1, name: 'Lana Wachowski', job: 'Director', profile_path: '/lana.jpg' },
+      { id: 1, name: 'Lana Wachowski', job: 'Writer', profile_path: '/lana.jpg' },
+      { id: 2, name: 'Bill Pope', job: 'Director of Photography', profile_path: null },
+      { id: 3, name: 'Kym Barrett', job: 'Costume Design', profile_path: null },
+    ],
   },
   recommendations: {
     page: 1,
@@ -141,6 +147,14 @@ describe('getMovieDetails', () => {
     expect(cast.find((a) => a.id === 100)).toBeUndefined()
   })
 
+  it('normaliza a equipe da Visão & Construção', async () => {
+    responderCom(COMPLETO)
+    expect((await getMovieDetails(603))!.crew).toEqual([
+      { id: 1, name: 'Lana Wachowski', profileUrl: 'https://image.tmdb.org/t/p/w185/lana.jpg', funcoes: ['Direção', 'Roteiro'] },
+      { id: 2, name: 'Bill Pope', profileUrl: null, funcoes: ['Fotografia'] },
+    ])
+  })
+
   it('usa só os provedores do Brasil, na ordem de prioridade', async () => {
     responderCom(COMPLETO)
     expect((await getMovieDetails(603))!.watchProviders).toEqual({
@@ -176,6 +190,7 @@ describe('getMovieDetails', () => {
       trailerKey: null,
       trailerFundoKey: null,
       cast: [],
+      crew: [],
       recommendations: [],
       watchProviders: null,
     })

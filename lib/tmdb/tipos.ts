@@ -19,6 +19,8 @@ export type PaginaFilmes = { results: MovieSummary[]; page: number; totalPages: 
 
 export type CastMember = { id: number; name: string; character: string | null; profileUrl: string | null }
 
+export type MembroEquipe = { id: number; name: string; profileUrl: string | null; funcoes: string[] }
+
 export type Provider = { id: number; name: string; logoUrl: string | null }
 
 export type WatchProviders = { link: string; streaming: Provider[]; rent: Provider[]; buy: Provider[] }
@@ -29,6 +31,8 @@ export type MovieDetails = MovieSummary & {
   /** Trailer que toca sem som no fundo do cabeçalho: evita os legendados. */
   trailerFundoKey: string | null
   cast: CastMember[]
+  /** Visão & Construção: já filtrada, agrupada por pessoa, ordenada e limitada. */
+  crew: MembroEquipe[]
   recommendations: MovieSummary[]
   watchProviders: WatchProviders | null
 }

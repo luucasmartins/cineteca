@@ -1,6 +1,7 @@
 import 'server-only'
 import { tmdbFetch, TmdbError } from './client'
 import { CACHE_LISTAS_SEGUNDOS, REGIAO } from './config'
+import { normalizarEquipe, type MembroEquipeBruto } from './equipe'
 import { getGenres } from './filmes'
 import { imageUrl } from './imagens'
 import { normalizarResumo } from './normalizar'
@@ -17,7 +18,7 @@ type TmdbDetalhesBruto = TmdbFilmeBruto & {
   runtime?: number | null
   genres?: Genero[]
   videos?: { results?: VideoBruto[] }
-  credits?: { cast?: AtorBruto[] }
+  credits?: { cast?: AtorBruto[]; crew?: MembroEquipeBruto[] }
   recommendations?: Partial<TmdbPaginaBruta>
   'watch/providers'?: { results?: Record<string, OfertasBrutas> }
 }
@@ -49,6 +50,7 @@ export async function getMovieDetails(id: number): Promise<MovieDetails | null> 
     trailerKey: escolherTrailer(bruto.videos?.results ?? []),
     trailerFundoKey: escolherTrailer(bruto.videos?.results ?? [], true),
     cast: normalizarElenco(bruto.credits?.cast ?? []),
+    crew: normalizarEquipe(bruto.credits?.crew ?? []),
     recommendations: (bruto.recommendations?.results ?? []).map((f) => normalizarResumo(f, mapa)),
     watchProviders: normalizarProvedores(bruto['watch/providers']?.results?.[REGIAO]),
   }
