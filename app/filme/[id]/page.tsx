@@ -10,6 +10,7 @@ import { ImagemComReserva } from '@/components/ImagemComReserva'
 import { MensagemErro } from '@/components/MensagemErro'
 import { OndeAssistir } from '@/components/OndeAssistir'
 import { TrailerFundo } from '@/components/TrailerFundo'
+import { VisaoConstrucao } from '@/components/VisaoConstrucao'
 import { obterAvaliacaoDoFilme } from '@/lib/avaliacoes/banco'
 import { formatarDuracao } from '@/lib/formatar'
 import { paraFilmeSalvo } from '@/lib/lista/tipos'
@@ -93,6 +94,7 @@ export default async function PaginaFilme({ params }: Props) {
       <div className={`${CONTEUDO} space-y-12 pb-8`}>
         <BlocoAvaliacao filme={salvo} inicial={avaliacao} />
         <OndeAssistir provedores={filme.watchProviders} />
+        {filme.crew.length > 0 && <VisaoConstrucao equipe={filme.crew} />}
         {filme.cast.length > 0 && <Elenco elenco={filme.cast} />}
       </div>
 
