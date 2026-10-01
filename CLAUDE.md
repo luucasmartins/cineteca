@@ -2,17 +2,19 @@
 
 # CineTeca
 
-Catálogo público de filmes em pt-BR, com dados do TMDB e visual escuro no estilo streaming.
+Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual escuro no estilo streaming.
 
 - **Produção:** https://cineteca-gules.vercel.app (Vercel, publica sozinha a cada push no `master`).
-- **Repositório:** github.com/luucasmartins/cineteca (privado).
+- **Repositório:** github.com/luucasmartins/cineteca — **público** desde 2026-09-30. Nenhum segredo no histórico (auditado). Continue sem commitar chaves.
 - **Dono:** não programa. Fale com ele em português, com passos de clique em clique nos painéis (Vercel, Supabase, Google). **Nunca peça segredos no chat:** diga exatamente em qual arquivo ou campo do painel ele deve colar.
 
 ## Como trabalhar com o dono
 
 - **Seja direto.** Entregue o resultado, sem repetir o pedido nem enrolar.
 - **Terminal é seu trabalho.** Rode você mesmo instalação, testes, typecheck, build e scripts. Só peça ação manual quando for impossível por ferramenta: login em painel, 2FA, clique em UI externa ou enviar ao GitHub.
-- **Opções sempre com recomendação:** qual e por quê, em uma linha. Em decisão técnica relevante, prós e contras por opção. Pergunta simples não vira análise gigante.
+- **Um passo de cada vez nos painéis.** Ele pediu isso explicitamente. Peça o print e confirme antes do próximo.
+- **Verifique em vez de perguntar.** Dá para conferir muita coisa daqui: `curl` no site publicado, consulta ao Supabase com a chave secreta do `.env.local`, leitura do log do servidor de desenvolvimento. Prefira medir a pedir que ele descreva.
+- **Opções sempre com recomendação:** qual e por quê, em uma linha. Em decisão técnica relevante, prós e contras por opção.
 - **Decisões no final.** O que depender dele fica num bloco separado no fim da resposta:
 
   ```
@@ -22,7 +24,7 @@ Catálogo público de filmes em pt-BR, com dados do TMDB e visual escuro no esti
   ---
   ```
 
-- **Não declare "pronto" sem verificar.** Rode os testes e, quando a mudança for visível, confira no site local.
+- **Não declare "pronto" sem verificar.** Rode os testes e, quando a mudança for visível, confira no site.
 - **Se faltar variável de ambiente**, diga qual e em qual arquivo ou painel ela entra. Não invente valor.
 
 ## Mudanças no código
@@ -31,80 +33,92 @@ Catálogo público de filmes em pt-BR, com dados do TMDB e visual escuro no esti
 - Comentários só para lógica não óbvia.
 - Crie e edite só dentro do projeto. Temporários ficam fora do repositório (pasta de rascunho da sessão).
 - Não apague arquivos que você não criou nesta sessão.
-- **Git:** commit só quando o dono pedir, ou por tarefa ao executar um plano aprovado (como o da Fase 2). Uma mudança lógica por commit, mensagem dizendo o que mudou e por quê. Nunca `push --force` no `master`.
-- **Tarefas longas:** siga o checklist do plano em `docs/superpowers/plans/` e marque o que foi feito. Se a conversa ficar longa com trabalho pendente, grave um handoff (estado atual + próximo passo) num `.md` no projeto.
+- **Git:** commit só quando o dono pedir, ou por tarefa ao executar um plano aprovado. Uma mudança lógica por commit. Nunca `push --force` no `master`.
+- **Outra sessão de IA pode estar mexendo neste repositório ao mesmo tempo.** Já aconteceu (o trailer de fundo e o `.gitignore` das skills vieram de outra janela). Confira `git log` antes de concluir que um commit é seu.
 - Mantenha este arquivo enxuto: procedimentos longos vão para `docs/` ou skills.
 
 ## Fases
 
-- **Fase 1 — concluída e no ar.** Catálogo, busca, gênero, detalhes, Minha lista no `localStorage`.
+- **Fase 1 — concluída e no ar.** Catálogo, busca, gênero, detalhes, banner em carrossel, trailer de fundo.
   - Spec: `docs/superpowers/specs/2026-09-29-catalogo-filmes-fase1-design.md`
-- **Fase 2 — spec e plano aprovados, implementação não iniciada.** Contas no Supabase (e-mail + senha e Google) e listas na conta.
+- **Fase 2 — concluída e no ar.** Contas no Supabase (e-mail/senha e Google), listas na conta, Minha conta, janela de login ao favoritar sem conta, importação das listas antigas do navegador.
   - Spec: `docs/superpowers/specs/2026-09-29-cineteca-fase2-contas-design.md`
   - Plano: `docs/superpowers/plans/2026-09-29-cineteca-fase2.md`
-  - As Tasks 2 e 10 são feitas com o dono. Implemente em um branch (`fase-2`), não direto no `master`.
+- **Fase 3 — spec e plano aprovados, implementação não iniciada.** Curtir / não curtir e ranking dos mais curtidos.
+  - Spec: `docs/superpowers/specs/2026-09-30-cineteca-fase3-avaliacoes-design.md`
+  - Plano: `docs/superpowers/plans/2026-09-30-cineteca-fase3.md`
+  - Tasks 3 e 8 são feitas com o dono. Implemente em um branch (`fase-3`), não direto no `master`.
+
+## Pendências abertas
+
+- **Recuperação de senha não envia e-mail.** O Supabase só entrega para os donos do projeto sem SMTP próprio, e editar os modelos de e-mail também exige SMTP. Depende de o dono ter um domínio para ligar o Resend. As telas e a rota `/auth/callback` já funcionam.
+- **Troca de vermelho para verde**, desenhada e aprovada em parte: `destaque` vira `#01BD4E` (hover `#01993F`), botões verdes com **texto preto** (branco dá 2,50 de contraste e reprova; preto dá 8,39), e um token novo `perigo` guarda o vermelho `#D7263D` para "Excluir minha conta" e as 5 caixas de erro dos formulários. O logo está em `public/Bright Green CineTeca Wordmark.png` (PNG com transparência, 1897×448) e deve substituir o texto "CineTeca" na barra e no rodapé.
+- **Dois filmes de teste** na conta real do dono (`makersnegocios@gmail.com`), para ele remover pela tela.
 
 ## Stack
 
 - Next.js 16.3 (App Router), React 19, TypeScript 7, Tailwind v4.
-- Testes: Vitest 5 (unitários) e Playwright (ponta a ponta, desktop + celular).
-- Hospedagem: Vercel. Node 24 no Windows.
+- Supabase (Postgres + Auth), `@supabase/ssr` e `@supabase/supabase-js`.
+- Testes: Vitest 5 (unitários e integração) e Playwright (ponta a ponta, desktop + celular).
+- Hospedagem: Vercel. Node 24 no Windows 10.
 
 ## Comandos
 
-- `npm run dev` — site local em http://localhost:3000. Usa o `.env.local`.
+- `npm run dev` — site local em http://localhost:3000. Usa o `.env.local` (projeto Supabase de **produção**).
 - `npm test` — testes unitários.
+- `npm run test:supabase` — testes de banco contra o projeto `cineteca-testes`.
 - `npm run typecheck` — `next typegen` + `tsc`.
-- `npm run test:e2e` — Playwright. Sobe um TMDB simulado (porta 4010), faz `next build` e roda `next start` na porta 3100.
+- `npm run test:e2e` — Playwright. Sobe um TMDB simulado (porta 4010), faz `next build` e roda `next start` na porta 3100, usando o `.env.test.local`.
 
 ## Estrutura
 
-- `lib/tmdb/` — único ponto que fala com o TMDB, somente no servidor (`server-only`). O token não pode chegar ao navegador.
-- `lib/lista/` — Favoritos e Salvos, atrás da interface assíncrona `ListaStore`. A Fase 2 troca a implementação sem mexer nas telas.
-- `app/api/filmes/route.ts` — rota interna usada pela rolagem infinita e pela busca.
-- `components/` — um componente por arquivo. Estilos compartilhados ficam em `components/estilos.ts`: `CONTEUDO`, `BOTAO_PRIMARIO`, `BOTAO_SECUNDARIO`.
-- `app/(inicio)/` — página inicial (grupo de rotas com `loading.tsx` próprio).
-- `e2e/mock-tmdb/` — dados e servidor do TMDB simulado.
+- `lib/tmdb/` — único ponto que fala com o TMDB, somente no servidor (`server-only`).
+- `lib/supabase/` — `config` (lê as variáveis), `servidor` (cookies), `navegador` (singleton), `admin` (chave secreta, server-only).
+- `lib/auth/` — `validacao`, `erros`, `usuario`, `sessao`, `rotas` e as Server Actions em `acoes.ts`.
+- `lib/lista/` — Favoritos e Salvos atrás da interface `ListaStore`; `supabase.ts` é a implementação em uso, `local.ts` só serve à importação das listas antigas.
+- `app/api/filmes/route.ts` — rota interna da rolagem infinita e da busca.
+- `app/(conta)/` — entrar, cadastro, conta, recuperar-senha, redefinir-senha.
+- `app/auth/callback` e `app/auth/confirmar` — retorno do Google e do link de senha.
+- `components/` — um componente por arquivo. Estilos compartilhados em `components/estilos.ts`: `CONTEUDO`, `BOTAO_PRIMARIO`, `BOTAO_SECUNDARIO`.
+- `proxy.ts` — renova a sessão do Supabase antes de cada página.
+- `supabase/migrations/` — SQL aplicado à mão nos dois projetos.
+- `e2e/conta/` — `ajudantes.ts` (criar/apagar conta, entrar pela tela, `esperarNaConta`) e `fixtures.ts` (`usuario`, `logado`).
 
 ## Regras do projeto
 
 - **Texto:** tudo na tela em pt-BR. Chamadas ao TMDB usam `language=pt-BR` e `region=BR`. Só filmes, nada de séries.
-- **Cores e fonte:**
-  - fundo `#0B0B0F` e superfícies `#16161D`;
-  - destaque vermelho `#D7263D`, hover `#B01E32`;
-  - fonte Manrope.
-  - Nunca use o logo ou o nome da Netflix.
-- **Atribuição do TMDB:** obrigatória pelos termos de uso. Fica no rodapé, discreta. O dono pediu para remover e aceitou a versão discreta, então não remova. O crédito da JustWatch fica em "Onde assistir".
-- **Imagens:** use `<img>` simples, não `next/image`. Se a imagem pode faltar, use `ImagemComReserva`.
-- **Erros:** falhas do TMDB são registradas uma vez em `tmdbFetch`, com o prefixo `[CineTeca]`. Nunca registre tokens, chaves, senhas ou cabeçalhos.
+- **Cores e fonte:** fundo `#0B0B0F`, superfícies `#16161D`, fonte Manrope. Use sempre os tokens (`destaque`, `destaque-escuro`), nunca a cor escrita à mão — a marca está migrando para verde. Nunca use o logo ou o nome da Netflix.
+- **Atribuição do TMDB:** obrigatória pelos termos. Fica no rodapé, discreta. O dono pediu para remover e aceitou a versão discreta, então não remova.
+- **Imagens:** `<img>` simples, não `next/image`. Se a imagem pode faltar, use `ImagemComReserva`, que exige a prop `reserva` (ex.: `/poster-padrao.svg`).
+- **Acessibilidade:** o site respeita `prefers-reduced-motion` — o banner para de trocar e o trailer de fundo não carrega. É proposital.
+- **Erros:** nunca deixe uma falha parecer sucesso ou lista vazia. Falha de gravação desfaz na tela e avisa; falha de leitura mostra erro com "Tentar de novo". Logs com prefixo `[CineTeca]`, só o código do erro — nunca tokens, chaves, senhas, cabeçalhos ou id de usuário.
 - **Commits:** terminam com `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 
 ## Armadilhas conhecidas
 
-- **Next 16:**
-  - `params` e `searchParams` são `Promise`.
-  - O antigo `middleware.ts` agora se chama `proxy.ts`.
-  - Em `error.tsx`, use `retry` (busca de novo), não `reset`.
-  - Na dúvida, leia `node_modules/next/dist/docs/`.
-- **Vitest:** hooks (`beforeEach`, `afterEach`...) precisam de corpo em bloco `{ ... }`. Um valor retornado vira teardown e é chamado sem argumentos.
-- **TypeScript 7:** a variável do `catch` é `unknown`, então faça um cast quando precisar.
+- **Next 16:** `params` e `searchParams` são `Promise`; o antigo `middleware.ts` virou `proxy.ts`; em `error.tsx` use `retry`, não `reset`. Na dúvida, leia `node_modules/next/dist/docs/`.
+- **Vitest:** hooks precisam de corpo em bloco `{ ... }`. Um valor retornado vira teardown.
+- **TypeScript 7:** a variável do `catch` é `unknown`.
+- **Heredoc do shell colapsa `\\` em `\`.** Arquivos com barra invertida (regex, `includes('\\')`) devem ser criados com a ferramenta de escrita, não com heredoc. Já quebrou o matcher do `proxy.ts`.
 - **Playwright:**
-  - Use `getByText` para mensagens. O Next injeta um anunciador de rota com `role="alert"`.
-  - Durante o streaming existe uma cópia escondida do conteúdo. Se um texto casar duas vezes, use `.filter({ visible: true })`.
-  - Use `exact: true` quando um nome é substring de outro ("Ação" e "Animação").
-  - Os testes que conferem um filme específico no banner usam `page.emulateMedia({ reducedMotion: 'reduce' })` para que ele não troque sozinho.
-- **Windows:**
-  - Use PowerShell 5.1 (sem `&&`) ou Git Bash.
-  - O caminho do projeto tem espaço e acento, então coloque-o sempre entre aspas.
-  - O "Acesso controlado a pastas" do Windows Defender bloqueava o `.git` na Área de Trabalho; o dono desativou.
-- **GitHub:** o `gh` não está instalado e o terminal do Claude não consegue abrir o login do Git. Para enviar ao GitHub, o dono usa o painel Controle do Código-Fonte do VS Code.
+  - Use `getByText` para mensagens; o Next injeta um anunciador com `role="alert"`.
+  - Os toasts duram 3 s — **nunca** use um toast como prova de que algo foi gravado. Use `esperarNaConta()`, que confere a linha no banco com `expect.poll`.
+  - `getByLabel` pode casar com a região quando o `Cartao` tem o mesmo título do campo. Use `getByRole('textbox', { name, exact: true })`.
+  - Escope por `getByRole('navigation', { name: 'Principal' })` ou `getByRole('main')` quando o mesmo texto existir nos dois.
+  - `expect.timeout` global está em 15 s: o app fala com um Supabase remoto.
+- **Supabase (painel):**
+  - "Confirm email" fica no **topo** de Authentication → Sign In / Providers, na seção "User Signups" — não dentro do provedor Email.
+  - Editar modelos de e-mail exige SMTP próprio. Sem SMTP, o envio só alcança os donos do projeto, 2 por hora.
+  - O **Project URL** fica em Settings → **Data API**, não em API Keys. Copie só o domínio: `https://xxx.supabase.co`, **sem** `/rest/v1` no fim. Esse erro derruba o login inteiro.
+- **Vercel:** o plano Hobby bloqueia deploy quando a conta do GitHub que envia não é a ligada à Vercel e o repositório é privado. Resolvido tornando o repositório público. Republicar um deploy bloqueado não adianta — só um commit novo é reavaliado.
+- **Windows:** PowerShell 5.1 (sem `&&`) ou Git Bash. O caminho do projeto tem espaço e acento: use aspas. O "Acesso controlado a pastas" do Defender já bloqueou o `.git`.
+- **GitHub:** o `gh` não está instalado e o terminal não consegue abrir o login do Git. O dono envia pelo painel Controle do Código-Fonte do VS Code, com a conta `makersnegocios-dotcom`.
 
 ## Variáveis de ambiente
 
 Os arquivos `.env*.local` e `.env` ficam fora do git.
 
-- **`.env.local`** (desenvolvimento): `TMDB_READ_TOKEN`, com o token real do dono.
-  - Na Fase 2 entram também `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` e `NEXT_PUBLIC_SITE_URL`.
-- **Vercel:** as mesmas variáveis, com os valores de produção.
-- **`.env.test.local`** (a partir da Fase 2): chaves do projeto Supabase `cineteca-testes`, usadas pelo e2e e por `npm run test:supabase`.
+- **`.env.local`** (desenvolvimento, aponta para o projeto Supabase **`cineteca`**, o de produção): `TMDB_READ_TOKEN`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_SITE_URL=http://localhost:3000`.
+- **`.env.test.local`** (projeto **`cineteca-testes`**): as mesmas, com `NEXT_PUBLIC_SITE_URL=http://localhost:3100`. Usado pelo e2e e pelo `test:supabase`.
+- **Vercel:** as cinco em Settings → Environments → Production. As `NEXT_PUBLIC_` são do tipo **Config** (vão ao navegador por definição); só `SUPABASE_SECRET_KEY` e `TMDB_READ_TOKEN` são **Secret**.
 - Nunca leia nem imprima o conteúdo desses arquivos. Para conferir se uma variável está preenchida, use um `Select-String` que devolve só verdadeiro ou falso.
