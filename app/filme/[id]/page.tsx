@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { BlocoAvaliacao } from '@/components/BlocoAvaliacao'
 import { BotaoLista } from '@/components/BotaoLista'
+import { BotaoSessaoDupla } from '@/components/BotaoSessaoDupla'
 import { BotaoTrailer } from '@/components/BotaoTrailer'
 import { Carrossel } from '@/components/Carrossel'
 import { Elenco } from '@/components/Elenco'
@@ -89,6 +90,7 @@ export default async function PaginaFilme({ params }: Props) {
               {filme.trailerKey && <BotaoTrailer chave={filme.trailerKey} titulo={filme.title} />}
               <BotaoLista tipo="favoritos" filme={salvo} comTexto />
               <BotaoLista tipo="salvos" filme={salvo} comTexto />
+              <BotaoSessaoDupla filme={salvo} />
             </div>
           </div>
         </div>
