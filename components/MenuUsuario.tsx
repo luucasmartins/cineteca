@@ -46,7 +46,7 @@ export function MenuUsuario({ usuario }: { usuario: Usuario | null }) {
         </Link>
         <Link
           href={`/cadastro?voltar=${voltar}`}
-          className="rounded-md bg-destaque px-3 py-1.5 text-sm font-bold text-white transition-colors hover:bg-destaque-escuro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="rounded-md bg-destaque px-3 py-1.5 text-sm font-bold text-black transition-colors hover:bg-destaque-escuro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           Criar conta
         </Link>

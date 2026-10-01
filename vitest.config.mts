@@ -13,6 +13,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['**/*.test.ts'],
-    exclude: ['node_modules/**', '.next/**', 'e2e/**', 'testes-integracao/**'],
+    // .claude/** guarda worktrees de outras sessões de IA: os testes de lá não são nossos.
+    exclude: ['node_modules/**', '.next/**', '.claude/**', 'e2e/**', 'testes-integracao/**'],
   },
 })

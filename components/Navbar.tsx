@@ -57,8 +57,8 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
     >
       <nav aria-label="Principal">
         <div className={`${CONTEUDO} flex h-16 items-center gap-6`}>
-          <Link href="/" className="text-2xl font-extrabold tracking-tight">
-            CineTeca
+          <Link href="/" className="shrink-0">
+            <img src="/logo.png" alt="CineTeca" className="h-6 w-auto md:h-7" />
           </Link>
 
           <ul className="hidden items-center gap-6 text-sm font-semibold md:flex">

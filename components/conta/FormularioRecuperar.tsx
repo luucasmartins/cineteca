@@ -20,7 +20,7 @@ export function FormularioRecuperar({ erroInicial }: { erroInicial: string | nul
         Digite o e-mail da sua conta. Vamos enviar um link para você criar uma nova senha.
       </p>
       <Campo rotulo="E-mail" nome="email" tipo="email" autoComplete="email" />
-      {estado.erro && <p className="rounded-md bg-destaque/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
+      {estado.erro && <p className="rounded-md bg-perigo/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
       <button type="submit" disabled={pendente} className={`${BOTAO_PRIMARIO} w-full`}>
         {pendente ? 'Enviando…' : 'Enviar link'}
       </button>

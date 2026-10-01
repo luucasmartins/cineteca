@@ -17,7 +17,7 @@ export function FormularioNome({ nomeAtual }: { nomeAtual: string }) {
   return (
     <form action={acao} noValidate className="space-y-3">
       <Campo rotulo="Nome" nome="nome" autoComplete="name" valorInicial={estado.nome} />
-      {estado.erro && <p className="rounded-md bg-destaque/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
+      {estado.erro && <p className="rounded-md bg-perigo/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
       <button type="submit" disabled={pendente} className={BOTAO_SECUNDARIO}>
         {pendente ? 'Salvando…' : 'Salvar'}
       </button>

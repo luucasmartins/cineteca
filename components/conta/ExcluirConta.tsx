@@ -9,7 +9,7 @@ export function ExcluirConta() {
   const id = useId()
 
   return (
-    <section aria-labelledby="titulo-excluir" className="space-y-3 rounded-md border border-destaque/40 p-4">
+    <section aria-labelledby="titulo-excluir" className="space-y-3 rounded-md border border-perigo/40 p-4">
       <h2 id="titulo-excluir" className="font-bold text-red-200">
         Excluir conta
       </h2>
@@ -30,11 +30,11 @@ export function ExcluirConta() {
             className="w-full rounded-md border border-white/15 bg-black/40 px-3 py-2.5 text-white outline-none transition-colors focus:border-white"
           />
         </div>
-        {estado.erro && <p className="rounded-md bg-destaque/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
+        {estado.erro && <p className="rounded-md bg-perigo/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
         <button
           type="submit"
           disabled={confirmacao !== 'EXCLUIR' || pendente}
-          className="w-full rounded-md bg-destaque px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-destaque-escuro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-md bg-perigo px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-perigo-escuro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:cursor-not-allowed disabled:opacity-40"
         >
           {pendente ? 'Excluindo…' : 'Excluir minha conta'}
         </button>
