@@ -14,8 +14,8 @@ const GENEROS_INICIO = [
   { id: 878, nome: 'Ficção científica' },
 ]
 
-const FILEIRAS: { titulo: string; carregar: () => Promise<PaginaFilmes>; verMaisHref?: string }[] = [
-  { titulo: 'Em alta hoje', carregar: () => getTrending() },
+const FILEIRAS: { titulo: string; carregar: () => Promise<PaginaFilmes>; verMaisHref?: string; automatico?: boolean }[] = [
+  { titulo: 'Em alta hoje', carregar: () => getTrending(), automatico: true },
   { titulo: 'Populares', carregar: () => getPopular() },
   { titulo: 'Em cartaz nos cinemas', carregar: () => getNowPlaying() },
   { titulo: 'Mais bem avaliados', carregar: () => getTopRated() },
@@ -38,7 +38,7 @@ export default async function Inicio() {
       <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${temBanner ? '-mt-24 md:-mt-40' : ''}`}>
         {FILEIRAS.map((fileira) => (
           <Suspense key={fileira.titulo} fallback={<FileiraEsqueleto titulo={fileira.titulo} />}>
-            <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} />
+            <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} automatico={fileira.automatico} />
           </Suspense>
         ))}
       </div>

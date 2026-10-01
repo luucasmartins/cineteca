@@ -50,6 +50,7 @@ test('sem trailer no fundo no celular ou com movimento reduzido', async ({ page,
 })
 
 test('fluxo completo: início → filme → favoritar e salvar → Minha lista → recarregar', async ({ page, logado, isMobile }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }) // "Em alta hoje" parada: o Playwright só clica em elemento imóvel
   await page.goto('/')
   await page.getByRole('region', { name: 'Em alta hoje' }).getByRole('link', { name: 'Filme Teste 1002' }).click()
   await expect(page).toHaveURL(/\/filme\/1002$/)

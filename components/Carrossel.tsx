@@ -5,11 +5,15 @@ import type { MovieSummary } from '@/lib/tmdb/tipos'
 import { IconeSetaDireita, IconeSetaEsquerda } from './Icones'
 import { MovieCard } from './MovieCard'
 import { SecaoFileira } from './SecaoFileira'
+import { useRolagemAutomatica } from './useRolagemAutomatica'
 
-type Props = { titulo: string; filmes: MovieSummary[]; verMaisHref?: string }
+type Props = { titulo: string; filmes: MovieSummary[]; verMaisHref?: string; automatico?: boolean }
 
-export function Carrossel({ titulo, filmes, verMaisHref }: Props) {
+const ITEM = 'w-[38%] shrink-0 snap-start sm:w-[27%] md:w-[19%] lg:w-[15.5%] xl:w-[12.5%]'
+
+export function Carrossel({ titulo, filmes, verMaisHref, automatico = false }: Props) {
   const trilhoRef = useRef<HTMLUListElement>(null)
+  const rodando = useRolagemAutomatica(trilhoRef, automatico)
 
   const rolar = (direcao: 1 | -1) => {
     const trilho = trilhoRef.current
@@ -31,13 +35,21 @@ export function Carrossel({ titulo, filmes, verMaisHref }: Props) {
         </button>
         <ul
           ref={trilhoRef}
-          className="sem-scrollbar flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto px-4 py-4 md:scroll-px-10 md:px-10"
+          // Sem encaixe (snap) enquanto desliza: ele puxaria o trilho de volta a cada passo.
+          className={`sem-scrollbar flex scroll-px-4 gap-2 overflow-x-auto px-4 py-4 md:scroll-px-10 md:px-10 ${rodando ? '' : 'snap-x snap-mandatory'}`}
         >
           {filmes.map((filme) => (
-            <li key={filme.id} className="w-[38%] shrink-0 snap-start sm:w-[27%] md:w-[19%] lg:w-[15.5%] xl:w-[12.5%]">
+            <li key={filme.id} className={ITEM}>
               <MovieCard filme={filme} />
             </li>
           ))}
+          {/* Cópia que fecha o loop: escondida do leitor de tela e do teclado. */}
+          {rodando &&
+            filmes.map((filme) => (
+              <li key={`copia-${filme.id}`} className={ITEM} aria-hidden="true" inert>
+                <MovieCard filme={filme} />
+              </li>
+            ))}
         </ul>
         <button
           type="button"

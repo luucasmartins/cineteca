@@ -4,9 +4,9 @@ import { CONTEUDO } from './estilos'
 import { MensagemErro } from './MensagemErro'
 import { SecaoFileira } from './SecaoFileira'
 
-type Props = { titulo: string; carregar: () => Promise<PaginaFilmes>; verMaisHref?: string }
+type Props = { titulo: string; carregar: () => Promise<PaginaFilmes>; verMaisHref?: string; automatico?: boolean }
 
-export async function FileiraAssincrona({ titulo, carregar, verMaisHref }: Props) {
+export async function FileiraAssincrona({ titulo, carregar, verMaisHref, automatico }: Props) {
   let filmes: MovieSummary[]
   try {
     filmes = (await carregar()).results
@@ -20,5 +20,5 @@ export async function FileiraAssincrona({ titulo, carregar, verMaisHref }: Props
     )
   }
   if (filmes.length === 0) return null
-  return <Carrossel titulo={titulo} filmes={filmes} verMaisHref={verMaisHref} />
+  return <Carrossel titulo={titulo} filmes={filmes} verMaisHref={verMaisHref} automatico={automatico} />
 }

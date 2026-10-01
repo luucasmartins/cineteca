@@ -65,6 +65,31 @@ test('mostra as fileiras da página inicial', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Ação', exact: true }).getByRole('link', { name: /Ver tudo/ })).toHaveAttribute('href', '/genero/28')
 })
 
+test('a fileira Em alta hoje desliza sozinha e pausa com o mouse em cima', async ({ page, isMobile }) => {
+  await page.goto('/')
+  const fileira = page.getByRole('region', { name: 'Em alta hoje' })
+  const trilho = fileira.getByRole('list')
+  const posicao = () => trilho.evaluate((t) => t.scrollLeft)
+  await expect.poll(posicao).toBeGreaterThan(20)
+  // A cópia que fecha o loop fica fora da árvore de acessibilidade: cada filme aparece uma vez só.
+  await expect(fileira.getByRole('link', { name: 'Filme Teste 1002' })).toHaveCount(1)
+  if (isMobile) return
+
+  await trilho.hover()
+  const parada = await posicao()
+  await page.waitForTimeout(1000)
+  expect(Math.abs((await posicao()) - parada)).toBeLessThan(2)
+})
+
+test('a fileira Em alta hoje fica parada com movimento reduzido', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const trilho = page.getByRole('region', { name: 'Em alta hoje' }).getByRole('list')
+  await expect(trilho.getByTestId('movie-card').first()).toBeVisible()
+  await page.waitForTimeout(1500)
+  expect(await trilho.evaluate((t) => t.scrollLeft)).toBe(0)
+})
+
 test('uma fileira com erro não derruba as outras', async ({ page }) => {
   await page.goto('/')
   const fileira = page.getByRole('region', { name: 'Ficção científica' })
