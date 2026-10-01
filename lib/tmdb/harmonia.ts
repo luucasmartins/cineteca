@@ -6,6 +6,7 @@ import { normalizarResumo } from './normalizar'
 import type { FilmeHarmonia, TmdbPaginaBruta } from './tipos'
 
 export const VOTOS_MINIMOS_HARMONIA = 1000
+export const NOTA_MINIMA_HARMONIA = 7.5
 const QUANTIDADE = 12
 const CENAS_POR_FILME = 3
 const LIMITE_PAGINAS = 500
@@ -13,6 +14,7 @@ const LIMITE_PAGINAS = 500
 const PARAMETROS = {
   sort_by: 'vote_average.desc',
   'vote_count.gte': VOTOS_MINIMOS_HARMONIA,
+  'vote_average.gte': NOTA_MINIMA_HARMONIA,
   include_adult: false,
 }
 

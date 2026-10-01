@@ -32,12 +32,12 @@ describe('sortearHarmonia', () => {
     tmdbFetchMock.mockReset()
   })
 
-  it('busca os mais bem avaliados com 1.000 votos ou mais, numa página sorteada', async () => {
+  it('busca os bem avaliados (nota 7,5+ e 1.000 votos ou mais), numa página sorteada', async () => {
     responder([1, 2], 40, tresCenas)
     await sortearHarmonia(() => 0.5)
 
     const discover = tmdbFetchMock.mock.calls.filter(([caminho]) => caminho === '/discover/movie')
-    expect(discover[0][1]).toMatchObject({ sort_by: 'vote_average.desc', 'vote_count.gte': 1000, include_adult: false, page: 1 })
+    expect(discover[0][1]).toMatchObject({ sort_by: 'vote_average.desc', 'vote_count.gte': 1000, 'vote_average.gte': 7.5, include_adult: false, page: 1 })
     expect(discover[1][1]).toMatchObject({ page: 21 })
   })
 
