@@ -2,6 +2,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { criarClienteAdmin } from '@/lib/supabase/admin'
 import { criarClienteServidor } from '@/lib/supabase/servidor'
 import { getMovieDetails } from '@/lib/tmdb/detalhes'
@@ -50,8 +51,13 @@ export async function avaliar(filmeId: unknown, curtiu: unknown): Promise<Respos
   if (!voto.ok) return { ok: false, erro: voto.erro, sessaoExpirada: false }
 
   const supabase = await criarClienteServidor()
-  const { data: sessao } = await supabase.auth.getUser()
-  if (!sessao.user) return { ok: false, erro: MENSAGEM_ERRO_VOTO, sessaoExpirada: true }
+  const { data: sessao, error: erroSessao } = await supabase.auth.getUser()
+  if (!sessao.user) {
+    // Só o nome do erro e se o cookie de sessão chegou: nunca o valor dele.
+    const temCookie = (await cookies()).getAll().some((c) => c.name.includes('auth-token'))
+    console.error('[CineTeca] avaliar sem sessão:', erroSessao?.name ?? 'sem erro', temCookie ? 'com cookie' : 'sem cookie')
+    return { ok: false, erro: MENSAGEM_ERRO_VOTO, sessaoExpirada: true }
+  }
   const usuarioId = sessao.user.id
 
   if (voto.valor === null) {
