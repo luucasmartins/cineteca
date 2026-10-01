@@ -49,3 +49,28 @@ test('se o arquivo da trilha falhar, o site segue normal', async ({ page }) => {
   expect(errosDePagina).toEqual([])
   await expect(page.getByRole('region', { name: 'Destaque' })).toBeVisible()
 })
+
+test('o botão de som desliga e religa a trilha na hora', async ({ page }) => {
+  await page.goto('/')
+  await iniciarTrilha(page)
+  await page.getByRole('button', { name: 'Desligar trilha sonora' }).click()
+  expect(await tocando(page)).toBe(false)
+  await page.getByRole('button', { name: 'Ligar trilha sonora' }).click()
+  expect(await tocando(page)).toBe(true)
+})
+
+test('clicar primeiro no botão desliga sem tocar, e a escolha vale depois de recarregar', async ({ page }) => {
+  await page.goto('/')
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Desligar trilha sonora' }).click({ timeout: 1000 })
+    await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible({ timeout: 1000 })
+  }).toPass()
+  expect(await tocando(page)).toBe(false)
+
+  await page.reload()
+  // O botão só vira "Ligar" depois da hidratação ler a preferência: aí o ouvinte de gesto já existiria.
+  await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible()
+  await page.getByRole('contentinfo').click({ position: { x: 2, y: 2 } })
+  await page.waitForTimeout(500)
+  expect(await tocando(page)).toBe(false)
+})
