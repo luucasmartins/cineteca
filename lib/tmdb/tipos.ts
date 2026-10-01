@@ -26,6 +26,8 @@ export type WatchProviders = { link: string; streaming: Provider[]; rent: Provid
 export type MovieDetails = MovieSummary & {
   runtime: number | null
   trailerKey: string | null
+  /** Trailer que toca sem som no fundo do cabeçalho: evita os legendados. */
+  trailerFundoKey: string | null
   cast: CastMember[]
   recommendations: MovieSummary[]
   watchProviders: WatchProviders | null

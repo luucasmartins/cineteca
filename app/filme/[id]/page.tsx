@@ -53,7 +53,7 @@ export default async function PaginaFilme({ params }: Props) {
     <article>
       <section aria-labelledby="titulo-filme" className="relative min-h-[70vh]">
         {filme.backdropUrl && <img src={filme.backdropUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />}
-        {filme.trailerKey && <TrailerFundo chave={filme.trailerKey} />}
+        {filme.trailerFundoKey && <TrailerFundo chave={filme.trailerFundoKey} />}
         <div className="absolute inset-0 bg-gradient-to-r from-fundo via-fundo/80 to-fundo/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-fundo via-transparent to-transparent" />
         <div className={`${CONTEUDO} relative flex flex-col gap-8 pb-12 pt-28 md:flex-row md:items-end`}>
