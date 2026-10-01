@@ -1,7 +1,7 @@
 # CineTeca — Fase 4 (Olhar de cinéfilo) — Design
 
 **Data:** 2026-10-01
-**Status:** aguardando revisão do dono
+**Status:** aprovada
 **Depende de:** Fase 3 (`docs/superpowers/specs/2026-09-30-cineteca-fase3-avaliacoes-design.md`), no ar em https://cineteca-gules.vercel.app
 
 ## 1. Objetivo
