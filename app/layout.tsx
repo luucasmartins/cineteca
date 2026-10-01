@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Manrope } from 'next/font/google'
 import { AvisosProvider } from '@/components/AvisosProvider'
+import { FureBolhaProvider } from '@/components/FureBolhaProvider'
 import { ListasProvider } from '@/components/ListasProvider'
 import { Navbar } from '@/components/Navbar'
 import { Rodape } from '@/components/Rodape'
@@ -31,9 +32,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <AvisosProvider>
             <ListasProvider>
               <TrilhaSonoraProvider>
-                <Navbar generos={generos} usuario={usuario} />
-                <main className="min-h-screen">{children}</main>
-                <Rodape />
+                <FureBolhaProvider>
+                  <Navbar generos={generos} usuario={usuario} />
+                  <main className="min-h-screen">{children}</main>
+                  <Rodape />
+                </FureBolhaProvider>
               </TrilhaSonoraProvider>
             </ListasProvider>
           </AvisosProvider>

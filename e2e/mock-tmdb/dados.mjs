@@ -32,6 +32,7 @@ export function detalhes(id) {
   const semBastidores = id === 1005
   return {
     ...filme(id),
+    origin_country: ['KR'],
     runtime: 136,
     genres: [
       { id: 28, name: 'Ação' },
