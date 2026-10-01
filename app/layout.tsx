@@ -5,6 +5,7 @@ import { ListasProvider } from '@/components/ListasProvider'
 import { Navbar } from '@/components/Navbar'
 import { Rodape } from '@/components/Rodape'
 import { SessaoProvider } from '@/components/SessaoProvider'
+import { TrilhaSonoraProvider } from '@/components/TrilhaSonoraProvider'
 import { obterUsuario } from '@/lib/auth/sessao'
 import { getGenres } from '@/lib/tmdb/filmes'
 import type { Genero } from '@/lib/tmdb/tipos'
@@ -29,9 +30,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <SessaoProvider usuario={usuario}>
           <AvisosProvider>
             <ListasProvider>
-              <Navbar generos={generos} usuario={usuario} />
-              <main className="min-h-screen">{children}</main>
-              <Rodape />
+              <TrilhaSonoraProvider>
+                <Navbar generos={generos} usuario={usuario} />
+                <main className="min-h-screen">{children}</main>
+                <Rodape />
+              </TrilhaSonoraProvider>
             </ListasProvider>
           </AvisosProvider>
         </SessaoProvider>
