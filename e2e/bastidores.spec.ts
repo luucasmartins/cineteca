@@ -31,3 +31,58 @@ test.describe('Visão & Construção', () => {
     await expect(page.getByRole('region', { name: 'Visão & Construção' })).toHaveCount(0)
   })
 })
+
+test.describe('Galeria de imagens', () => {
+  const galeria = (page: import('@playwright/test').Page) => page.getByRole('region', { name: 'Imagens', exact: true })
+  const telaCheia = (page: import('@playwright/test').Page) => page.getByRole('dialog', { name: 'Imagens de Filme Teste 1001' })
+
+  test('mosaico com 5 quadros e "+3" no último', async ({ page }) => {
+    await page.goto('/filme/1001')
+    await expect(galeria(page).getByRole('button')).toHaveCount(5)
+    await expect(galeria(page).getByText('+3')).toBeVisible()
+    await expect(page.getByAltText('Cena 1 de Filme Teste 1001')).toBeVisible()
+  })
+
+  test('abre na imagem clicada, troca com setas e teclado, volta ao início e fecha com Esc', async ({ page }) => {
+    await page.goto('/filme/1001')
+    const segunda = galeria(page).getByRole('button', { name: 'Cena 2 de Filme Teste 1001' })
+    await segunda.click()
+    await expect(telaCheia(page).getByText('2 de 7')).toBeVisible()
+
+    await page.keyboard.press('ArrowRight')
+    await expect(telaCheia(page).getByText('3 de 7')).toBeVisible()
+    await telaCheia(page).getByRole('button', { name: 'Imagem anterior' }).click()
+    await expect(telaCheia(page).getByText('2 de 7')).toBeVisible()
+
+    for (let i = 0; i < 6; i++) await telaCheia(page).getByRole('button', { name: 'Próxima imagem' }).click()
+    await expect(telaCheia(page).getByText('1 de 7')).toBeVisible()
+
+    await page.keyboard.press('Escape')
+    await expect(telaCheia(page)).toHaveCount(0)
+    await expect(segunda).toBeFocused()
+  })
+
+  test('o "+3" abre a galeria a partir da quinta imagem', async ({ page }) => {
+    await page.goto('/filme/1001')
+    await galeria(page).getByRole('button', { name: /Cena 5 de Filme Teste 1001/ }).click()
+    await expect(telaCheia(page).getByText('5 de 7')).toBeVisible()
+    await telaCheia(page).getByRole('button', { name: 'Fechar' }).click()
+    await expect(telaCheia(page)).toHaveCount(0)
+  })
+
+  test('Tab não escapa da tela cheia', async ({ page }) => {
+    await page.goto('/filme/1001')
+    await galeria(page).getByRole('button', { name: 'Cena 1 de Filme Teste 1001' }).click()
+    for (let i = 0; i < 8; i++) {
+      await page.keyboard.press('Tab')
+      const dentro = await telaCheia(page).evaluate((el) => el.contains(document.activeElement))
+      expect(dentro).toBe(true)
+    }
+  })
+
+  test('filme sem imagens não mostra a galeria', async ({ page }) => {
+    await page.goto('/filme/1005')
+    await expect(page.getByRole('region', { name: 'Elenco principal' })).toBeVisible()
+    await expect(galeria(page)).toHaveCount(0)
+  })
+})

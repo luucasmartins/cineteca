@@ -6,6 +6,7 @@ import { BotaoTrailer } from '@/components/BotaoTrailer'
 import { Carrossel } from '@/components/Carrossel'
 import { Elenco } from '@/components/Elenco'
 import { CONTEUDO } from '@/components/estilos'
+import { GaleriaImagens } from '@/components/GaleriaImagens'
 import { ImagemComReserva } from '@/components/ImagemComReserva'
 import { MensagemErro } from '@/components/MensagemErro'
 import { OndeAssistir } from '@/components/OndeAssistir'
@@ -96,6 +97,7 @@ export default async function PaginaFilme({ params }: Props) {
         <OndeAssistir provedores={filme.watchProviders} />
         {filme.crew.length > 0 && <VisaoConstrucao equipe={filme.crew} />}
         {filme.cast.length > 0 && <Elenco elenco={filme.cast} />}
+        {filme.images.length > 0 && <GaleriaImagens imagens={filme.images} titulo={filme.title} />}
       </div>
 
       {filme.recommendations.length > 0 && (
