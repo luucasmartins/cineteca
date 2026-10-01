@@ -6,14 +6,14 @@ import type { MembroEquipe } from '@/lib/tmdb/tipos'
 
 export function VisaoConstrucao({ equipe }: { equipe: MembroEquipe[] }) {
   return (
-    <section aria-labelledby="visao-titulo" className="space-y-4">
+    <section aria-labelledby="visao-titulo" className="space-y-5 rounded-xl bg-superficie p-5 ring-1 ring-white/10 md:p-6">
       <div>
         <h2 id="visao-titulo" className="text-xl font-bold md:text-2xl">
           Visão &amp; Construção
         </h2>
         <p className="mt-1 text-sm text-white/60">Quem fez o filme por trás das câmeras</p>
       </div>
-      <ul className="sem-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 md:mx-0 md:px-0">
+      <ul className="sem-scrollbar -mx-5 flex gap-4 overflow-x-auto px-5 md:-mx-6 md:px-6">
         {equipe.map((pessoa) => (
           <li key={pessoa.id} className="w-28 shrink-0 text-center md:w-32">
             <FotoOuIniciais nome={pessoa.name} src={pessoa.profileUrl} />
@@ -26,7 +26,7 @@ export function VisaoConstrucao({ equipe }: { equipe: MembroEquipe[] }) {
   )
 }
 
-const CIRCULO = 'mx-auto aspect-square w-20 rounded-full bg-superficie ring-1 ring-white/10 md:w-24'
+const CIRCULO = 'mx-auto aspect-square w-20 rounded-full bg-white/5 ring-1 ring-white/10 md:w-24'
 
 function FotoOuIniciais({ nome, src }: { nome: string; src: string | null }) {
   const [falhou, setFalhou] = useState(false)
