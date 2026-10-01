@@ -1,7 +1,7 @@
 # CineTeca — Trilha sonora — Design
 
 **Data:** 2026-09-30
-**Status:** em revisão
+**Status:** aprovada
 **Branch:** `trilha-sonora`, no worktree `.claude/worktrees/trilha-sonora`. Outra sessão trabalha no `master` na pasta principal.
 
 ## 1. Objetivo
