@@ -45,13 +45,23 @@ export function iniciarMockTmdb(porta) {
 
     if (caminho === '/search/movie') {
       const termo = (url.searchParams.get('query') ?? '').toLowerCase()
-      if (!termo.includes('matrix')) return responder(200, { page: 1, results: [], total_pages: 0, total_results: 0 })
-      return responder(200, {
-        page: 1,
-        results: [filme(7001, 'Matrix'), filme(7002, 'Matrix Reloaded'), filme(7003, 'Matrix Revolutions')],
-        total_pages: 1,
-        total_results: 3,
-      })
+      if (termo.includes('matrix')) {
+        return responder(200, {
+          page: 1,
+          results: [filme(7001, 'Matrix'), filme(7002, 'Matrix Reloaded'), filme(7003, 'Matrix Revolutions')],
+          total_pages: 1,
+          total_results: 3,
+        })
+      }
+      if (termo.includes('her')) {
+        return responder(200, {
+          page: 1,
+          results: [filme(8001, 'Ela'), filme(8002, 'Her - Uma História de Amor')],
+          total_pages: 1,
+          total_results: 2,
+        })
+      }
+      return responder(200, { page: 1, results: [], total_pages: 0, total_results: 0 })
     }
 
     // Cenas para a paleta: ids terminados em 5 não têm nenhuma.

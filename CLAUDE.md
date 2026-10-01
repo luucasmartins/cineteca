@@ -53,7 +53,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - Plano: `docs/superpowers/plans/2026-10-01-cineteca-fase4.md`
   - Ficaram para depois: sessão dupla, tags de vibe, diário/dashboard, paleta de cores, "clipar" imagens. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
   - Ajustes menores vistos na revisão e não feitos: imagem 404 no mosaico mostra ícone quebrado; contador da tela cheia não é anunciado; falha só na busca do país descarta a sugestão; respostas fora de ordem no sorteio sem guarda; janela do Fure a bolha não trava a rolagem.
-- **Próximas, na ordem aprovada:** Prêmios, Paleta de cores, Sessão dupla, Diário com Comunidade. Roteiro em `docs/superpowers/roteiro-proximas-fases.md`.
+- **Próximas, na ordem aprovada:** Comunidade (camada pública — comentários, perfis, moderação). Roteiro em `docs/superpowers/roteiro-proximas-fases.md`.
 - **Prêmios — concluída.** Seção com abas na página do filme (Oscar, BAFTA, Globo de Ouro, Cannes, Veneza, Berlim), dados do Wikidata.
   - Spec: `docs/superpowers/specs/2026-10-01-cineteca-premios-design.md`
   - Plano: `docs/superpowers/plans/2026-10-01-cineteca-premios.md`
@@ -62,6 +62,11 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - Spec: `docs/superpowers/specs/2026-10-01-cineteca-harmonia-design.md`
   - Plano: `docs/superpowers/plans/2026-10-01-cineteca-harmonia.md`
   - As cores são extraídas **no navegador** (canvas + k-means em `lib/paleta/extrair.ts`); funciona porque o `image.tmdb.org` manda `Access-Control-Allow-Origin: *`. O e2e intercepta as imagens `w300` e responde BMP de cor sólida.
+- **Sessão dupla + Diário pessoal — concluída.** Dois filmes sob um título, link público, imagem para Stories/feed. Botão "Assisti" na página do filme com data e anotação. Dashboard ("Números") com mapa de calor, décadas e 5 diretores favoritos.
+  - Spec: `docs/superpowers/specs/2026-10-01-cineteca-sessao-dupla-diario-design.md`
+  - Plano: `docs/superpowers/plans/2026-10-01-cineteca-sessao-dupla-diario.md`
+  - A página pública da sessão busca pelo servidor com `criarClienteAdmin()`; visitantes não têm acesso à tabela.
+  - Os diretores são gravados no registro do Assisti; o dashboard não consulta o TMDB.
 
 ## Pendências abertas
 
@@ -91,6 +96,8 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - `lib/paleta/` — extração de cores (função pura) e leitura das cenas no canvas do navegador.
 - `lib/premios/` — catálogo de categorias, montagem e consulta ao Wikidata (server-only, cache de 1 dia). `WIKIDATA_SPARQL_URL` só existe no e2e, apontando para o simulador; produção usa o endpoint público.
 - `lib/lista/` — Favoritos e Salvos atrás da interface `ListaStore`; `supabase.ts` é a implementação em uso, `local.ts` só serve à importação das listas antigas.
+- `lib/sessao-dupla/` — tipos, validação, banco e Server Actions da Sessão dupla.
+- `lib/diario/` — tipos, validação, banco, Server Actions e `numeros.ts` (função pura do dashboard) do Assisti.
 - `app/api/filmes/route.ts` — rota interna da rolagem infinita e da busca.
 - `app/(conta)/` — entrar, cadastro, conta, recuperar-senha, redefinir-senha.
 - `app/auth/callback` e `app/auth/confirmar` — retorno do Google e do link de senha.

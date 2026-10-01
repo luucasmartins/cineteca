@@ -78,6 +78,55 @@ export async function esperarNaConta(
     .toBe(1)
 }
 
+export async function esperarSessaoDupla(
+  u: Pick<UsuarioTeste, 'id'>,
+  titulo: string,
+): Promise<string> {
+  let sessaoId = ''
+  await expect
+    .poll(
+      async () => {
+        const { data } = await clienteAdmin()
+          .from('sessoes_duplas')
+          .select('id')
+          .eq('usuario_id', u.id)
+          .eq('titulo', titulo)
+        if (data && data.length > 0) sessaoId = (data[0] as { id: string }).id
+        return data?.length ?? 0
+      },
+      { timeout: 15_000 },
+    )
+    .toBe(1)
+  return sessaoId
+}
+
+export async function esperarAssistido(
+  u: Pick<UsuarioTeste, 'id'>,
+  filmeId: number,
+): Promise<void> {
+  await expect
+    .poll(
+      async () => {
+        const { data } = await clienteAdmin()
+          .from('assistidos')
+          .select('id')
+          .eq('usuario_id', u.id)
+          .eq('filme_id', filmeId)
+        return data?.length ?? 0
+      },
+      { timeout: 15_000 },
+    )
+    .toBeGreaterThanOrEqual(1)
+}
+
+export async function limparSessoesDuplas(u: Pick<UsuarioTeste, 'id'>): Promise<void> {
+  await clienteAdmin().from('sessoes_duplas').delete().eq('usuario_id', u.id)
+}
+
+export async function limparAssistidos(u: Pick<UsuarioTeste, 'id'>): Promise<void> {
+  await clienteAdmin().from('assistidos').delete().eq('usuario_id', u.id)
+}
+
 export async function inserirFilmes(
   u: Pick<UsuarioTeste, 'id'>,
   tipo: 'favoritos' | 'salvos',

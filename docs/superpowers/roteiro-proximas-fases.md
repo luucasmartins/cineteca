@@ -4,8 +4,8 @@ Combinado com o dono em 2026-10-01. Ordem aprovada:
 
 1. **Prêmios** na página do filme — concluído (spec e plano de 2026-10-01).
 2. **Paleta de cores** ("Blind Watch") — concluído como "Harmonia de cores" (spec e plano de 2026-10-01).
-3. **Sessão dupla.**
-4. **Diário com Comunidade** — por último, numa fase própria.
+3. **Sessão dupla + Diário pessoal (Assisti) e Dashboard** — concluído (spec e plano de 2026-10-01).
+4. **Comunidade** — por último, numa fase própria. A parte privada do diário já está pronta; falta a camada pública (comentários, perfis, moderação).
 
 Cada item ganha a própria spec e o próprio plano em `specs/` e `plans/` quando chegar a vez.
 
@@ -28,17 +28,18 @@ Esconder título, sinopse e pôster e mostrar só a paleta dominante, extraída 
 - **Suposições não confirmadas:** página própria de descoberta e uma paleta pequena na página do filme.
 - Estimativa: 2–3 h.
 
-## 3. Sessão dupla
+## 3. Sessão dupla + Diário pessoal e Dashboard
 
-Agrupar dois filmes com um título dado pela pessoa (ex.: Blade Runner 2049 + Her = "Solidão Cyberpunk"), com os pôsteres lado a lado e exportáveis para redes sociais. Precisa de tabela no Supabase.
+Dois filmes sob um título, compartilhável por link e baixável para Stories/feed. Botão "Assisti" na página do filme com data e anotação. Dashboard ("Números") com mapa de calor, décadas e 5 diretores favoritos.
 
-- **Suposição não confirmada:** pares criados por quem tem conta e públicos por link.
-- Estimativa: 4–5 h.
+- Spec: `docs/superpowers/specs/2026-10-01-cineteca-sessao-dupla-diario-design.md`
+- Plano: `docs/superpowers/plans/2026-10-01-cineteca-sessao-dupla-diario.md`
+- Concluído em 2026-10-01.
 
-## 4. Diário com Comunidade
+## 4. Comunidade
 
-- **Diário:** registrar "assisti em tal dia", com uma nota opcional.
-- **Comunidade:** uma aba dentro do Diário, com comentários de quem tem conta junto à capa do filme.
+- **Diário privado:** já concluído na fase 3 acima.
+- **Comunidade:** uma aba pública, com comentários de quem tem conta junto à capa do filme.
 - **Moderação mínima obrigatória:** denunciar, o dono poder apagar o que for ofensivo e o autor poder apagar o próprio.
 - **Base necessária:** um perfil público (nome de exibição e foto). Hoje o nome em `perfis` só é lido pelo próprio dono da conta.
 - Ainda sem nenhuma conversa de desenho.
