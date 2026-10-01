@@ -172,6 +172,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                     </Link>
                   </li>
                   <li>
+                    <Link href="/diario" onClick={fecharMenu} className="block py-3">
+                      Meu diário
+                    </Link>
+                  </li>
+                  <li>
                     <Link href="/conta" onClick={fecharMenu} className="block py-3">
                       Minha conta
                     </Link>

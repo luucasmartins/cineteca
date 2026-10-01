@@ -83,6 +83,9 @@ export function MenuUsuario({ usuario }: { usuario: Usuario | null }) {
           <Link href="/sessoes" className={ITEM}>
             Sessões duplas
           </Link>
+          <Link href="/diario" className={ITEM}>
+            Meu diário
+          </Link>
           <Link href="/conta" className={ITEM}>
             Minha conta
           </Link>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { BlocoAvaliacao } from '@/components/BlocoAvaliacao'
+import { BotaoAssisti } from '@/components/BotaoAssisti'
 import { BotaoLista } from '@/components/BotaoLista'
 import { BotaoSessaoDupla } from '@/components/BotaoSessaoDupla'
 import { BotaoTrailer } from '@/components/BotaoTrailer'
@@ -16,6 +17,7 @@ import { Premios } from '@/components/Premios'
 import { TrailerFundo } from '@/components/TrailerFundo'
 import { VisaoConstrucao } from '@/components/VisaoConstrucao'
 import { obterAvaliacaoDoFilme } from '@/lib/avaliacoes/banco'
+import { obterResumoAssistido } from '@/lib/diario/acoes'
 import { formatarDuracao } from '@/lib/formatar'
 import { paraFilmeSalvo } from '@/lib/lista/tipos'
 import { lerIdPositivo } from '@/lib/parametros'
@@ -49,6 +51,7 @@ export default async function PaginaFilme({ params }: Props) {
 
   const salvo = paraFilmeSalvo(filme)
   const avaliacao = await obterAvaliacaoDoFilme(id)
+  const resumoAssistido = await obterResumoAssistido(id)
   const detalhes = [
     filme.year,
     filme.runtime !== null ? formatarDuracao(filme.runtime) : null,
@@ -91,6 +94,7 @@ export default async function PaginaFilme({ params }: Props) {
               <BotaoLista tipo="favoritos" filme={salvo} comTexto />
               <BotaoLista tipo="salvos" filme={salvo} comTexto />
               <BotaoSessaoDupla filme={salvo} />
+              <BotaoAssisti filmeId={id} resumo={resumoAssistido} />
             </div>
           </div>
         </div>
