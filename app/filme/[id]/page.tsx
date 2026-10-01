@@ -6,10 +6,12 @@ import { BotaoTrailer } from '@/components/BotaoTrailer'
 import { Carrossel } from '@/components/Carrossel'
 import { Elenco } from '@/components/Elenco'
 import { CONTEUDO } from '@/components/estilos'
+import { GaleriaImagens } from '@/components/GaleriaImagens'
 import { ImagemComReserva } from '@/components/ImagemComReserva'
 import { MensagemErro } from '@/components/MensagemErro'
 import { OndeAssistir } from '@/components/OndeAssistir'
 import { TrailerFundo } from '@/components/TrailerFundo'
+import { VisaoConstrucao } from '@/components/VisaoConstrucao'
 import { obterAvaliacaoDoFilme } from '@/lib/avaliacoes/banco'
 import { formatarDuracao } from '@/lib/formatar'
 import { paraFilmeSalvo } from '@/lib/lista/tipos'
@@ -93,7 +95,9 @@ export default async function PaginaFilme({ params }: Props) {
       <div className={`${CONTEUDO} space-y-12 pb-8`}>
         <BlocoAvaliacao filme={salvo} inicial={avaliacao} />
         <OndeAssistir provedores={filme.watchProviders} />
+        {filme.crew.length > 0 && <VisaoConstrucao equipe={filme.crew} />}
         {filme.cast.length > 0 && <Elenco elenco={filme.cast} />}
+        {filme.images.length > 0 && <GaleriaImagens imagens={filme.images} titulo={filme.title} />}
       </div>
 
       {filme.recommendations.length > 0 && (

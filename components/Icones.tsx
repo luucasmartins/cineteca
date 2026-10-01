@@ -95,6 +95,14 @@ export const IconeNaoCurti = ({ className, preenchido = false }: Props & { preen
   </svg>
 )
 
+export const IconeBolha = ({ className }: Props) => (
+  <svg {...base(className)}>
+    <circle cx="12" cy="12" r="8" />
+    <path d="M8.5 10a4 4 0 0 1 3-3" />
+    <path d="M19 5l2-2M21 7h-1.5M17 3V1.5" />
+  </svg>
+)
+
 export const IconeSom = ({ className }: Props) => (
   <svg {...base(className)}>
     <path d="M11 5 6 9H2v6h4l5 4z" />

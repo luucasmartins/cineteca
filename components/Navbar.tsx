@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { sair } from '@/lib/auth/acoes'
 import type { Usuario } from '@/lib/auth/usuario'
 import type { Genero } from '@/lib/tmdb/tipos'
+import { BotaoFureBolha } from './BotaoFureBolha'
 import { BotaoSom } from './BotaoSom'
 import { CampoBusca } from './CampoBusca'
 import { CONTEUDO } from './estilos'
@@ -108,6 +109,9 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                 Mais curtidos
               </LinkNav>
             </li>
+            <li>
+              <BotaoFureBolha className="flex items-center gap-1.5 text-white/80 transition-colors hover:text-white" />
+            </li>
           </ul>
 
           <div className="ml-auto flex items-center gap-2">
@@ -146,6 +150,9 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                 <Link href="/mais-curtidos" onClick={fecharMenu} className="block py-3">
                   Mais curtidos
                 </Link>
+              </li>
+              <li>
+                <BotaoFureBolha className="flex w-full items-center gap-2 py-3 text-left" aoClicar={fecharMenu} />
               </li>
               {usuario ? (
                 <>

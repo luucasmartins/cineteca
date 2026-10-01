@@ -39,12 +39,26 @@ const COMPLETO = {
       profile_path: i === 0 ? '/ator.jpg' : null,
       order: 19 - i,
     })),
+    crew: [
+      { id: 1, name: 'Lana Wachowski', job: 'Director', profile_path: '/lana.jpg' },
+      { id: 1, name: 'Lana Wachowski', job: 'Writer', profile_path: '/lana.jpg' },
+      { id: 2, name: 'Bill Pope', job: 'Director of Photography', profile_path: null },
+      { id: 3, name: 'Kym Barrett', job: 'Costume Design', profile_path: null },
+    ],
   },
   recommendations: {
     page: 1,
     total_pages: 1,
     total_results: 1,
     results: [{ id: 604, title: 'Matrix Reloaded', genre_ids: [878] }],
+  },
+  images: {
+    backdrops: [
+      { file_path: '/c1.jpg', iso_639_1: null },
+      { file_path: '/com-texto.jpg', iso_639_1: 'en' },
+      { file_path: '/c2.jpg', iso_639_1: null },
+      { file_path: null, iso_639_1: null },
+    ],
   },
   'watch/providers': {
     results: {
@@ -82,8 +96,9 @@ describe('getMovieDetails', () => {
     await getMovieDetails(603)
     const chamada = tmdbFetchMock.mock.calls.find(([c]) => c === '/movie/603')!
     expect(chamada[1]).toEqual({
-      append_to_response: 'videos,credits,recommendations,watch/providers',
+      append_to_response: 'videos,credits,recommendations,watch/providers,images',
       include_video_language: 'pt,en,null',
+      include_image_language: 'null',
     })
     expect(chamada[2]).toBe(21600)
   })
@@ -141,6 +156,28 @@ describe('getMovieDetails', () => {
     expect(cast.find((a) => a.id === 100)).toBeUndefined()
   })
 
+  it('normaliza a equipe da Visão & Construção', async () => {
+    responderCom(COMPLETO)
+    expect((await getMovieDetails(603))!.crew).toEqual([
+      { id: 1, name: 'Lana Wachowski', profileUrl: 'https://image.tmdb.org/t/p/w185/lana.jpg', funcoes: ['Direção', 'Roteiro'] },
+      { id: 2, name: 'Bill Pope', profileUrl: null, funcoes: ['Fotografia'] },
+    ])
+  })
+
+  it('usa só as cenas sem texto, em w780 e w1280', async () => {
+    responderCom(COMPLETO)
+    expect((await getMovieDetails(603))!.images).toEqual([
+      { media: 'https://image.tmdb.org/t/p/w780/c1.jpg', grande: 'https://image.tmdb.org/t/p/w1280/c1.jpg' },
+      { media: 'https://image.tmdb.org/t/p/w780/c2.jpg', grande: 'https://image.tmdb.org/t/p/w1280/c2.jpg' },
+    ])
+  })
+
+  it('limita a galeria a 20 imagens', async () => {
+    const backdrops = Array.from({ length: 30 }, (_, i) => ({ file_path: `/c${i}.jpg`, iso_639_1: null }))
+    responderCom({ ...COMPLETO, images: { backdrops } })
+    expect((await getMovieDetails(603))!.images).toHaveLength(20)
+  })
+
   it('usa só os provedores do Brasil, na ordem de prioridade', async () => {
     responderCom(COMPLETO)
     expect((await getMovieDetails(603))!.watchProviders).toEqual({
@@ -176,6 +213,8 @@ describe('getMovieDetails', () => {
       trailerKey: null,
       trailerFundoKey: null,
       cast: [],
+      crew: [],
+      images: [],
       recommendations: [],
       watchProviders: null,
     })

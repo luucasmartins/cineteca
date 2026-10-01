@@ -23,6 +23,8 @@ export function iniciarMockTmdb(porta) {
     if (caminho === '/movie/top_rated') return responder(200, pagina(4000, numero, 5))
 
     if (caminho === '/discover/movie') {
+      // Fure a bolha: qualquer idioma devolve 2 páginas de filmes.
+      if (url.searchParams.has('with_original_language')) return responder(200, pagina(800000, numero, 2))
       const genero = Number(url.searchParams.get('with_genres'))
       if (genero === 878) return responder(500, { status_message: 'falha simulada' })
       const base = genero * 1000 + 100000

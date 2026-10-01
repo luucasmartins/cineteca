@@ -1,5 +1,7 @@
 import { Suspense } from 'react'
 import { BannerDestaque } from '@/components/BannerDestaque'
+import { BotaoFureBolha } from '@/components/BotaoFureBolha'
+import { BOTAO_PRIMARIO, CONTEUDO } from '@/components/estilos'
 import { FileiraEsqueleto } from '@/components/Esqueletos'
 import { FileiraAssincrona } from '@/components/FileiraAssincrona'
 import { FileiraRanking } from '@/components/FileiraRanking'
@@ -37,6 +39,10 @@ export default async function Inicio() {
     <>
       {temBanner ? <BannerDestaque filmes={destaques} /> : <div className="h-24" />}
       <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${temBanner ? '-mt-24 md:-mt-40' : ''}`}>
+        <div className={`${CONTEUDO} flex flex-wrap items-center gap-x-4 gap-y-2`}>
+          <BotaoFureBolha className={BOTAO_PRIMARIO} />
+          <p className="text-sm text-white/70">Um filme aclamado, longe do circuito de sempre.</p>
+        </div>
         <Suspense fallback={null}>
           <FileiraRanking />
         </Suspense>
