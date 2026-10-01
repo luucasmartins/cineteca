@@ -37,5 +37,6 @@ Os dois últimos precisam de `.env.test.local`, com as chaves do projeto `cinete
 - `lib/supabase/` — conexão com o banco e com as contas.
 - `lib/auth/` — validações, mensagens e as ações de entrar, criar conta e mexer na conta.
 - `lib/lista/` — Favoritos e Salvos, guardados na conta do usuário.
+- `lib/avaliacoes/` — curtidas dos usuários e o ranking dos mais curtidos.
 - `components/` — peças visuais do site.
 - `app/` — páginas.

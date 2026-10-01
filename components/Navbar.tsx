@@ -103,6 +103,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                 Minha lista
               </LinkNav>
             </li>
+            <li>
+              <LinkNav href="/mais-curtidos" ativo={pathname === '/mais-curtidos'}>
+                Mais curtidos
+              </LinkNav>
+            </li>
           </ul>
 
           <div className="ml-auto flex items-center gap-2">
@@ -135,6 +140,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
               <li>
                 <Link href="/minha-lista" onClick={fecharMenu} className="block py-3">
                   Minha lista
+                </Link>
+              </li>
+              <li>
+                <Link href="/mais-curtidos" onClick={fecharMenu} className="block py-3">
+                  Mais curtidos
                 </Link>
               </li>
               {usuario ? (

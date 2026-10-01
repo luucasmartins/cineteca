@@ -11,7 +11,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 ## Como trabalhar com o dono
 
 - **Seja direto.** Entregue o resultado, sem repetir o pedido nem enrolar.
-- **Terminal é seu trabalho.** Rode você mesmo instalação, testes, typecheck, build e scripts. Só peça ação manual quando for impossível por ferramenta: login em painel, 2FA, clique em UI externa ou enviar ao GitHub.
+- **Terminal é seu trabalho.** Rode você mesmo instalação, testes, typecheck, build e scripts. Só peça ação manual quando for impossível por ferramenta: login em painel, 2FA, clique em UI externa ou merge do Pull Request.
 - **Um passo de cada vez nos painéis.** Ele pediu isso explicitamente. Peça o print e confirme antes do próximo.
 - **Verifique em vez de perguntar.** Dá para conferir muita coisa daqui: `curl` no site publicado, consulta ao Supabase com a chave secreta do `.env.local`, leitura do log do servidor de desenvolvimento. Prefira medir a pedir que ele descreva.
 - **Opções sempre com recomendação:** qual e por quê, em uma linha. Em decisão técnica relevante, prós e contras por opção.
@@ -44,15 +44,19 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - **Fase 2 — concluída e no ar.** Contas no Supabase (e-mail/senha e Google), listas na conta, Minha conta, janela de login ao favoritar sem conta, importação das listas antigas do navegador.
   - Spec: `docs/superpowers/specs/2026-09-29-cineteca-fase2-contas-design.md`
   - Plano: `docs/superpowers/plans/2026-09-29-cineteca-fase2.md`
-- **Fase 3 — spec e plano aprovados, implementação não iniciada.** Curtir / não curtir e ranking dos mais curtidos.
+- **Fase 3 — concluída.** Curtir / não curtir na página do filme, página `/mais-curtidos` e fileira na home. Banco aplicado nos dois projetos Supabase.
   - Spec: `docs/superpowers/specs/2026-09-30-cineteca-fase3-avaliacoes-design.md`
   - Plano: `docs/superpowers/plans/2026-09-30-cineteca-fase3.md`
-  - Tasks 3 e 8 são feitas com o dono. Implemente em um branch (`fase-3`), não direto no `master`.
+  - O voto é gravado com update e, se não existir, insert: `upsert` leva 42501, porque o banco só libera update em `curtiu` e `atualizado_em`.
+- **Fase 4 — próxima, sem spec ainda.** Decidido com o dono em 2026-10-01, só com dados do TMDB:
+  - "Visão & Construção" na página do filme: direção, fotografia, roteiro e direção de arte.
+  - Galeria de imagens do filme (só exibir; "clipar" para o perfil fica para depois).
+  - Botão "Fure a bolha": sugestão surpresa de filme bem avaliado, com mínimo de votos no TMDB.
+  - Ficaram de fora por enquanto: sessão dupla, tags de vibe, diário/dashboard, paleta de cores. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
 
 ## Pendências abertas
 
 - **Recuperação de senha não envia e-mail.** O Supabase só entrega para os donos do projeto sem SMTP próprio, e editar os modelos de e-mail também exige SMTP. Depende de o dono ter um domínio para ligar o Resend. As telas e a rota `/auth/callback` já funcionam.
-- **Troca de vermelho para verde**, desenhada e aprovada em parte: `destaque` vira `#01BD4E` (hover `#01993F`), botões verdes com **texto preto** (branco dá 2,50 de contraste e reprova; preto dá 8,39), e um token novo `perigo` guarda o vermelho `#D7263D` para "Excluir minha conta" e as 5 caixas de erro dos formulários. O logo está em `public/Bright Green CineTeca Wordmark.png` (PNG com transparência, 1897×448) e deve substituir o texto "CineTeca" na barra e no rodapé.
 - **Dois filmes de teste** na conta real do dono (`makersnegocios@gmail.com`), para ele remover pela tela.
 
 ## Stack
@@ -87,7 +91,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 ## Regras do projeto
 
 - **Texto:** tudo na tela em pt-BR. Chamadas ao TMDB usam `language=pt-BR` e `region=BR`. Só filmes, nada de séries.
-- **Cores e fonte:** fundo `#0B0B0F`, superfícies `#16161D`, fonte Manrope. Use sempre os tokens (`destaque`, `destaque-escuro`), nunca a cor escrita à mão — a marca está migrando para verde. Nunca use o logo ou o nome da Netflix.
+- **Cores e fonte:** fundo `#0B0B0F`, superfícies `#16161D`, fonte Manrope. Marca verde `#01BD4E` (`destaque`, hover `destaque-escuro` `#01993F`), **sempre com texto preto** sobre ela: branco dá 2,50 de contraste e reprova, preto dá 8,39. O vermelho `#D7263D` vive no token `perigo` e só serve a erro e a "Excluir minha conta". Use sempre os tokens, nunca a cor escrita à mão. O logo é `public/logo.png` e substitui o texto na barra e no rodapé. Nunca use o logo ou o nome da Netflix.
 - **Atribuição do TMDB:** obrigatória pelos termos. Fica no rodapé, discreta. O dono pediu para remover e aceitou a versão discreta, então não remova.
 - **Imagens:** `<img>` simples, não `next/image`. Se a imagem pode faltar, use `ImagemComReserva`, que exige a prop `reserva` (ex.: `/poster-padrao.svg`).
 - **Acessibilidade:** o site respeita `prefers-reduced-motion` — o banner para de trocar e o trailer de fundo não carrega. É proposital.
@@ -112,7 +116,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - O **Project URL** fica em Settings → **Data API**, não em API Keys. Copie só o domínio: `https://xxx.supabase.co`, **sem** `/rest/v1` no fim. Esse erro derruba o login inteiro.
 - **Vercel:** o plano Hobby bloqueia deploy quando a conta do GitHub que envia não é a ligada à Vercel e o repositório é privado. Resolvido tornando o repositório público. Republicar um deploy bloqueado não adianta — só um commit novo é reavaliado.
 - **Windows:** PowerShell 5.1 (sem `&&`) ou Git Bash. O caminho do projeto tem espaço e acento: use aspas. O "Acesso controlado a pastas" do Defender já bloqueou o `.git`.
-- **GitHub:** o `gh` não está instalado e o terminal não consegue abrir o login do Git. O dono envia pelo painel Controle do Código-Fonte do VS Code, com a conta `makersnegocios-dotcom`.
+- **GitHub:** o `git push` de um branch funciona pelo terminal (login salvo no Windows; rode com `GIT_TERMINAL_PROMPT=0` para falhar em vez de travar). O modo automático do Claude Code bloqueia o push ao `master` e o de commits que mudam este arquivo: publique por Pull Request, e o dono clica em "Merge pull request" no GitHub. O `gh` não está instalado; o dono abre o PR pelo link que o `git push` imprime. Se o push falhar, o dono envia pelo Controle do Código-Fonte do VS Code, com a conta `makersnegocios-dotcom`.
 
 ## Variáveis de ambiente
 
