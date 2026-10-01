@@ -36,6 +36,7 @@ export function TrilhaSonoraProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Os navegadores só liberam som depois de um gesto: o primeiro clique, toque ou tecla dá o play.
+  // No toque, o gesto só vale no pointerup; no mouse, já no pointerdown.
   useEffect(() => {
     const audio = audioRef.current
     if (!ligada || !audio) return
@@ -46,10 +47,12 @@ export function TrilhaSonoraProvider({ children }: { children: ReactNode }) {
     }
     const parar = () => {
       document.removeEventListener('pointerdown', aoGesto)
+      document.removeEventListener('pointerup', aoGesto)
       document.removeEventListener('keydown', aoGesto)
       audio.removeEventListener('play', parar)
     }
     document.addEventListener('pointerdown', aoGesto)
+    document.addEventListener('pointerup', aoGesto)
     document.addEventListener('keydown', aoGesto)
     audio.addEventListener('play', parar)
     return parar

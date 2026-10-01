@@ -4,6 +4,9 @@ const trilha = (page: Page) => page.getByTestId('trilha-sonora')
 const tocando = (page: Page) => trilha(page).evaluate((a: HTMLAudioElement) => !a.paused)
 const tempo = (page: Page) => trilha(page).evaluate((a: HTMLAudioElement) => a.currentTime)
 
+// O preload só vira "auto" pelo efeito do provider, depois da hidratação e do load.
+const esperarHidratacao = (page: Page) => expect(trilha(page)).toHaveAttribute('preload', 'auto')
+
 // Clica num canto do rodapé, onde não há link. Repete até a hidratação ligar o ouvinte de gesto.
 async function iniciarTrilha(page: Page) {
   await expect(async () => {
@@ -60,12 +63,18 @@ test('o botão de som desliga e religa a trilha na hora', async ({ page }) => {
 })
 
 test('clicar primeiro no botão desliga sem tocar, e a escolha vale depois de recarregar', async ({ page }) => {
+  // Conta cada play, para pegar até um play que fosse pausado logo em seguida.
+  await page.addInitScript(() => {
+    const w = window as unknown as { __plays: number }
+    w.__plays = 0
+    document.addEventListener('play', () => w.__plays++, true)
+  })
   await page.goto('/')
-  await expect(async () => {
-    await page.getByRole('button', { name: 'Desligar trilha sonora' }).click({ timeout: 1000 })
-    await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible({ timeout: 1000 })
-  }).toPass()
+  await esperarHidratacao(page)
+  await page.getByRole('button', { name: 'Desligar trilha sonora' }).click()
+  await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible()
   expect(await tocando(page)).toBe(false)
+  expect(await page.evaluate(() => (window as unknown as { __plays: number }).__plays)).toBe(0)
 
   await page.reload()
   // O botão só vira "Ligar" depois da hidratação ler a preferência: aí o ouvinte de gesto já existiria.
@@ -108,4 +117,15 @@ test('com o som desligado, abrir e fechar o trailer não religa a trilha', async
   await page.getByRole('button', { name: 'Fechar trailer' }).click()
   await page.waitForTimeout(500)
   expect(await tocando(page)).toBe(false)
+})
+
+// No celular, o navegador só libera som no fim do toque (pointerup), não no começo.
+// O Chromium dos testes não aplica essa regra, então o teste dispara o pointerup sozinho.
+test('o fim de um toque inicia a trilha', async ({ page }) => {
+  await page.goto('/')
+  await esperarHidratacao(page)
+  await page.evaluate(() =>
+    document.body.dispatchEvent(new PointerEvent('pointerup', { pointerType: 'touch', bubbles: true })),
+  )
+  await expect.poll(() => tocando(page)).toBe(true)
 })

@@ -20,7 +20,7 @@ O site ganha uma identidade sonora: uma trilha no clima de cinema toca enquanto 
 | Tema | Decisão |
 |---|---|
 | Música | Uma faixa livre de direitos da Pixabay Music: uso comercial permitido, sem crédito obrigatório. Estilo orquestral/cinematográfico. Claude escolhe pelo título, pelas etiquetas e pela descrição. O dono pode trocar a faixa substituindo o arquivo. |
-| Início | No primeiro gesto do visitante (`pointerdown` ou `keydown`) em qualquer página. Os navegadores bloqueiam som antes disso. |
+| Início | No primeiro gesto do visitante (`pointerdown`, `pointerup` ou `keydown`) em qualquer página. Os navegadores bloqueiam som antes disso. |
 | Abrangência | O site todo. O tocador fica no layout raiz e sobrevive à navegação do App Router. |
 | Repetição e volume | Toca em repetição (`loop`), com volume 0,3. |
 | Desligar | Botão de alto-falante na barra superior, sempre visível. A escolha "desligada" fica no `localStorage`. |
@@ -31,7 +31,7 @@ O site ganha uma identidade sonora: uma trilha no clima de cinema toca enquanto 
 1. **Ao carregar:**
    - O tocador renderiza um único `<audio loop>` com `preload="none"`, que não baixa o arquivo.
    - Se a preferência não for "desligada", ele troca para `preload="auto"` depois do evento `load` da janela e fica esperando o primeiro gesto. Quem desligou só baixa o arquivo se religar.
-2. **Primeiro gesto:** `pointerdown` ou `keydown` no `document` chama `play()`, mesmo que a página ainda não tenha terminado de carregar.
+2. **Primeiro gesto:** `pointerdown`, `pointerup` (no toque, o navegador só libera som no fim) ou `keydown` no `document` chama `play()`, mesmo que a página ainda não tenha terminado de carregar.
    - Se `play()` for rejeitado, por exemplo por causa de uma tecla que o navegador não conta como gesto, o tocador espera o próximo gesto.
    - Quando o áudio dispara o evento `play`, os ouvintes de gesto são removidos.
 3. **Primeiro gesto no botão de som:** não inicia a trilha. O botão tem o atributo `data-botao-som`, e o ouvinte global ignora eventos cujo alvo está dentro dele. O clique segue o fluxo normal do botão.
