@@ -117,6 +117,13 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
             <li>
               <BotaoFureBolha className="flex items-center gap-1.5 text-white/80 transition-colors hover:text-white" />
             </li>
+            {usuario && (
+              <li>
+                <LinkNav href="/diario" ativo={pathname === '/diario'}>
+                  Meu diário
+                </LinkNav>
+              </li>
+            )}
           </ul>
 
           <div className="ml-auto flex items-center gap-2">
