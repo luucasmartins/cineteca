@@ -164,11 +164,11 @@ describe('getMovieDetails', () => {
     ])
   })
 
-  it('usa só as cenas sem texto, em w780 e w1280', async () => {
+  it('usa só as cenas sem texto, em w300, w780 e w1280', async () => {
     responderCom(COMPLETO)
     expect((await getMovieDetails(603))!.images).toEqual([
-      { media: 'https://image.tmdb.org/t/p/w780/c1.jpg', grande: 'https://image.tmdb.org/t/p/w1280/c1.jpg' },
-      { media: 'https://image.tmdb.org/t/p/w780/c2.jpg', grande: 'https://image.tmdb.org/t/p/w1280/c2.jpg' },
+      { pequena: 'https://image.tmdb.org/t/p/w300/c1.jpg', media: 'https://image.tmdb.org/t/p/w780/c1.jpg', grande: 'https://image.tmdb.org/t/p/w1280/c1.jpg' },
+      { pequena: 'https://image.tmdb.org/t/p/w300/c2.jpg', media: 'https://image.tmdb.org/t/p/w780/c2.jpg', grande: 'https://image.tmdb.org/t/p/w1280/c2.jpg' },
     ])
   })
 

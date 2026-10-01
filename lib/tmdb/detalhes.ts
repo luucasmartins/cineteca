@@ -91,7 +91,7 @@ function normalizarImagens(cenas: ImagemBruta[]): ImagemFilme[] {
   return cenas
     .filter((c): c is ImagemBruta & { file_path: string } => !c.iso_639_1 && Boolean(c.file_path))
     .slice(0, MAX_IMAGENS)
-    .map((c) => ({ media: imageUrl(c.file_path, 'w780')!, grande: imageUrl(c.file_path, 'w1280')! }))
+    .map((c) => ({ pequena: imageUrl(c.file_path, 'w300')!, media: imageUrl(c.file_path, 'w780')!, grande: imageUrl(c.file_path, 'w1280')! }))
 }
 
 function normalizarProvedores(ofertas?: OfertasBrutas): WatchProviders | null {
