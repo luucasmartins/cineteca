@@ -52,7 +52,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 ## Pendências abertas
 
 - **Recuperação de senha não envia e-mail.** O Supabase só entrega para os donos do projeto sem SMTP próprio, e editar os modelos de e-mail também exige SMTP. Depende de o dono ter um domínio para ligar o Resend. As telas e a rota `/auth/callback` já funcionam.
-- **Troca de vermelho para verde**, desenhada e aprovada em parte: `destaque` vira `#01BD4E` (hover `#01993F`), botões verdes com **texto preto** (branco dá 2,50 de contraste e reprova; preto dá 8,39), e um token novo `perigo` guarda o vermelho `#D7263D` para "Excluir minha conta" e as 5 caixas de erro dos formulários. O logo está em `public/Bright Green CineTeca Wordmark.png` (PNG com transparência, 1897×448) e deve substituir o texto "CineTeca" na barra e no rodapé.
+- **Logo pesado:** `public/logo.png` tem 723 KB e aparece com 28px de altura. Comprimir para ~15 KB acelera o carregamento no celular. Combinado para sair junto com a Fase 3.
 - **Dois filmes de teste** na conta real do dono (`makersnegocios@gmail.com`), para ele remover pela tela.
 
 ## Stack
@@ -87,7 +87,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 ## Regras do projeto
 
 - **Texto:** tudo na tela em pt-BR. Chamadas ao TMDB usam `language=pt-BR` e `region=BR`. Só filmes, nada de séries.
-- **Cores e fonte:** fundo `#0B0B0F`, superfícies `#16161D`, fonte Manrope. Use sempre os tokens (`destaque`, `destaque-escuro`), nunca a cor escrita à mão — a marca está migrando para verde. Nunca use o logo ou o nome da Netflix.
+- **Cores e fonte:** fundo `#0B0B0F`, superfícies `#16161D`, fonte Manrope. Marca verde `#01BD4E` (`destaque`, hover `destaque-escuro` `#01993F`), **sempre com texto preto** sobre ela: branco dá 2,50 de contraste e reprova, preto dá 8,39. O vermelho `#D7263D` vive no token `perigo` e só serve a erro e a "Excluir minha conta". Use sempre os tokens, nunca a cor escrita à mão. O logo é `public/logo.png` e substitui o texto na barra e no rodapé. Nunca use o logo ou o nome da Netflix.
 - **Atribuição do TMDB:** obrigatória pelos termos. Fica no rodapé, discreta. O dono pediu para remover e aceitou a versão discreta, então não remova.
 - **Imagens:** `<img>` simples, não `next/image`. Se a imagem pode faltar, use `ImagemComReserva`, que exige a prop `reserva` (ex.: `/poster-padrao.svg`).
 - **Acessibilidade:** o site respeita `prefers-reduced-motion` — o banner para de trocar e o trailer de fundo não carrega. É proposital.
