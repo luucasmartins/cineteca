@@ -3,7 +3,9 @@
 import { useFureBolha } from './FureBolhaProvider'
 import { IconeBolha } from './Icones'
 
-export function BotaoFureBolha({ className, aoClicar }: { className: string; aoClicar?: () => void }) {
+type Props = { className: string; aoClicar?: () => void; rotulo?: string }
+
+export function BotaoFureBolha({ className, aoClicar, rotulo = 'Fure a bolha' }: Props) {
   const { abrir } = useFureBolha()
   return (
     <button
@@ -14,7 +16,7 @@ export function BotaoFureBolha({ className, aoClicar }: { className: string; aoC
       }}
       className={className}
     >
-      <IconeBolha className="h-5 w-5" /> Fure a bolha
+      <IconeBolha className="h-5 w-5" /> {rotulo}
     </button>
   )
 }

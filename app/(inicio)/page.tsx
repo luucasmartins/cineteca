@@ -1,7 +1,6 @@
-import { Suspense } from 'react'
+import { Fragment, Suspense } from 'react'
 import { BannerDestaque } from '@/components/BannerDestaque'
-import { BotaoFureBolha } from '@/components/BotaoFureBolha'
-import { BOTAO_PRIMARIO, CONTEUDO } from '@/components/estilos'
+import { FaixaFureBolha } from '@/components/FaixaFureBolha'
 import { FileiraEsqueleto } from '@/components/Esqueletos'
 import { FileiraAssincrona } from '@/components/FileiraAssincrona'
 import { FileiraRanking } from '@/components/FileiraRanking'
@@ -16,6 +15,9 @@ const GENEROS_INICIO = [
   { id: 16, nome: 'Animação' },
   { id: 878, nome: 'Ficção científica' },
 ]
+
+// A faixa do Fure a bolha entra depois de "Em alta hoje" e "Populares".
+const POSICAO_FAIXA = 1
 
 const FILEIRAS: { titulo: string; carregar: () => Promise<PaginaFilmes>; verMaisHref?: string; automatico?: boolean }[] = [
   { titulo: 'Em alta hoje', carregar: () => getTrending(), automatico: true },
@@ -39,17 +41,16 @@ export default async function Inicio() {
     <>
       {temBanner ? <BannerDestaque filmes={destaques} /> : <div className="h-24" />}
       <div className={`relative z-10 space-y-6 pb-8 md:space-y-10 ${temBanner ? '-mt-24 md:-mt-40' : ''}`}>
-        <div className={`${CONTEUDO} flex flex-wrap items-center gap-x-4 gap-y-2`}>
-          <BotaoFureBolha className={BOTAO_PRIMARIO} />
-          <p className="text-sm text-white/70">Um filme aclamado, longe do circuito de sempre.</p>
-        </div>
         <Suspense fallback={null}>
           <FileiraRanking />
         </Suspense>
-        {FILEIRAS.map((fileira) => (
-          <Suspense key={fileira.titulo} fallback={<FileiraEsqueleto titulo={fileira.titulo} />}>
-            <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} automatico={fileira.automatico} />
-          </Suspense>
+        {FILEIRAS.map((fileira, i) => (
+          <Fragment key={fileira.titulo}>
+            <Suspense fallback={<FileiraEsqueleto titulo={fileira.titulo} />}>
+              <FileiraAssincrona titulo={fileira.titulo} carregar={fileira.carregar} verMaisHref={fileira.verMaisHref} automatico={fileira.automatico} />
+            </Suspense>
+            {i === POSICAO_FAIXA && <FaixaFureBolha />}
+          </Fragment>
         ))}
       </div>
     </>
