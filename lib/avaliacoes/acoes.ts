@@ -80,7 +80,11 @@ export async function avaliar(filmeId: unknown, curtiu: unknown): Promise<Respos
         },
         { onConflict: 'filme_id' },
       )
-    if (cadastro.error) return falhou(cadastro.error.code, 'cadastrar filme avaliado')
+    // Usa a chave secreta, não a sessão da pessoa: uma recusa aqui é configuração, nunca login vencido.
+    if (cadastro.error) {
+      console.error('[CineTeca] cadastrar filme avaliado falhou:', cadastro.error.code ?? 'sem código')
+      return { ok: false, erro: MENSAGEM_ERRO_VOTO, sessaoExpirada: false }
+    }
 
     const codigo = await gravarVoto(supabase, usuarioId, id.valor, voto.valor)
     if (codigo) return falhou(codigo, 'avaliar')
