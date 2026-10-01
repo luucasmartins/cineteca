@@ -76,6 +76,9 @@ export function BannerDestaque({ filmes }: { filmes: MovieSummary[] }) {
       <div className="absolute inset-0 bg-gradient-to-r from-fundo via-fundo/60 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-fundo via-transparent to-transparent" />
       <div className={`${CONTEUDO} relative flex h-full flex-col justify-end pb-32 md:pb-48`}>
+        <p className="mb-3 text-sm font-bold tracking-wide text-destaque drop-shadow md:text-base">
+          Cinema para quem repara em cada quadro.
+        </p>
         <div key={filme.id} className="animar-surgir max-w-xl space-y-4">
           <h1 className="text-4xl font-extrabold leading-tight drop-shadow md:text-6xl">{filme.title}</h1>
           <p className="line-clamp-3 text-sm text-white/85 md:text-lg">{filme.overview}</p>
