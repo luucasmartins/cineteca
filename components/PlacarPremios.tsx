@@ -23,7 +23,7 @@ export function PlacarPremios({ premios }: { premios: PremioFilme[] }) {
   const lista = (
     <ul className="divide-y divide-white/10">
       {premio.vitorias.map((v) => (
-        <li key={`v-${v.categoria}`} className="flex gap-4 py-2.5">
+        <li key={`v-${v.categoria}`} className="flex items-baseline gap-4 py-2.5">
           <span className="w-20 shrink-0 text-sm font-bold text-destaque">Venceu</span>
           <span className="min-w-0">
             {v.categoria}
@@ -32,7 +32,7 @@ export function PlacarPremios({ premios }: { premios: PremioFilme[] }) {
         </li>
       ))}
       {premio.indicacoes.map((nome) => (
-        <li key={`i-${nome}`} className="flex gap-4 py-2.5 text-white/60">
+        <li key={`i-${nome}`} className="flex items-baseline gap-4 py-2.5 text-white/60">
           <span className="w-20 shrink-0 text-sm">Indicado</span>
           <span className="min-w-0">{nome}</span>
         </li>
