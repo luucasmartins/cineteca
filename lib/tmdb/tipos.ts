@@ -21,6 +21,8 @@ export type CastMember = { id: number; name: string; character: string | null; p
 
 export type MembroEquipe = { id: number; name: string; profileUrl: string | null; funcoes: string[] }
 
+export type ImagemFilme = { media: string; grande: string }
+
 export type Provider = { id: number; name: string; logoUrl: string | null }
 
 export type WatchProviders = { link: string; streaming: Provider[]; rent: Provider[]; buy: Provider[] }
@@ -33,6 +35,8 @@ export type MovieDetails = MovieSummary & {
   cast: CastMember[]
   /** Visão & Construção: já filtrada, agrupada por pessoa, ordenada e limitada. */
   crew: MembroEquipe[]
+  /** Cenas sem texto para a galeria: w780 no mosaico, w1280 na tela cheia. */
+  images: ImagemFilme[]
   recommendations: MovieSummary[]
   watchProviders: WatchProviders | null
 }

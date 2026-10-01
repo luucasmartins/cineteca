@@ -5,13 +5,15 @@ import { normalizarEquipe, type MembroEquipeBruto } from './equipe'
 import { getGenres } from './filmes'
 import { imageUrl } from './imagens'
 import { normalizarResumo } from './normalizar'
-import type { CastMember, Genero, MovieDetails, Provider, TmdbFilmeBruto, TmdbPaginaBruta, WatchProviders } from './tipos'
+import type { CastMember, Genero, ImagemFilme, MovieDetails, Provider, TmdbFilmeBruto, TmdbPaginaBruta, WatchProviders } from './tipos'
 
 export const MAX_ELENCO = 15
+export const MAX_IMAGENS = 20
 
 type VideoBruto = { key: string; name?: string; site: string; type: string; official?: boolean; iso_639_1?: string | null }
 type AtorBruto = { id: number; name: string; character?: string | null; profile_path?: string | null; order?: number }
-type ProvedorBruto = { provider_id: number; provider_name: string; logo_path?: string | null; display_priority?: number }
+type ImagemBruta = { file_path?: string | null; iso_639_1?: string | null }
+type ProvedorBruto ={ provider_id: number; provider_name: string; logo_path?: string | null; display_priority?: number }
 type OfertasBrutas = { link?: string; flatrate?: ProvedorBruto[]; rent?: ProvedorBruto[]; buy?: ProvedorBruto[] }
 
 type TmdbDetalhesBruto = TmdbFilmeBruto & {
@@ -21,6 +23,7 @@ type TmdbDetalhesBruto = TmdbFilmeBruto & {
   credits?: { cast?: AtorBruto[]; crew?: MembroEquipeBruto[] }
   recommendations?: Partial<TmdbPaginaBruta>
   'watch/providers'?: { results?: Record<string, OfertasBrutas> }
+  images?: { backdrops?: ImagemBruta[] }
 }
 
 export async function getMovieDetails(id: number): Promise<MovieDetails | null> {
@@ -29,8 +32,10 @@ export async function getMovieDetails(id: number): Promise<MovieDetails | null> 
     bruto = await tmdbFetch<TmdbDetalhesBruto>(
       `/movie/${id}`,
       {
-        append_to_response: 'videos,credits,recommendations,watch/providers',
+        append_to_response: 'videos,credits,recommendations,watch/providers,images',
         include_video_language: 'pt,en,null',
+        // Só cenas sem texto por cima (sem título, sem logo de estúdio).
+        include_image_language: 'null',
       },
       CACHE_LISTAS_SEGUNDOS,
     )
@@ -51,6 +56,7 @@ export async function getMovieDetails(id: number): Promise<MovieDetails | null> 
     trailerFundoKey: escolherTrailer(bruto.videos?.results ?? [], true),
     cast: normalizarElenco(bruto.credits?.cast ?? []),
     crew: normalizarEquipe(bruto.credits?.crew ?? []),
+    images: normalizarImagens(bruto.images?.backdrops ?? []),
     recommendations: (bruto.recommendations?.results ?? []).map((f) => normalizarResumo(f, mapa)),
     watchProviders: normalizarProvedores(bruto['watch/providers']?.results?.[REGIAO]),
   }
@@ -79,6 +85,13 @@ function normalizarElenco(elenco: AtorBruto[]): CastMember[] {
       character: ator.character?.trim() || null,
       profileUrl: imageUrl(ator.profile_path, 'w185'),
     }))
+}
+
+function normalizarImagens(cenas: ImagemBruta[]): ImagemFilme[] {
+  return cenas
+    .filter((c): c is ImagemBruta & { file_path: string } => !c.iso_639_1 && Boolean(c.file_path))
+    .slice(0, MAX_IMAGENS)
+    .map((c) => ({ media: imageUrl(c.file_path, 'w780')!, grande: imageUrl(c.file_path, 'w1280')! }))
 }
 
 function normalizarProvedores(ofertas?: OfertasBrutas): WatchProviders | null {

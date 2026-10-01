@@ -58,6 +58,14 @@ export function detalhes(id) {
             { id: 904, name: 'Figurinista Teste', job: 'Costume Design', profile_path: null },
           ],
     },
+    images: {
+      backdrops: semBastidores
+        ? []
+        : [
+            ...Array.from({ length: 7 }, (_, i) => ({ file_path: `/cena-${id}-${i + 1}.jpg`, iso_639_1: null })),
+            { file_path: `/cena-${id}-com-texto.jpg`, iso_639_1: 'pt' },
+          ],
+    },
     recommendations: pagina(id * 100, 1, 1),
     'watch/providers': {
       results: {
