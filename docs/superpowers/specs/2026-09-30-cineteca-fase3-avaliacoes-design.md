@@ -1,7 +1,7 @@
 # CineTeca — Fase 3 (Avaliações e ranking) — Design
 
 **Data:** 2026-09-30
-**Status:** aguardando revisão
+**Status:** aprovada
 **Depende de:** Fase 2 (`docs/superpowers/specs/2026-09-29-cineteca-fase2-contas-design.md`), no ar em https://cineteca-gules.vercel.app
 
 ## 1. Objetivo
