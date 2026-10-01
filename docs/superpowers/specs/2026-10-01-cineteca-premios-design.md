@@ -57,7 +57,7 @@ Indicado  Melhor Filme
 - **Nomes de quem ganhou:** só nas vitórias. Um nome: "Greig Fraser". Dois: "A e B". Três ou mais: "A e outros N", com A sendo o primeiro em ordem alfabética. O sufixo entre parênteses que o Wikidata usa para desambiguar ("Paul Lambert (efeitos visuais)") é removido.
 - **Um único prêmio:** o placar mostra um bloco sem papel de aba (não há o que trocar).
 - **Celular:** os blocos do placar quebram em duas colunas.
-- **Acessibilidade:** `tablist`/`tab`/`tabpanel` com `aria-selected`, `aria-controls`, foco só na aba ativa (`tabIndex`) e troca com as setas esquerda e direita, como as abas de Minha lista.
+- **Acessibilidade:** `tablist`/`tab`/`tabpanel` com `aria-selected`, `aria-controls`, foco só na aba ativa (`tabIndex`) e troca com as setas esquerda e direita (circular).
 - **Cores:** "Venceu" em `destaque`; "Indicado" e as indicações em branco apagado; aba ativa com borda `destaque`.
 
 ## 4. Dados
