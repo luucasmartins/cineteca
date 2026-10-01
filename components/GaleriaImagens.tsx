@@ -118,7 +118,7 @@ function TelaCheia({ imagens, titulo, indice, aoMudar, aoFechar }: PropsTelaChei
         <p className="mt-3 text-center text-sm text-white/70">
           {indice + 1} de {total}
         </p>
-        <button ref={fecharRef} type="button" aria-label="Fechar" onClick={aoFechar} className={`${botao} absolute -top-12 right-0`}>
+        <button ref={fecharRef} type="button" aria-label="Fechar" onClick={aoFechar} className={`${botao} fixed right-4 top-4 z-10`}>
           <IconeFechar className="h-6 w-6" />
         </button>
         <button type="button" aria-label="Imagem anterior" onClick={anterior} className={`${botao} absolute left-2 top-1/2 -translate-y-1/2`}>

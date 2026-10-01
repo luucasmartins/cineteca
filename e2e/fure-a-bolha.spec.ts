@@ -59,3 +59,24 @@ test('o menu abre a janela, inclusive no celular, e Esc fecha', async ({ page, i
   await page.keyboard.press('Escape')
   await expect(janela(page)).toHaveCount(0)
 })
+
+test('ao fechar, o foco volta para o botão que abriu a janela', async ({ page }) => {
+  await page.goto('/')
+  const botao = page.getByRole('main').getByRole('button', { name: 'Fure a bolha' })
+  await botao.focus()
+  await page.keyboard.press('Enter')
+  await expect(tituloSugerido(page)).toHaveText(/Filme Teste/)
+  await page.keyboard.press('Escape')
+  await expect(janela(page)).toHaveCount(0)
+  await expect(botao).toBeFocused()
+})
+
+test('"Outra sugestão" pelo teclado não tira o foco da janela', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('main').getByRole('button', { name: 'Fure a bolha' }).click()
+  await expect(tituloSugerido(page)).toHaveText(/Filme Teste/)
+  await janela(page).getByRole('button', { name: 'Outra sugestão' }).focus()
+  await page.keyboard.press('Enter')
+  await expect(tituloSugerido(page)).toHaveText(/Filme Teste/)
+  expect(await janela(page).evaluate((el) => el.contains(document.activeElement))).toBe(true)
+})

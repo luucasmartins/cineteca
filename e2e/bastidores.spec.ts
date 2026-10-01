@@ -86,3 +86,13 @@ test.describe('Galeria de imagens', () => {
     await expect(galeria(page)).toHaveCount(0)
   })
 })
+
+test('na tela baixa (celular deitado), o botão Fechar fica visível', async ({ page }) => {
+  await page.setViewportSize({ width: 812, height: 375 })
+  // Cena de verdade, em 16:9: com o 404 do TMDB simulado a imagem ficaria minúscula e esconderia o problema.
+  const cena = '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="1280" height="720" fill="#335"/></svg>'
+  await page.route('https://image.tmdb.org/**', (rota) => rota.fulfill({ contentType: 'image/svg+xml', body: cena }))
+  await page.goto('/filme/1001')
+  await page.getByRole('region', { name: 'Imagens', exact: true }).getByRole('button', { name: 'Cena 1 de Filme Teste 1001' }).click()
+  await expect(page.getByRole('dialog', { name: 'Imagens de Filme Teste 1001' }).getByRole('button', { name: 'Fechar' })).toBeInViewport({ ratio: 1 })
+})

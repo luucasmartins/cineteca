@@ -31,6 +31,8 @@ export function JanelaFureBolha({ aoFechar }: { aoFechar: () => void }) {
   }, [])
 
   const sortearDeNovo = () => {
+    // O botão clicado vai ficar desabilitado e perderia o foco para a página: o foco fica na janela.
+    caixaRef.current?.focus()
     setEstado({ tipo: 'carregando' })
     void buscar()
   }
@@ -62,8 +64,9 @@ export function JanelaFureBolha({ aoFechar }: { aoFechar: () => void }) {
     >
       <div
         ref={caixaRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg rounded-xl bg-superficie p-6 shadow-2xl ring-1 ring-white/10"
+        className="relative w-full max-w-lg rounded-xl bg-superficie p-6 shadow-2xl ring-1 ring-white/10 focus:outline-none"
       >
         <button
           ref={fecharRef}
@@ -87,6 +90,7 @@ export function JanelaFureBolha({ aoFechar }: { aoFechar: () => void }) {
           </div>
         ) : (
           <>
+            <div aria-live="polite" aria-busy={carregando}>
             {estado.tipo === 'pronto' ? (
               <Sugestao joia={estado.joia} />
             ) : (
@@ -99,6 +103,7 @@ export function JanelaFureBolha({ aoFechar }: { aoFechar: () => void }) {
                 </div>
               </div>
             )}
+            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               {estado.tipo === 'pronto' ? (
                 <Link href={`/filme/${estado.joia.id}`} onClick={aoFechar} className={BOTAO_PRIMARIO}>
