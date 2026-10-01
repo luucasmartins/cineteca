@@ -44,10 +44,15 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - **Fase 2 — concluída e no ar.** Contas no Supabase (e-mail/senha e Google), listas na conta, Minha conta, janela de login ao favoritar sem conta, importação das listas antigas do navegador.
   - Spec: `docs/superpowers/specs/2026-09-29-cineteca-fase2-contas-design.md`
   - Plano: `docs/superpowers/plans/2026-09-29-cineteca-fase2.md`
-- **Fase 3 — spec e plano aprovados, implementação não iniciada.** Curtir / não curtir e ranking dos mais curtidos.
+- **Fase 3 — concluída.** Curtir / não curtir na página do filme, página `/mais-curtidos` e fileira na home. Banco aplicado nos dois projetos Supabase.
   - Spec: `docs/superpowers/specs/2026-09-30-cineteca-fase3-avaliacoes-design.md`
   - Plano: `docs/superpowers/plans/2026-09-30-cineteca-fase3.md`
-  - Tasks 3 e 8 são feitas com o dono. Implemente em um branch (`fase-3`), não direto no `master`.
+  - O voto é gravado com update e, se não existir, insert: `upsert` leva 42501, porque o banco só libera update em `curtiu` e `atualizado_em`.
+- **Fase 4 — próxima, sem spec ainda.** Decidido com o dono em 2026-10-01, só com dados do TMDB:
+  - "Visão & Construção" na página do filme: direção, fotografia, roteiro e direção de arte.
+  - Galeria de imagens do filme (só exibir; "clipar" para o perfil fica para depois).
+  - Botão "Fure a bolha": sugestão surpresa de filme bem avaliado, com mínimo de votos no TMDB.
+  - Ficaram de fora por enquanto: sessão dupla, tags de vibe, diário/dashboard, paleta de cores. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
 
 ## Pendências abertas
 
