@@ -14,9 +14,9 @@ const filme = (id: number) => ({ id, title: `Filme ${id}`, release_date: '1994-0
 
 type Cenas = (id: number) => { file_path: string }[]
 
-function responder(ids: number[], totalPaginas: number, cenas: Cenas) {
+function responder(ids: number[], totalPaginas: number, cenas: Cenas, totalFilmes = totalPaginas * 20) {
   tmdbFetchMock.mockImplementation((async (caminho: string, params: Record<string, unknown>) => {
-    if (caminho === '/discover/movie') return { page: Number(params.page), results: ids.map(filme), total_pages: totalPaginas, total_results: 0 }
+    if (caminho === '/discover/movie') return { page: Number(params.page), results: ids.map(filme), total_pages: totalPaginas, total_results: totalFilmes }
     const imagens = caminho.match(/^\/movie\/(\d+)\/images$/)
     if (imagens) return { backdrops: cenas(Number(imagens[1])) }
     throw new Error(`caminho inesperado: ${caminho}`)
@@ -39,6 +39,15 @@ describe('sortearHarmonia', () => {
     const discover = tmdbFetchMock.mock.calls.filter(([caminho]) => caminho === '/discover/movie')
     expect(discover[0][1]).toMatchObject({ sort_by: 'vote_average.desc', 'vote_count.gte': 1000, 'vote_average.gte': 7.5, include_adult: false, page: 1 })
     expect(discover[1][1]).toMatchObject({ page: 21 })
+  })
+
+  it('nunca sorteia a última página quando ela está incompleta', async () => {
+    // 863 filmes = 43 páginas cheias + uma 44ª com só 3.
+    responder([1, 2], 44, tresCenas, 863)
+    await sortearHarmonia(() => 0.999)
+
+    const discover = tmdbFetchMock.mock.calls.filter(([caminho]) => caminho === '/discover/movie')
+    expect(discover[1][1]).toMatchObject({ page: 43 })
   })
 
   it('pede só cenas sem texto e devolve as 3 primeiras em w300', async () => {

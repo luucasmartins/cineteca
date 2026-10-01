@@ -10,6 +10,7 @@ export const NOTA_MINIMA_HARMONIA = 7.5
 const QUANTIDADE = 12
 const CENAS_POR_FILME = 3
 const LIMITE_PAGINAS = 500
+const FILMES_POR_PAGINA_TMDB = 20
 
 const PARAMETROS = {
   sort_by: 'vote_average.desc',
@@ -39,7 +40,8 @@ async function buscarCenas(id: number): Promise<string[]> {
 /** Sorteia até 12 filmes bem avaliados, cada um com até 3 cenas pequenas para extrair a paleta. */
 export async function sortearHarmonia(aleatorio: () => number = Math.random): Promise<FilmeHarmonia[]> {
   const primeira = await tmdbFetch<TmdbPaginaBruta>('/discover/movie', { ...PARAMETROS, page: 1 }, CACHE_LISTAS_SEGUNDOS)
-  const paginas = Math.min(primeira.total_pages, LIMITE_PAGINAS)
+  // Só páginas cheias: a última pode ter 3 filmes e deixaria a grade com 3 cartões.
+  const paginas = Math.min(Math.floor(primeira.total_results / FILMES_POR_PAGINA_TMDB) || primeira.total_pages, LIMITE_PAGINAS)
   const numero = 1 + indice(Math.max(paginas, 1), aleatorio)
   const pagina =
     numero === 1 ? primeira : await tmdbFetch<TmdbPaginaBruta>('/discover/movie', { ...PARAMETROS, page: numero }, CACHE_LISTAS_SEGUNDOS)
