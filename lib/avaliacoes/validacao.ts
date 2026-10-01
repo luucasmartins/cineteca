@@ -4,6 +4,9 @@ import type { Voto } from './tipos'
 // O TMDB não tem id acima disso; recusar cedo evita consulta inútil.
 const ID_MAXIMO = 100_000_000
 
+// Fica aqui, e não em acoes.ts: um arquivo 'use server' só pode exportar funções assíncronas.
+export const MENSAGEM_ERRO_VOTO = 'Não foi possível salvar. Tente de novo.'
+
 export function validarFilmeId(bruto: unknown): Resultado<number> {
   const numero = typeof bruto === 'number' ? bruto : typeof bruto === 'string' ? Number(bruto) : Number.NaN
   const valido = Number.isInteger(numero) && numero > 0 && numero <= ID_MAXIMO

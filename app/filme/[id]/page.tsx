@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { BlocoAvaliacao } from '@/components/BlocoAvaliacao'
 import { BotaoLista } from '@/components/BotaoLista'
 import { BotaoTrailer } from '@/components/BotaoTrailer'
 import { Carrossel } from '@/components/Carrossel'
@@ -9,6 +10,7 @@ import { ImagemComReserva } from '@/components/ImagemComReserva'
 import { MensagemErro } from '@/components/MensagemErro'
 import { OndeAssistir } from '@/components/OndeAssistir'
 import { TrailerFundo } from '@/components/TrailerFundo'
+import { obterAvaliacaoDoFilme } from '@/lib/avaliacoes/banco'
 import { formatarDuracao } from '@/lib/formatar'
 import { paraFilmeSalvo } from '@/lib/lista/tipos'
 import { lerIdPositivo } from '@/lib/parametros'
@@ -41,6 +43,7 @@ export default async function PaginaFilme({ params }: Props) {
   if (!filme) notFound()
 
   const salvo = paraFilmeSalvo(filme)
+  const avaliacao = await obterAvaliacaoDoFilme(id)
   const detalhes = [
     filme.year,
     filme.runtime !== null ? formatarDuracao(filme.runtime) : null,
@@ -88,6 +91,7 @@ export default async function PaginaFilme({ params }: Props) {
       </section>
 
       <div className={`${CONTEUDO} space-y-12 pb-8`}>
+        <BlocoAvaliacao filme={salvo} inicial={avaliacao} />
         <OndeAssistir provedores={filme.watchProviders} />
         {filme.cast.length > 0 && <Elenco elenco={filme.cast} />}
       </div>

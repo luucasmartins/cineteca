@@ -8,7 +8,8 @@ import type { FilmeSalvo, TipoLista } from '@/lib/lista/tipos'
 import { BOTAO_PRIMARIO, BOTAO_SECUNDARIO } from './estilos'
 import { IconeFechar } from './Icones'
 
-type Props = { pendente: { tipo: TipoLista; filme: FilmeSalvo }; aoFechar(): void }
+// Sem pendente, a janela só leva ao login: nada é refeito depois de entrar.
+type Props = { pendente?: { tipo: TipoLista; filme: FilmeSalvo }; aoFechar(): void }
 
 export function JanelaLogin({ pendente, aoFechar }: Props) {
   const primeiroRef = useRef<HTMLAnchorElement>(null)
@@ -27,7 +28,7 @@ export function JanelaLogin({ pendente, aoFechar }: Props) {
   }, [aoFechar])
 
   const guardar = () => {
-    guardarAcaoPendente(obterArmazenamentoDaSessao(), { ...pendente, voltar })
+    if (pendente) guardarAcaoPendente(obterArmazenamentoDaSessao(), { ...pendente, voltar })
     aoFechar()
   }
   const consulta = `?voltar=${encodeURIComponent(voltar)}`

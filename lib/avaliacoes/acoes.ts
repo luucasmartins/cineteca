@@ -1,14 +1,13 @@
 'use server'
 
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { criarClienteAdmin } from '@/lib/supabase/admin'
 import { criarClienteServidor } from '@/lib/supabase/servidor'
 import { getMovieDetails } from '@/lib/tmdb/detalhes'
 import { lerAvaliacaoDoFilme } from './banco'
 import type { AvaliacaoDoFilme } from './tipos'
-import { validarFilmeId, validarVoto } from './validacao'
-
-export const MENSAGEM_ERRO_VOTO = 'Não foi possível salvar. Tente de novo.'
+import { MENSAGEM_ERRO_VOTO, validarFilmeId, validarVoto } from './validacao'
 
 export type RespostaAvaliacao =
   | { ok: true; estado: AvaliacaoDoFilme }
@@ -19,6 +18,29 @@ const CODIGOS_DE_SESSAO = new Set(['42501', 'PGRST301', 'PGRST303'])
 function falhou(codigo: string | undefined, acao: string): { ok: false; erro: string; sessaoExpirada: boolean } {
   console.error(`[CineTeca] ${acao} falhou:`, codigo ?? 'sem código')
   return { ok: false, erro: MENSAGEM_ERRO_VOTO, sessaoExpirada: CODIGOS_DE_SESSAO.has(codigo ?? '') }
+}
+
+// Sem upsert: ele pede permissão de update em usuario_id e filme_id, que o banco nega de propósito.
+// Atualiza; se não havia voto, insere; se um clique paralelo inseriu antes (23505), atualiza de novo.
+async function gravarVoto(supabase: SupabaseClient, usuarioId: string, filmeId: number, curtiu: boolean) {
+  const atualizar = () =>
+    supabase
+      .from('avaliacoes')
+      .update({ curtiu, atualizado_em: new Date().toISOString() })
+      .eq('usuario_id', usuarioId)
+      .eq('filme_id', filmeId)
+      .select('filme_id')
+
+  const atualizado = await atualizar()
+  if (atualizado.error) return atualizado.error.code
+  if (atualizado.data.length > 0) return null
+
+  const inserido = await supabase.from('avaliacoes').insert({ usuario_id: usuarioId, filme_id: filmeId, curtiu })
+  if (!inserido.error) return null
+  if (inserido.error.code !== '23505') return inserido.error.code
+
+  const novamente = await atualizar()
+  return novamente.error ? novamente.error.code : null
 }
 
 export async function avaliar(filmeId: unknown, curtiu: unknown): Promise<RespostaAvaliacao> {
@@ -54,11 +76,8 @@ export async function avaliar(filmeId: unknown, curtiu: unknown): Promise<Respos
       )
     if (cadastro.error) return falhou(cadastro.error.code, 'cadastrar filme avaliado')
 
-    const { error } = await supabase.from('avaliacoes').upsert(
-      { usuario_id: usuarioId, filme_id: id.valor, curtiu: voto.valor, atualizado_em: new Date().toISOString() },
-      { onConflict: 'usuario_id,filme_id' },
-    )
-    if (error) return falhou(error.code, 'avaliar')
+    const codigo = await gravarVoto(supabase, usuarioId, id.valor, voto.valor)
+    if (codigo) return falhou(codigo, 'avaliar')
   }
 
   revalidatePath('/mais-curtidos')
