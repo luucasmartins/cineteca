@@ -8,6 +8,7 @@ import { MENSAGEM_ERRO_VOTO } from '@/lib/avaliacoes/validacao'
 import type { FilmeSalvo } from '@/lib/lista/tipos'
 import { useAvisos } from './AvisosProvider'
 import { BOTAO_SECUNDARIO } from './estilos'
+import { IconeCurti, IconeNaoCurti } from './Icones'
 import { JanelaLogin } from './JanelaLogin'
 import { useUsuario } from './SessaoProvider'
 
@@ -58,7 +59,7 @@ export function BlocoAvaliacao({ filme, inicial }: { filme: FilmeSalvo; inicial:
             onClick={() => votar(true)}
             className={`${BOTAO_SECUNDARIO} ${estado.meuVoto === true ? 'ring-2 ring-white' : ''}`}
           >
-            <span aria-hidden="true">👍</span> Curti
+            <IconeCurti preenchido={estado.meuVoto === true} className={`h-5 w-5 ${estado.meuVoto === true ? 'text-destaque' : ''}`} /> Curti
           </button>
           <button
             type="button"
@@ -67,7 +68,7 @@ export function BlocoAvaliacao({ filme, inicial }: { filme: FilmeSalvo; inicial:
             onClick={() => votar(false)}
             className={`${BOTAO_SECUNDARIO} ${estado.meuVoto === false ? 'ring-2 ring-white' : ''}`}
           >
-            <span aria-hidden="true">👎</span> Não curti
+            <IconeNaoCurti preenchido={estado.meuVoto === false} className={`h-5 w-5 ${estado.meuVoto === false ? 'text-destaque' : ''}`} /> Não curti
           </button>
         </div>
       ) : (
