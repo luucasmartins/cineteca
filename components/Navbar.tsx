@@ -110,6 +110,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
               </LinkNav>
             </li>
             <li>
+              <LinkNav href="/harmonia" ativo={pathname === '/harmonia'}>
+                Harmonia de cores
+              </LinkNav>
+            </li>
+            <li>
               <BotaoFureBolha className="flex items-center gap-1.5 text-white/80 transition-colors hover:text-white" />
             </li>
           </ul>
@@ -149,6 +154,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
               <li>
                 <Link href="/mais-curtidos" onClick={fecharMenu} className="block py-3">
                   Mais curtidos
+                </Link>
+              </li>
+              <li>
+                <Link href="/harmonia" onClick={fecharMenu} className="block py-3">
+                  Harmonia de cores
                 </Link>
               </li>
               <li>

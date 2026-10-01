@@ -58,6 +58,10 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - Spec: `docs/superpowers/specs/2026-10-01-cineteca-premios-design.md`
   - Plano: `docs/superpowers/plans/2026-10-01-cineteca-premios.md`
   - Só aparece categoria cujo Q-id está em `lib/premios/catalogo.ts`. O Wikidata tem o Oscar completo, mas BAFTA e Globo pela metade, e anos inconsistentes (por isso não mostramos ano).
+- **Harmonia de cores — concluída.** Página `/harmonia` (menu "Harmonia de cores"): 12 paletas de filmes com nota 7,5+ e 1.000+ votos; clicar revela o filme. A página do filme mostra a paleta no topo da seção Imagens. Era a "Paleta de cores / Blind Watch" do roteiro.
+  - Spec: `docs/superpowers/specs/2026-10-01-cineteca-harmonia-design.md`
+  - Plano: `docs/superpowers/plans/2026-10-01-cineteca-harmonia.md`
+  - As cores são extraídas **no navegador** (canvas + k-means em `lib/paleta/extrair.ts`); funciona porque o `image.tmdb.org` manda `Access-Control-Allow-Origin: *`. O e2e intercepta as imagens `w300` e responde BMP de cor sólida.
 
 ## Pendências abertas
 
@@ -84,6 +88,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - `lib/tmdb/` — único ponto que fala com o TMDB, somente no servidor (`server-only`).
 - `lib/supabase/` — `config` (lê as variáveis), `servidor` (cookies), `navegador` (singleton), `admin` (chave secreta, server-only).
 - `lib/auth/` — `validacao`, `erros`, `usuario`, `sessao`, `rotas` e as Server Actions em `acoes.ts`.
+- `lib/paleta/` — extração de cores (função pura) e leitura das cenas no canvas do navegador.
 - `lib/premios/` — catálogo de categorias, montagem e consulta ao Wikidata (server-only, cache de 1 dia). `WIKIDATA_SPARQL_URL` só existe no e2e, apontando para o simulador; produção usa o endpoint público.
 - `lib/lista/` — Favoritos e Salvos atrás da interface `ListaStore`; `supabase.ts` é a implementação em uso, `local.ts` só serve à importação das listas antigas.
 - `app/api/filmes/route.ts` — rota interna da rolagem infinita e da busca.
