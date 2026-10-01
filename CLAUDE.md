@@ -57,7 +57,6 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 ## Pendências abertas
 
 - **Recuperação de senha não envia e-mail.** O Supabase só entrega para os donos do projeto sem SMTP próprio, e editar os modelos de e-mail também exige SMTP. Depende de o dono ter um domínio para ligar o Resend. As telas e a rota `/auth/callback` já funcionam.
-- **Logo pesado:** `public/logo.png` tem 723 KB e aparece com 28px de altura. Comprimir para ~15 KB acelera o carregamento no celular. Combinado para sair junto com a Fase 3.
 - **Dois filmes de teste** na conta real do dono (`makersnegocios@gmail.com`), para ele remover pela tela.
 
 ## Stack
