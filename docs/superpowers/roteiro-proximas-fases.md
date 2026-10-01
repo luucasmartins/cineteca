@@ -3,7 +3,7 @@
 Combinado com o dono em 2026-10-01. Ordem aprovada:
 
 1. **Prêmios** na página do filme — concluído (spec e plano de 2026-10-01).
-2. **Paleta de cores** ("Blind Watch").
+2. **Paleta de cores** ("Blind Watch") — concluído como "Harmonia de cores" (spec e plano de 2026-10-01).
 3. **Sessão dupla.**
 4. **Diário com Comunidade** — por último, numa fase própria.
 
