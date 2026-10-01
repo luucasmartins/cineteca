@@ -129,4 +129,9 @@ describe('nomes em português', () => {
     expect(nomePais('XX')).toBeNull()
     expect(nomePais(undefined)).toBeNull()
   })
+
+  it('regiões administrativas da China aparecem pelo nome curto', () => {
+    expect(nomePais('HK')).toBe('Hong Kong')
+    expect(nomePais('MO')).toBe('Macau')
+  })
 })

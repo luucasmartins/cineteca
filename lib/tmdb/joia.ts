@@ -24,8 +24,12 @@ export function nomeIdioma(codigo: string): string {
   }
 }
 
+// O nome oficial ("Hong Kong, RAE da China") é burocrático demais para a janela.
+const NOMES_CURTOS: Record<string, string> = { HK: 'Hong Kong', MO: 'Macau' }
+
 export function nomePais(codigo: string | undefined): string | null {
   if (!codigo) return null
+  if (NOMES_CURTOS[codigo]) return NOMES_CURTOS[codigo]
   try {
     const nome = new Intl.DisplayNames('pt-BR', { type: 'region' }).of(codigo)
     // Código desconhecido volta igual: não é um nome.
