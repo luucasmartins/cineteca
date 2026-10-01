@@ -92,12 +92,29 @@ export default async function PaginaFilme({ params }: Props) {
         </div>
       </section>
 
-      <div className={`${CONTEUDO} space-y-12 pb-8`}>
-        <BlocoAvaliacao filme={salvo} inicial={avaliacao} />
-        <OndeAssistir provedores={filme.watchProviders} />
-        {filme.crew.length > 0 && <VisaoConstrucao equipe={filme.crew} />}
-        {filme.cast.length > 0 && <Elenco elenco={filme.cast} />}
-        {filme.images.length > 0 && <GaleriaImagens imagens={filme.images} titulo={filme.title} />}
+      {/* Embrulhos em vez das próprias seções: o py-10 sobrescreveria o padding das que são box. */}
+      <div className={`${CONTEUDO} divide-y divide-white/10 pb-8 *:py-10 *:first:pt-0 *:last:pb-0`}>
+        <div>
+          <BlocoAvaliacao filme={salvo} inicial={avaliacao} />
+        </div>
+        <div>
+          <OndeAssistir provedores={filme.watchProviders} />
+        </div>
+        {filme.crew.length > 0 && (
+          <div>
+            <VisaoConstrucao equipe={filme.crew} />
+          </div>
+        )}
+        {filme.cast.length > 0 && (
+          <div>
+            <Elenco elenco={filme.cast} />
+          </div>
+        )}
+        {filme.images.length > 0 && (
+          <div>
+            <GaleriaImagens imagens={filme.images} titulo={filme.title} />
+          </div>
+        )}
       </div>
 
       {filme.recommendations.length > 0 && (
