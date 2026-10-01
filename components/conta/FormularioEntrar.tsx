@@ -18,7 +18,7 @@ export function FormularioEntrar({ voltar, erroInicial }: { voltar: string; erro
           Esqueci minha senha
         </Link>
       </div>
-      {estado.erro && <p className="rounded-md bg-destaque/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
+      {estado.erro && <p className="rounded-md bg-perigo/15 px-3 py-2 text-sm text-red-200">{estado.erro}</p>}
       <button type="submit" disabled={pendente} className={`${BOTAO_PRIMARIO} w-full`}>
         {pendente ? 'Entrando…' : 'Entrar'}
       </button>

@@ -8,7 +8,7 @@ import type { CastMember, Genero, MovieDetails, Provider, TmdbFilmeBruto, TmdbPa
 
 export const MAX_ELENCO = 15
 
-type VideoBruto = { key: string; site: string; type: string; official?: boolean; iso_639_1?: string | null }
+type VideoBruto = { key: string; name?: string; site: string; type: string; official?: boolean; iso_639_1?: string | null }
 type AtorBruto = { id: number; name: string; character?: string | null; profile_path?: string | null; order?: number }
 type ProvedorBruto = { provider_id: number; provider_name: string; logo_path?: string | null; display_priority?: number }
 type OfertasBrutas = { link?: string; flatrate?: ProvedorBruto[]; rent?: ProvedorBruto[]; buy?: ProvedorBruto[] }
@@ -47,19 +47,22 @@ export async function getMovieDetails(id: number): Promise<MovieDetails | null> 
     genres: (bruto.genres ?? []).map((g) => g.name),
     runtime: bruto.runtime && bruto.runtime > 0 ? bruto.runtime : null,
     trailerKey: escolherTrailer(bruto.videos?.results ?? []),
+    trailerFundoKey: escolherTrailer(bruto.videos?.results ?? [], true),
     cast: normalizarElenco(bruto.credits?.cast ?? []),
     recommendations: (bruto.recommendations?.results ?? []).map((f) => normalizarResumo(f, mapa)),
     watchProviders: normalizarProvedores(bruto['watch/providers']?.results?.[REGIAO]),
   }
 }
 
-function escolherTrailer(videos: VideoBruto[]): string | null {
+function escolherTrailer(videos: VideoBruto[], paraFundo = false): string | null {
   const pontuar = (v: VideoBruto) =>
     (v.type === 'Trailer' ? 4 : v.type === 'Teaser' ? 2 : -100) +
-    (v.iso_639_1 === 'pt' ? 1.5 : 0) +
+    // O fundo toca sem som: vale o vídeo sem legenda gravada, que costuma ser o de outra língua.
+    ((v.iso_639_1 === 'pt') !== paraFundo ? 1.5 : 0) +
     (v.official ? 0.5 : 0)
   const melhor = videos
     .filter((v) => v.site === 'YouTube' && v.key && pontuar(v) > 0)
+    .filter((v) => !paraFundo || !/legendad/i.test(v.name ?? ''))
     .sort((a, b) => pontuar(b) - pontuar(a))[0]
   return melhor?.key ?? null
 }

@@ -4,7 +4,7 @@ export function Rodape() {
   return (
     <footer className="mt-16 border-t border-white/5 py-8">
       <div className={`${CONTEUDO} flex flex-col gap-3`}>
-        <p className="text-lg font-extrabold text-white">CineTeca</p>
+        <img src="/logo.png" alt="CineTeca" className="h-6 w-auto self-start" />
         {/* Atribuição exigida pelos termos de uso da API do TMDB: discreta, mas presente. */}
         <div className="flex items-center gap-2 text-[11px] leading-tight text-white/30">
           <a href="https://www.themoviedb.org" target="_blank" rel="noreferrer" className="shrink-0 opacity-50 transition-opacity hover:opacity-80">

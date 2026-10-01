@@ -3,8 +3,12 @@
 @theme {
   --color-fundo: #0b0b0f;
   --color-superficie: #16161d;
-  --color-destaque: #d7263d;
-  --color-destaque-escuro: #b01e32;
+  /* Verde da marca. Texto sobre ele é PRETO: branco dá 2,50 de contraste e reprova. */
+  --color-destaque: #01bd4e;
+  --color-destaque-escuro: #01993f;
+  /* Perigo fica vermelho: erro e exclusão não podem usar a cor da marca. */
+  --color-perigo: #d7263d;
+  --color-perigo-escuro: #b01e32;
   --font-sans: var(--font-manrope), system-ui, sans-serif;
 }
 

@@ -109,6 +109,29 @@ describe('getMovieDetails', () => {
     expect((await getMovieDetails(603))!.trailerKey).toBe('trailer-pt')
   })
 
+  describe('trailer do fundo (sem som, então sem legenda gravada)', () => {
+    const comVideos = (results: object[]) => ({ ...COMPLETO, videos: { results } })
+    const legendado = { key: 'pt-legendado', name: 'Trailer Oficial Legendado', site: 'YouTube', type: 'Trailer', official: true, iso_639_1: 'pt' }
+    const dublado = { key: 'pt-dublado', name: 'Trailer Dublado', site: 'YouTube', type: 'Trailer', iso_639_1: 'pt' }
+
+    it('prefere o trailer que não está em português', async () => {
+      responderCom(COMPLETO)
+      expect((await getMovieDetails(603))!.trailerFundoKey).toBe('trailer-en')
+    })
+
+    it('sem outra língua, usa o português que não é legendado', async () => {
+      responderCom(comVideos([legendado, dublado]))
+      expect((await getMovieDetails(603))!.trailerFundoKey).toBe('pt-dublado')
+    })
+
+    it('só com trailer legendado, fica sem vídeo no fundo', async () => {
+      responderCom(comVideos([legendado]))
+      const filme = (await getMovieDetails(603))!
+      expect(filme.trailerFundoKey).toBeNull()
+      expect(filme.trailerKey).toBe('pt-legendado')
+    })
+  })
+
   it('limita o elenco a 15 pessoas na ordem de créditos', async () => {
     responderCom(COMPLETO)
     const { cast } = (await getMovieDetails(603))!
@@ -151,6 +174,7 @@ describe('getMovieDetails', () => {
       genres: [],
       runtime: null,
       trailerKey: null,
+      trailerFundoKey: null,
       cast: [],
       recommendations: [],
       watchProviders: null,
