@@ -35,6 +35,8 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - Não apague arquivos que você não criou nesta sessão.
 - **Git:** commit só quando o dono pedir, ou por tarefa ao executar um plano aprovado. Uma mudança lógica por commit. Nunca `push --force` no `master`.
 - **Outra sessão de IA pode estar mexendo neste repositório ao mesmo tempo.** Já aconteceu (o trailer de fundo e o `.gitignore` das skills vieram de outra janela). Confira `git log` antes de concluir que um commit é seu.
+  - A outra janela pode **trocar o branch da pasta** no meio do seu trabalho (já levou a pasta ao `master` e criou um branch a partir do seu). Rode `git branch --show-current` antes de cada commit, e não inclua arquivos alterados que não são seus.
+  - Se a porta 3000 já tem um `next dev` de outra janela, use-o ou escolha outra porta. Nunca mate processos `node` em massa.
 - Mantenha este arquivo enxuto: procedimentos longos vão para `docs/` ou skills.
 
 ## Fases
@@ -114,6 +116,8 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - **Next 16:** `params` e `searchParams` são `Promise`; o antigo `middleware.ts` virou `proxy.ts`; em `error.tsx` use `retry`, não `reset`. Na dúvida, leia `node_modules/next/dist/docs/`.
 - **Vitest:** hooks precisam de corpo em bloco `{ ... }`. Um valor retornado vira teardown.
 - **TypeScript 7:** a variável do `catch` é `unknown`.
+- **TMDB:** a última página de uma lista costuma vir incompleta (ex.: 3 filmes) e o `total_pages` para em 500. Para sortear uma página, use só as cheias: `Math.floor(total_results / 20)`. Já deixou a Harmonia com 3 cartões em produção.
+- **Wikidata:** casa o filme pelo id do TMDB (`P4947`). Cobertura boa no Oscar, parcial em BAFTA e Globo. Mande `User-Agent` próprio e tempo limite, senão a consulta pode ser recusada ou travar a página.
 - **Heredoc do shell colapsa `\\` em `\`.** Arquivos com barra invertida (regex, `includes('\\')`) devem ser criados com a ferramenta de escrita, não com heredoc. Já quebrou o matcher do `proxy.ts`.
 - **Playwright:**
   - Use `getByText` para mensagens; o Next injeta um anunciador com `role="alert"`.
