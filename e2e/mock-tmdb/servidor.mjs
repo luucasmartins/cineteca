@@ -32,6 +32,8 @@ export function iniciarMockTmdb(porta) {
     if (caminho === '/discover/movie') {
       // Fure a bolha: qualquer idioma devolve 2 páginas de filmes.
       if (url.searchParams.has('with_original_language')) return responder(200, pagina(800000, numero, 2))
+      // Harmonia de cores: os mais bem avaliados com 1.000 votos ou mais.
+      if (url.searchParams.get('vote_count.gte') === '1000') return responder(200, pagina(900000, numero, 2))
       const genero = Number(url.searchParams.get('with_genres'))
       if (genero === 878) return responder(500, { status_message: 'falha simulada' })
       const base = genero * 1000 + 100000
@@ -50,6 +52,14 @@ export function iniciarMockTmdb(porta) {
         total_pages: 1,
         total_results: 3,
       })
+    }
+
+    // Cenas para a paleta: ids terminados em 5 não têm nenhuma.
+    const imagens = caminho.match(/^\/movie\/(\d+)\/images$/)
+    if (imagens) {
+      const id = Number(imagens[1])
+      const backdrops = id % 10 === 5 ? [] : [1, 2, 3].map((n) => ({ file_path: `/harmonia-${id}-${n}.jpg`, iso_639_1: null }))
+      return responder(200, { id, backdrops })
     }
 
     const detalhe = caminho.match(/^\/movie\/(\d+)$/)

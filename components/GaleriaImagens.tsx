@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { classesMosaico, NO_MOSAICO } from '@/lib/mosaico'
 import type { ImagemFilme } from '@/lib/tmdb/tipos'
 import { IconeFechar, IconeSetaDireita, IconeSetaEsquerda } from './Icones'
+import { PaletaFilme } from './PaletaFilme'
 import { usePrenderFoco } from './usePrenderFoco'
 
 export function GaleriaImagens({ imagens, titulo }: { imagens: ImagemFilme[]; titulo: string }) {
@@ -26,6 +27,7 @@ export function GaleriaImagens({ imagens, titulo }: { imagens: ImagemFilme[]; ti
       <h2 id="imagens-titulo" className="text-xl font-bold md:text-2xl">
         Imagens
       </h2>
+      <PaletaFilme cenas={imagens.slice(0, 3).map((imagem) => imagem.pequena)} />
       <div className={grade}>
         {itens.map((classe, i) => {
           const comMais = i === NO_MOSAICO - 1 && imagens.length > NO_MOSAICO
