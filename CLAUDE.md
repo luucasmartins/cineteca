@@ -11,7 +11,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 ## Como trabalhar com o dono
 
 - **Seja direto.** Entregue o resultado, sem repetir o pedido nem enrolar.
-- **Terminal é seu trabalho.** Rode você mesmo instalação, testes, typecheck, build e scripts. Só peça ação manual quando for impossível por ferramenta: login em painel, 2FA, clique em UI externa ou enviar ao GitHub.
+- **Terminal é seu trabalho.** Rode você mesmo instalação, testes, typecheck, build e scripts. Só peça ação manual quando for impossível por ferramenta: login em painel, 2FA, clique em UI externa ou merge do Pull Request.
 - **Um passo de cada vez nos painéis.** Ele pediu isso explicitamente. Peça o print e confirme antes do próximo.
 - **Verifique em vez de perguntar.** Dá para conferir muita coisa daqui: `curl` no site publicado, consulta ao Supabase com a chave secreta do `.env.local`, leitura do log do servidor de desenvolvimento. Prefira medir a pedir que ele descreva.
 - **Opções sempre com recomendação:** qual e por quê, em uma linha. Em decisão técnica relevante, prós e contras por opção.
@@ -53,6 +53,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 
 - **Recuperação de senha não envia e-mail.** O Supabase só entrega para os donos do projeto sem SMTP próprio, e editar os modelos de e-mail também exige SMTP. Depende de o dono ter um domínio para ligar o Resend. As telas e a rota `/auth/callback` já funcionam.
 - **Logo pesado:** `public/logo.png` tem 723 KB e aparece com 28px de altura. Comprimir para ~15 KB acelera o carregamento no celular. Combinado para sair junto com a Fase 3.
+- **Trilha sonora sem teste em celular real.** Está no ar (`TrilhaSonoraProvider`, spec `docs/superpowers/specs/2026-09-30-trilha-sonora-design.md`) e o dono confirmou no computador. O Chromium do Playwright ignora a regra de autoplay, então só um aparelho confirma que o 1º toque inicia a música.
 - **Dois filmes de teste** na conta real do dono (`makersnegocios@gmail.com`), para ele remover pela tela.
 
 ## Stack
@@ -112,7 +113,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - O **Project URL** fica em Settings → **Data API**, não em API Keys. Copie só o domínio: `https://xxx.supabase.co`, **sem** `/rest/v1` no fim. Esse erro derruba o login inteiro.
 - **Vercel:** o plano Hobby bloqueia deploy quando a conta do GitHub que envia não é a ligada à Vercel e o repositório é privado. Resolvido tornando o repositório público. Republicar um deploy bloqueado não adianta — só um commit novo é reavaliado.
 - **Windows:** PowerShell 5.1 (sem `&&`) ou Git Bash. O caminho do projeto tem espaço e acento: use aspas. O "Acesso controlado a pastas" do Defender já bloqueou o `.git`.
-- **GitHub:** o `gh` não está instalado e o terminal não consegue abrir o login do Git. O dono envia pelo painel Controle do Código-Fonte do VS Code, com a conta `makersnegocios-dotcom`.
+- **GitHub:** o `git push` de um branch funciona pelo terminal (login salvo no Windows; rode com `GIT_TERMINAL_PROMPT=0` para falhar em vez de travar). O modo automático do Claude Code bloqueia o push ao `master` e o de commits que mudam este arquivo: publique por Pull Request, e o dono clica em "Merge pull request" no GitHub. O `gh` não está instalado; o dono abre o PR pelo link que o `git push` imprime. Se o push falhar, o dono envia pelo Controle do Código-Fonte do VS Code, com a conta `makersnegocios-dotcom`.
 
 ## Variáveis de ambiente
 
