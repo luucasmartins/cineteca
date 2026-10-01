@@ -1,0 +1,131 @@
+import { expect, test, type Page } from '@playwright/test'
+
+const trilha = (page: Page) => page.getByTestId('trilha-sonora')
+const tocando = (page: Page) => trilha(page).evaluate((a: HTMLAudioElement) => !a.paused)
+const tempo = (page: Page) => trilha(page).evaluate((a: HTMLAudioElement) => a.currentTime)
+
+// O preload só vira "auto" pelo efeito do provider, depois da hidratação e do load.
+const esperarHidratacao = (page: Page) => expect(trilha(page)).toHaveAttribute('preload', 'auto')
+
+// Clica num canto do rodapé, onde não há link. Repete até a hidratação ligar o ouvinte de gesto.
+async function iniciarTrilha(page: Page) {
+  await expect(async () => {
+    await page.getByRole('contentinfo').click({ position: { x: 2, y: 2 } })
+    expect(await tocando(page)).toBe(true)
+  }).toPass()
+}
+
+test('a trilha só começa depois do primeiro gesto, em repetição e volume moderado', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('load')
+  expect(await tocando(page)).toBe(false)
+  await iniciarTrilha(page)
+  expect(await trilha(page).evaluate((a: HTMLAudioElement) => [a.loop, a.volume])).toEqual([true, 0.3])
+})
+
+test('a trilha continua tocando ao abrir um filme, sem recomeçar', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }) // banner parado no Filme Teste 1001
+  await page.goto('/')
+  await iniciarTrilha(page)
+  await expect.poll(() => tempo(page)).toBeGreaterThan(0.5)
+  const antes = await tempo(page)
+  await page.getByRole('region', { name: 'Destaque' }).getByRole('link', { name: 'Ver detalhes' }).click()
+  await expect(page).toHaveURL(/\/filme\/1001$/)
+  expect(await tocando(page)).toBe(true)
+  expect(await tempo(page)).toBeGreaterThanOrEqual(antes)
+})
+
+test('se o arquivo da trilha falhar, o site segue normal', async ({ page }) => {
+  const errosDePagina: string[] = []
+  const registros: string[] = []
+  page.on('pageerror', (e) => errosDePagina.push(e.message))
+  page.on('console', (m) => {
+    if (m.type() === 'error') registros.push(m.text())
+  })
+  await page.route('**/som/trilha.mp3', (rota) => rota.abort())
+  await page.goto('/')
+  await expect(async () => {
+    await page.getByRole('contentinfo').click({ position: { x: 2, y: 2 } })
+    expect(registros.some((r) => r.includes('[CineTeca]'))).toBe(true)
+  }).toPass()
+  expect(registros.filter((r) => r.includes('[CineTeca]'))).toHaveLength(1)
+  expect(errosDePagina).toEqual([])
+  await expect(page.getByRole('region', { name: 'Destaque' })).toBeVisible()
+})
+
+test('o botão de som desliga e religa a trilha na hora', async ({ page }) => {
+  await page.goto('/')
+  await iniciarTrilha(page)
+  await page.getByRole('button', { name: 'Desligar trilha sonora' }).click()
+  expect(await tocando(page)).toBe(false)
+  await page.getByRole('button', { name: 'Ligar trilha sonora' }).click()
+  expect(await tocando(page)).toBe(true)
+})
+
+test('clicar primeiro no botão desliga sem tocar, e a escolha vale depois de recarregar', async ({ page }) => {
+  // Conta cada play, para pegar até um play que fosse pausado logo em seguida.
+  await page.addInitScript(() => {
+    const w = window as unknown as { __plays: number }
+    w.__plays = 0
+    document.addEventListener('play', () => w.__plays++, true)
+  })
+  await page.goto('/')
+  await esperarHidratacao(page)
+  await page.getByRole('button', { name: 'Desligar trilha sonora' }).click()
+  await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible()
+  expect(await tocando(page)).toBe(false)
+  expect(await page.evaluate(() => (window as unknown as { __plays: number }).__plays)).toBe(0)
+
+  await page.reload()
+  // O botão só vira "Ligar" depois da hidratação ler a preferência: aí o ouvinte de gesto já existiria.
+  await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible()
+  await page.getByRole('contentinfo').click({ position: { x: 2, y: 2 } })
+  await page.waitForTimeout(500)
+  expect(await tocando(page)).toBe(false)
+})
+
+const botaoTrailer = (page: Page) =>
+  page.getByRole('region', { name: 'Filme Teste 1001' }).getByRole('button', { name: 'Trailer' })
+
+test('o trailer pausa a trilha, e ela volta ao fechar', async ({ page }) => {
+  await page.goto('/filme/1001')
+  await iniciarTrilha(page)
+  await botaoTrailer(page).click()
+  await expect.poll(() => tocando(page)).toBe(false)
+  await page.getByRole('button', { name: 'Fechar trailer' }).click()
+  await expect.poll(() => tocando(page)).toBe(true)
+})
+
+test('se o primeiro gesto é abrir o trailer, a trilha só começa ao fechar', async ({ page }) => {
+  await page.goto('/filme/1001')
+  await expect(async () => {
+    await botaoTrailer(page).click({ timeout: 1000 })
+    await expect(page.getByRole('dialog', { name: 'Trailer de Filme Teste 1001' })).toBeVisible({ timeout: 1000 })
+  }).toPass()
+  await expect.poll(() => tocando(page)).toBe(false)
+  await page.getByRole('button', { name: 'Fechar trailer' }).click()
+  await expect.poll(() => tocando(page)).toBe(true)
+})
+
+test('com o som desligado, abrir e fechar o trailer não religa a trilha', async ({ page }) => {
+  await page.goto('/filme/1001')
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Desligar trilha sonora' }).click({ timeout: 1000 })
+    await expect(page.getByRole('button', { name: 'Ligar trilha sonora' })).toBeVisible({ timeout: 1000 })
+  }).toPass()
+  await botaoTrailer(page).click()
+  await page.getByRole('button', { name: 'Fechar trailer' }).click()
+  await page.waitForTimeout(500)
+  expect(await tocando(page)).toBe(false)
+})
+
+// No celular, o navegador só libera som no fim do toque (pointerup), não no começo.
+// O Chromium dos testes não aplica essa regra, então o teste dispara o pointerup sozinho.
+test('o fim de um toque inicia a trilha', async ({ page }) => {
+  await page.goto('/')
+  await esperarHidratacao(page)
+  await page.evaluate(() =>
+    document.body.dispatchEvent(new PointerEvent('pointerup', { pointerType: 'touch', bubbles: true })),
+  )
+  await expect.poll(() => tocando(page)).toBe(true)
+})

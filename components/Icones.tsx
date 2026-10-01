@@ -80,3 +80,17 @@ export const IconeCoracao = ({ className, preenchido = false }: Props & { preenc
     <path d="M12 20.5s-7.5-4.6-9.3-9.2C1.5 8 3.6 4.5 7.2 4.5c2 0 3.4 1 4.8 2.7 1.4-1.7 2.8-2.7 4.8-2.7 3.6 0 5.7 3.5 4.5 6.8-1.8 4.6-9.3 9.2-9.3 9.2z" />
   </svg>
 )
+
+export const IconeSom = ({ className }: Props) => (
+  <svg {...base(className)}>
+    <path d="M11 5 6 9H2v6h4l5 4z" />
+    <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" />
+  </svg>
+)
+
+export const IconeSomDesligado = ({ className }: Props) => (
+  <svg {...base(className)}>
+    <path d="M11 5 6 9H2v6h4l5 4z" />
+    <path d="m22 9-6 6M16 9l6 6" />
+  </svg>
+)

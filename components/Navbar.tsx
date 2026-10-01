@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { sair } from '@/lib/auth/acoes'
 import type { Usuario } from '@/lib/auth/usuario'
 import type { Genero } from '@/lib/tmdb/tipos'
+import { BotaoSom } from './BotaoSom'
 import { CampoBusca } from './CampoBusca'
 import { CONTEUDO } from './estilos'
 import { IconeChevronBaixo, IconeFechar, IconeMenu } from './Icones'
@@ -108,6 +109,7 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
             <Suspense fallback={null}>
               <CampoBusca />
             </Suspense>
+            <BotaoSom />
             <MenuUsuario usuario={usuario} />
             <button
               type="button"

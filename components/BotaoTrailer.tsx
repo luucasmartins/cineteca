@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BOTAO_PRIMARIO } from './estilos'
 import { IconeFechar, IconePlay } from './Icones'
+import { useTrilhaSonora } from './TrilhaSonoraProvider'
 
 export function BotaoTrailer({ chave, titulo }: { chave: string; titulo: string }) {
   const [aberto, setAberto] = useState(false)
@@ -20,6 +21,12 @@ export function BotaoTrailer({ chave, titulo }: { chave: string; titulo: string 
 
 function ModalTrailer({ chave, titulo, aoFechar }: { chave: string; titulo: string; aoFechar: () => void }) {
   const fecharRef = useRef<HTMLButtonElement>(null)
+  const { pausar, retomar } = useTrilhaSonora()
+
+  useEffect(() => {
+    pausar()
+    return retomar
+  }, [pausar, retomar])
 
   useEffect(() => {
     fecharRef.current?.focus()
