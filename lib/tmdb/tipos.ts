@@ -23,6 +23,19 @@ export type MembroEquipe = { id: number; name: string; profileUrl: string | null
 
 export type ImagemFilme = { media: string; grande: string }
 
+export type Joia = {
+  id: number
+  title: string
+  year: string | null
+  posterUrl: string | null
+  overview: string
+  rating: number | null
+  /** Já em português, ex.: "Coreano". */
+  idioma: string
+  /** Já em português, ex.: "Coreia do Sul"; null quando o TMDB não informa. */
+  pais: string | null
+}
+
 export type Provider = { id: number; name: string; logoUrl: string | null }
 
 export type WatchProviders = { link: string; streaming: Provider[]; rent: Provider[]; buy: Provider[] }
