@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import { BlocoAvaliacao } from '@/components/BlocoAvaliacao'
 import { BotaoLista } from '@/components/BotaoLista'
 import { BotaoTrailer } from '@/components/BotaoTrailer'
@@ -10,6 +11,7 @@ import { GaleriaImagens } from '@/components/GaleriaImagens'
 import { ImagemComReserva } from '@/components/ImagemComReserva'
 import { MensagemErro } from '@/components/MensagemErro'
 import { OndeAssistir } from '@/components/OndeAssistir'
+import { Premios } from '@/components/Premios'
 import { TrailerFundo } from '@/components/TrailerFundo'
 import { VisaoConstrucao } from '@/components/VisaoConstrucao'
 import { obterAvaliacaoDoFilme } from '@/lib/avaliacoes/banco'
@@ -100,6 +102,9 @@ export default async function PaginaFilme({ params }: Props) {
         <div>
           <OndeAssistir provedores={filme.watchProviders} />
         </div>
+        <Suspense fallback={null}>
+          <Premios filmeId={id} />
+        </Suspense>
         {filme.crew.length > 0 && (
           <div>
             <VisaoConstrucao equipe={filme.crew} />

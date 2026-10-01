@@ -78,3 +78,23 @@ export function detalhes(id) {
     },
   }
 }
+
+// Respostas do Wikidata simulado por id do TMDB. 1003 responde 500; os demais, nada.
+const premio = (venceu, q, pessoa) => ({
+  venceu: { value: String(venceu) },
+  categoria: { value: `http://www.wikidata.org/entity/${q}` },
+  ...(pessoa ? { pessoaLabel: { value: pessoa } } : {}),
+})
+export const PREMIOS = {
+  1001: [
+    premio(true, 'Q131520', 'Fotógrafo Teste'),
+    premio(false, 'Q131520', 'Fotógrafo Teste'),
+    premio(true, 'Q277751', 'Diretora de Arte'),
+    premio(true, 'Q277751', 'Cenógrafo Dois'),
+    premio(false, 'Q102427'),
+    premio(true, 'Q778870', 'Fotógrafo Teste'),
+    premio(true, 'Q1422140', 'Compositora Teste'),
+    premio(false, 'Q1011509'),
+  ],
+  1002: [premio(true, 'Q179808')],
+}

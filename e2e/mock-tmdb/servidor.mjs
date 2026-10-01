@@ -1,5 +1,5 @@
 import http from 'node:http'
-import { detalhes, filme, GENEROS, pagina } from './dados.mjs'
+import { detalhes, filme, GENEROS, pagina, PREMIOS } from './dados.mjs'
 
 export const TOKEN_E2E = 'token-e2e'
 
@@ -9,6 +9,13 @@ export function iniciarMockTmdb(porta) {
     const responder = (status, corpo) => {
       res.writeHead(status, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify(corpo))
+    }
+
+    // Wikidata simulado (prêmios): não usa o token do TMDB.
+    if (url.pathname === '/sparql') {
+      const id = (url.searchParams.get('query') ?? '').match(/wdt:P4947 "(\d+)"/)?.[1]
+      if (id === '1003') return responder(500, { erro: 'falha simulada' })
+      return responder(200, { head: { vars: [] }, results: { bindings: PREMIOS[id] ?? [] } })
     }
 
     if (req.headers.authorization !== `Bearer ${TOKEN_E2E}`) return responder(401, { status_message: 'token inválido' })

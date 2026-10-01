@@ -53,6 +53,11 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - Plano: `docs/superpowers/plans/2026-10-01-cineteca-fase4.md`
   - Ficaram para depois: sessão dupla, tags de vibe, diário/dashboard, paleta de cores, "clipar" imagens. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
   - Ajustes menores vistos na revisão e não feitos: imagem 404 no mosaico mostra ícone quebrado; contador da tela cheia não é anunciado; falha só na busca do país descarta a sugestão; respostas fora de ordem no sorteio sem guarda; janela do Fure a bolha não trava a rolagem.
+- **Próximas, na ordem aprovada:** Prêmios, Paleta de cores, Sessão dupla, Diário com Comunidade. Roteiro em `docs/superpowers/roteiro-proximas-fases.md`.
+- **Prêmios — concluída.** Seção com abas na página do filme (Oscar, BAFTA, Globo de Ouro, Cannes, Veneza, Berlim), dados do Wikidata.
+  - Spec: `docs/superpowers/specs/2026-10-01-cineteca-premios-design.md`
+  - Plano: `docs/superpowers/plans/2026-10-01-cineteca-premios.md`
+  - Só aparece categoria cujo Q-id está em `lib/premios/catalogo.ts`. O Wikidata tem o Oscar completo, mas BAFTA e Globo pela metade, e anos inconsistentes (por isso não mostramos ano).
 
 ## Pendências abertas
 
@@ -79,6 +84,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - `lib/tmdb/` — único ponto que fala com o TMDB, somente no servidor (`server-only`).
 - `lib/supabase/` — `config` (lê as variáveis), `servidor` (cookies), `navegador` (singleton), `admin` (chave secreta, server-only).
 - `lib/auth/` — `validacao`, `erros`, `usuario`, `sessao`, `rotas` e as Server Actions em `acoes.ts`.
+- `lib/premios/` — catálogo de categorias, montagem e consulta ao Wikidata (server-only, cache de 1 dia). `WIKIDATA_SPARQL_URL` só existe no e2e, apontando para o simulador; produção usa o endpoint público.
 - `lib/lista/` — Favoritos e Salvos atrás da interface `ListaStore`; `supabase.ts` é a implementação em uso, `local.ts` só serve à importação das listas antigas.
 - `app/api/filmes/route.ts` — rota interna da rolagem infinita e da busca.
 - `app/(conta)/` — entrar, cadastro, conta, recuperar-senha, redefinir-senha.
@@ -95,7 +101,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - **Atribuição do TMDB:** obrigatória pelos termos. Fica no rodapé, discreta. O dono pediu para remover e aceitou a versão discreta, então não remova.
 - **Imagens:** `<img>` simples, não `next/image`. Se a imagem pode faltar, use `ImagemComReserva`, que exige a prop `reserva` (ex.: `/poster-padrao.svg`).
 - **Acessibilidade:** o site respeita `prefers-reduced-motion` — o banner para de trocar e o trailer de fundo não carrega. É proposital.
-- **Erros:** nunca deixe uma falha parecer sucesso ou lista vazia. Falha de gravação desfaz na tela e avisa; falha de leitura mostra erro com "Tentar de novo". Logs com prefixo `[CineTeca]`, só o código do erro — nunca tokens, chaves, senhas, cabeçalhos ou id de usuário.
+- **Erros:** nunca deixe uma falha parecer sucesso ou lista vazia. Falha de gravação desfaz na tela e avisa; falha de leitura mostra erro com "Tentar de novo". Exceção combinada com o dono: a seção Prêmios some se o Wikidata falhar. Logs com prefixo `[CineTeca]`, só o código do erro — nunca tokens, chaves, senhas, cabeçalhos ou id de usuário.
 - **Commits:** terminam com `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 
 ## Armadilhas conhecidas
