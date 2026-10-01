@@ -19,6 +19,7 @@ const env = {
   ...process.env,
   TMDB_API_BASE: `http://localhost:${PORTA_MOCK}/3`,
   TMDB_READ_TOKEN: TOKEN_E2E,
+  WIKIDATA_SPARQL_URL: `http://localhost:${PORTA_MOCK}/sparql`,
 }
 
 const build = spawnSync('npx', ['next', 'build'], { stdio: 'inherit', env, shell: true })
