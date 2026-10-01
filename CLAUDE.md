@@ -68,6 +68,8 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - A página pública da sessão busca pelo servidor com `criarClienteAdmin()`; visitantes não têm acesso à tabela.
   - Os diretores são gravados no registro do Assisti; o dashboard não consulta o TMDB.
 
+- **Boas-vindas — concluída.** Popup de primeiro acesso com 4 passos apresentando as funcionalidades. Grava `cineteca:visto` no `localStorage`. Componente `components/BoasVindas.tsx`.
+
 ## Pendências abertas
 
 - **Recuperação de senha não envia e-mail.** O Supabase só entrega para os donos do projeto sem SMTP próprio, e editar os modelos de e-mail também exige SMTP. Depende de o dono ter um domínio para ligar o Resend. As telas e a rota `/auth/callback` já funcionam.
