@@ -5,7 +5,8 @@ Combinado com o dono em 2026-10-01. Ordem aprovada:
 1. **Prêmios** na página do filme — concluído (spec e plano de 2026-10-01).
 2. **Paleta de cores** ("Blind Watch") — concluído como "Harmonia de cores" (spec e plano de 2026-10-01).
 3. **Sessão dupla + Diário pessoal (Assisti) e Dashboard** — concluído (spec e plano de 2026-10-01).
-4. **Comunidade** — por último, numa fase própria. A parte privada do diário já está pronta; falta a camada pública (comentários, perfis, moderação).
+4. **Moodboard de cenas** — concluído (spec e plano de 2026-10-02). Coleções temáticas de backdrops com link público.
+5. **Comunidade** — por último, numa fase própria. A parte privada do diário já está pronta; falta a camada pública (comentários, perfis, moderação).
 
 Cada item ganha a própria spec e o próprio plano em `specs/` e `plans/` quando chegar a vez.
 

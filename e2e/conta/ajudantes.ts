@@ -127,6 +127,38 @@ export async function limparAssistidos(u: Pick<UsuarioTeste, 'id'>): Promise<voi
   await clienteAdmin().from('assistidos').delete().eq('usuario_id', u.id)
 }
 
+export async function esperarMoodboard(u: Pick<UsuarioTeste, 'id'>, titulo: string, cenas: number): Promise<string> {
+  let id = ''
+  await expect
+    .poll(
+      async () => {
+        const { data } = await clienteAdmin()
+          .from('moodboards')
+          .select('id, moodboard_cenas(filme_id)')
+          .eq('usuario_id', u.id)
+          .eq('titulo', titulo)
+        const linha = (data ?? [])[0] as { id: string; moodboard_cenas: unknown[] } | undefined
+        if (!linha) return -1
+        id = linha.id
+        return linha.moodboard_cenas.length
+      },
+      { timeout: 15_000 },
+    )
+    .toBe(cenas)
+  return id
+}
+
+export async function criarMoodboardsTeste(u: Pick<UsuarioTeste, 'id'>, titulos: string[]): Promise<void> {
+  const { error } = await clienteAdmin()
+    .from('moodboards')
+    .insert(titulos.map((titulo) => ({ usuario_id: u.id, titulo })))
+  if (error) throw error
+}
+
+export async function limparMoodboards(u: Pick<UsuarioTeste, 'id'>): Promise<void> {
+  await clienteAdmin().from('moodboards').delete().eq('usuario_id', u.id)
+}
+
 export async function inserirFilmes(
   u: Pick<UsuarioTeste, 'id'>,
   tipo: 'favoritos' | 'salvos',

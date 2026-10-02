@@ -123,7 +123,7 @@ export default async function PaginaFilme({ params }: Props) {
         )}
         {filme.images.length > 0 && (
           <div>
-            <GaleriaImagens imagens={filme.images} titulo={filme.title} />
+            <GaleriaImagens imagens={filme.images} titulo={filme.title} filmeId={id} />
           </div>
         )}
       </div>
