@@ -51,12 +51,15 @@ PK composta: `(moodboard_id, filme_id, caminho_imagem)` — permite várias cena
 
 ### RLS
 
-- **`moodboards`:**
-  - SELECT: qualquer um (link público)
-  - INSERT/UPDATE/DELETE: `auth.uid() = usuario_id`
-- **`moodboard_cenas`:**
-  - SELECT: qualquer um
-  - INSERT/DELETE: o `moodboard_id` pertence ao `auth.uid()`
+Igual à Sessão dupla: o banco só libera o dono. A página pública lê pelo servidor com `criarClienteAdmin()`, para que ninguém consiga listar os moodboards (e os ids) de todos os usuários pela chave pública.
+
+- **`moodboards`:** SELECT/INSERT/UPDATE/DELETE só quando `auth.uid() = usuario_id`
+- **`moodboard_cenas`:** SELECT/INSERT/DELETE só quando o `moodboard_id` pertence ao `auth.uid()`
+- Visitantes (`anon`) não têm acesso a nenhuma das duas tabelas.
+
+### Origem dos dados da cena
+
+O navegador manda só `moodboard_id`, `filme_id` e o caminho da imagem. O servidor busca o filme no TMDB (com cache) e só aceita o caminho se ele estiver entre as cenas daquele filme; o `titulo_filme` gravado vem do TMDB, nunca do navegador.
 
 ## 4. Fluxo do usuário
 
@@ -65,7 +68,7 @@ PK composta: `(moodboard_id, filme_id, caminho_imagem)` — permite várias cena
 1. Usuário abre uma imagem em tela cheia no lightbox da galeria
 2. Botão "Salvar no moodboard" aparece no canto (ícone de grid/coleção)
 3. Clica → modal lista os moodboards existentes + "Criar novo"
-4. Se não logado → janela de login (mesmo padrão de favoritar)
+4. Se não logado → `JanelaLogin` (mesmo padrão do botão "Assisti"; nada é refeito depois do login)
 5. Seleciona um moodboard → cena adicionada, toast de confirmação
 6. "Criar novo" → campos de título (obrigatório) e descrição (opcional) inline
 
@@ -78,7 +81,7 @@ PK composta: `(moodboard_id, filme_id, caminho_imagem)` — permite várias cena
 
 ### Página `/moodboard/[id]` (pública)
 
-- Título, descrição (se houver), nome do autor (do perfil)
+- Título e descrição (se houver). **Sem o nome do autor**: o nome do cadastro não é público em nenhum lugar do site; isso fica para os perfis públicos da fase Comunidade (decisão do dono, 2026-10-02).
 - Grid 3 colunas (desktop) / 2 colunas (mobile) com todas as cenas
 - Hover na cena → título do filme
 - Cena clicável → lightbox em tela cheia (reutiliza o existente)
@@ -112,14 +115,21 @@ PK composta: `(moodboard_id, filme_id, caminho_imagem)` — permite várias cena
 
 ### Reutilizados sem mudança
 
-- Lightbox (componente `TelaCheia` dentro de `GaleriaImagens`) — reutilizado na página pública
-- Padrão de `lib/lista/acao-pendente.ts` para redirecionar ao login
+- `JanelaLogin` para quem não tem conta
 - Estilos de `components/estilos.ts` (`CONTEUDO`, `BOTAO_PRIMARIO`, `BOTAO_SECUNDARIO`)
-- Hook `usePrenderFoco` para o modal
+- `MensagemErro` para falhas de leitura
+
+### Ajustes em código existente
+
+- `TelaCheia` sai de dentro de `GaleriaImagens` para `components/TelaCheia.tsx` e é reutilizada na página do moodboard. Ganha `pausada` (desliga teclado e trava de foco enquanto outra janela está por cima) e `acoes` (botões extras no canto).
+- `usePrenderFoco` ganha o parâmetro opcional `ativo`.
+- `ImagemFilme` ganha `caminho` (o `file_path` do TMDB), para a galeria não precisar recortar URLs.
 
 ## 6. Tratamento de erros
 
-- Falha ao criar/excluir moodboard ou adicionar/remover cena → desfaz na tela + toast de erro
+- Falha ao criar/excluir moodboard ou adicionar/remover cena → desfaz na tela + mensagem de erro
+- Falha ao ler moodboards (janela, `/moodboards`, página pública) → `MensagemErro` com "Tentar novamente", nunca lista vazia
+- Editar/excluir que não alteram nenhuma linha contam como falha
 - Sessão expirada → redireciona ao login (padrão `ErroLista`)
 - Moodboard não encontrado → `notFound()` (404 do Next)
 - Cena duplicada (PK) → server action retorna erro amigável ("Cena já está neste moodboard")
