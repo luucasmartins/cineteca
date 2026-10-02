@@ -110,6 +110,13 @@ export const IconeSom = ({ className }: Props) => (
   </svg>
 )
 
+export const IconeDiario = ({ className }: Props) => (
+  <svg {...base(className)}>
+    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+    <path d="M8 7h6" />
+  </svg>
+)
+
 export const IconeSomDesligado = ({ className }: Props) => (
   <svg {...base(className)}>
     <path d="M11 5 6 9H2v6h4l5 4z" />

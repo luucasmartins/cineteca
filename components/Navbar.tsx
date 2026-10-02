@@ -10,7 +10,7 @@ import { BotaoFureBolha } from './BotaoFureBolha'
 import { BotaoSom } from './BotaoSom'
 import { CampoBusca } from './CampoBusca'
 import { CONTEUDO } from './estilos'
-import { IconeChevronBaixo, IconeFechar, IconeMenu } from './Icones'
+import { IconeChevronBaixo, IconeDiario, IconeFechar, IconeMenu } from './Icones'
 import { MenuUsuario } from './MenuUsuario'
 
 export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuario | null }) {
@@ -120,7 +120,7 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
             {usuario && (
               <li>
                 <LinkNav href="/diario" ativo={pathname === '/diario'}>
-                  Meu diário
+                  <IconeDiario className="inline h-4 w-4" /> Meu diário
                 </LinkNav>
               </li>
             )}
@@ -179,8 +179,8 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                     </Link>
                   </li>
                   <li>
-                    <Link href="/diario" onClick={fecharMenu} className="block py-3">
-                      Meu diário
+                    <Link href="/diario" onClick={fecharMenu} className="flex items-center gap-1.5 py-3">
+                      <IconeDiario className="h-4 w-4" /> Meu diário
                     </Link>
                   </li>
                   <li>

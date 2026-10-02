@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { sair } from '@/lib/auth/acoes'
 import { primeiroNome, type Usuario } from '@/lib/auth/usuario'
+import { IconeDiario } from './Icones'
 
 const ITEM = 'block w-full rounded px-3 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white'
 
@@ -83,8 +84,8 @@ export function MenuUsuario({ usuario }: { usuario: Usuario | null }) {
           <Link href="/sessoes" className={ITEM}>
             Sessões duplas
           </Link>
-          <Link href="/diario" className={ITEM}>
-            Meu diário
+          <Link href="/diario" className={`${ITEM} flex items-center gap-1.5`}>
+            <IconeDiario className="h-4 w-4" /> Meu diário
           </Link>
           <Link href="/conta" className={ITEM}>
             Minha conta
