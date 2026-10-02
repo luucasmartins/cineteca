@@ -3,12 +3,19 @@
 import { useCallback, useRef, useState } from 'react'
 import { classesMosaico, NO_MOSAICO } from '@/lib/mosaico'
 import type { ImagemFilme } from '@/lib/tmdb/tipos'
+import { IconeMoodboard } from './Icones'
+import { JanelaLogin } from './JanelaLogin'
+import { JanelaMoodboard } from './JanelaMoodboard'
 import { PaletaFilme } from './PaletaFilme'
-import { TelaCheia } from './TelaCheia'
+import { useUsuario } from './SessaoProvider'
+import { BOTAO_TELA_CHEIA, TelaCheia } from './TelaCheia'
 
-export function GaleriaImagens({ imagens, titulo }: { imagens: ImagemFilme[]; titulo: string }) {
+export function GaleriaImagens({ imagens, titulo, filmeId }: { imagens: ImagemFilme[]; titulo: string; filmeId: number }) {
+  const usuario = useUsuario()
   const [aberta, setAberta] = useState<number | null>(null)
+  const [janela, setJanela] = useState<'moodboard' | 'login' | null>(null)
   const origemRef = useRef<HTMLButtonElement | null>(null)
+  const salvarRef = useRef<HTMLButtonElement>(null)
   const { grade, itens } = classesMosaico(imagens.length)
   const escondidas = imagens.length - (NO_MOSAICO - 1)
 
@@ -19,6 +26,10 @@ export function GaleriaImagens({ imagens, titulo }: { imagens: ImagemFilme[]; ti
   const fechar = useCallback(() => {
     setAberta(null)
     origemRef.current?.focus()
+  }, [])
+  const fecharJanela = useCallback(() => {
+    setJanela(null)
+    salvarRef.current?.focus()
   }, [])
 
   return (
@@ -48,8 +59,30 @@ export function GaleriaImagens({ imagens, titulo }: { imagens: ImagemFilme[]; ti
         })}
       </div>
       {aberta !== null && (
-        <TelaCheia imagens={imagens} titulo={titulo} indice={aberta} aoMudar={setAberta} aoFechar={fechar} />
+        <TelaCheia
+          imagens={imagens}
+          titulo={titulo}
+          indice={aberta}
+          aoMudar={setAberta}
+          aoFechar={fechar}
+          pausada={janela !== null}
+          acoes={
+            <button
+              ref={salvarRef}
+              type="button"
+              aria-label="Salvar no moodboard"
+              onClick={() => setJanela(usuario ? 'moodboard' : 'login')}
+              className={BOTAO_TELA_CHEIA}
+            >
+              <IconeMoodboard className="h-6 w-6" />
+            </button>
+          }
+        />
       )}
+      {aberta !== null && janela === 'moodboard' && (
+        <JanelaMoodboard cena={{ filmeId, caminho: imagens[aberta].caminho }} aoFechar={fecharJanela} />
+      )}
+      {aberta !== null && janela === 'login' && <JanelaLogin aoFechar={fecharJanela} />}
     </section>
   )
 }

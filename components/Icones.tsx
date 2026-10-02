@@ -117,6 +117,15 @@ export const IconeDiario = ({ className }: Props) => (
   </svg>
 )
 
+export const IconeMoodboard = ({ className }: Props) => (
+  <svg {...base(className)}>
+    <rect x="3" y="3" width="7" height="9" rx="1" />
+    <rect x="14" y="3" width="7" height="5" rx="1" />
+    <rect x="14" y="12" width="7" height="9" rx="1" />
+    <rect x="3" y="16" width="7" height="5" rx="1" />
+  </svg>
+)
+
 export const IconeSomDesligado = ({ className }: Props) => (
   <svg {...base(className)}>
     <path d="M11 5 6 9H2v6h4l5 4z" />
