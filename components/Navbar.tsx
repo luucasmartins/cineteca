@@ -120,11 +120,6 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
             <li>
               <BotaoFureBolha className="flex items-center gap-1.5 text-white/80 transition-colors hover:text-white" />
             </li>
-            <li>
-              <span className="flex cursor-default items-center gap-1.5 text-white/40">
-                Comunidade <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">Em breve</span>
-              </span>
-            </li>
             {usuario && (
               <>
                 <li>
@@ -139,6 +134,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                 </li>
               </>
             )}
+            <li>
+              <span className="flex cursor-default items-center gap-1.5 text-white/40">
+                Comunidade <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">Em breve</span>
+              </span>
+            </li>
           </ul>
 
           <div className="ml-auto flex items-center gap-2">
@@ -185,11 +185,6 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
               </li>
               <li>
                 <BotaoFureBolha className="flex w-full items-center gap-2 py-3 text-left" aoClicar={fecharMenu} />
-              </li>
-              <li>
-                <span className="flex items-center gap-2 py-3 text-white/40">
-                  Comunidade <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide">Em breve</span>
-                </span>
               </li>
             </ul>
 
@@ -248,6 +243,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                   </li>
                 </>
               )}
+              <li>
+                <span className="flex items-center gap-2 py-3 text-white/40">
+                  Comunidade <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide">Em breve</span>
+                </span>
+              </li>
             </ul>
 
             {generos.length > 0 && (
