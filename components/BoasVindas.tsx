@@ -41,6 +41,18 @@ const PASSOS = [
   {
     icone: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-8 w-8 text-destaque">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    ),
+    titulo: 'Moodboard de cenas',
+    texto: 'Monte coleções com as imagens mais bonitas dos filmes e compartilhe com um link público.',
+  },
+  {
+    icone: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-8 w-8 text-destaque">
         <path d="M12 5v14M5 12h14" />
       </svg>
     ),
