@@ -40,8 +40,34 @@ html {
   animation: surgir 500ms ease-out;
 }
 
+/* Logo animado: o C (com o traço) ocupa os primeiros 111 de 474 px de /logo.png.
+   Ciclo de 10 s: anima em ~1,6 s, fica parado e some rápido antes de repetir. */
+.logo-c {
+  clip-path: inset(0 76.6% 0 0);
+  transform-origin: 11.7% 50%;
+  animation: logo-c 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.logo-resto {
+  clip-path: inset(0 0 0 23.4%);
+  animation: logo-resto 10s ease-out infinite;
+}
+@keyframes logo-c {
+  0% { opacity: 0; transform: scale(0.5); }
+  6% { opacity: 1; transform: scale(1); }
+  94% { opacity: 1; transform: scale(1); animation-timing-function: ease-in; }
+  98%, 100% { opacity: 0; transform: scale(1); }
+}
+@keyframes logo-resto {
+  0%, 7% { opacity: 1; clip-path: inset(0 76.6% 0 23.4%); }
+  16% { opacity: 1; clip-path: inset(0 0 0 23.4%); }
+  94% { opacity: 1; clip-path: inset(0 0 0 23.4%); }
+  98%, 100% { opacity: 0; clip-path: inset(0 0 0 23.4%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animar-surgir {
+  .animar-surgir,
+  .logo-c,
+  .logo-resto {
     animation: none;
   }
 }
