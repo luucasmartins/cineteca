@@ -120,6 +120,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
             <li>
               <BotaoFureBolha className="flex items-center gap-1.5 text-white/80 transition-colors hover:text-white" />
             </li>
+            <li>
+              <span className="flex cursor-default items-center gap-1.5 text-white/40">
+                Comunidade <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">Em breve</span>
+              </span>
+            </li>
             {usuario && (
               <>
                 <li>
@@ -181,6 +186,16 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
               <li>
                 <BotaoFureBolha className="flex w-full items-center gap-2 py-3 text-left" aoClicar={fecharMenu} />
               </li>
+              <li>
+                <span className="flex items-center gap-2 py-3 text-white/40">
+                  Comunidade <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide">Em breve</span>
+                </span>
+              </li>
+            </ul>
+
+            <hr className="border-white/10" />
+
+            <ul className="flex flex-col py-2 text-lg font-semibold">
               {usuario ? (
                 <>
                   <li>
@@ -234,9 +249,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                 </>
               )}
             </ul>
+
             {generos.length > 0 && (
               <>
-                <p className="mt-2 text-xs font-bold uppercase tracking-widest text-white/50">Gêneros</p>
+                <hr className="border-white/10" />
+                <p className="mt-3 text-xs font-bold uppercase tracking-widest text-white/50">Gêneros</p>
                 <ul className="mt-2 grid grid-cols-2 gap-1">
                   {generos.map((g) => (
                     <li key={g.id}>
