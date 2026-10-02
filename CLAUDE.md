@@ -53,6 +53,10 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
   - Plano: `docs/superpowers/plans/2026-10-01-cineteca-fase4.md`
   - Ficaram para depois: sessão dupla, tags de vibe, diário/dashboard, paleta de cores, "clipar" imagens. Sliders de atributos foram descartados (contradizem o joinha da Fase 3).
   - Ajustes menores vistos na revisão e não feitos: imagem 404 no mosaico mostra ícone quebrado; contador da tela cheia não é anunciado; falha só na busca do país descarta a sugestão; respostas fora de ordem no sorteio sem guarda; janela do Fure a bolha não trava a rolagem.
+- **Moodboard de cenas — concluída.** Coleções de backdrops do TMDB com título e descrição opcional, link público. Adicionar pela galeria do filme (tela cheia). Grid uniforme, tela cheia no moodboard. RLS owner-only; página pública usa `criarClienteAdmin()`.
+  - Spec: `docs/superpowers/specs/2026-10-02-cineteca-moodboard-cenas-design.md`
+  - Plano: `docs/superpowers/plans/2026-10-02-cineteca-moodboard-cenas.md`
+  - Caminho da cena é validado contra o TMDB antes de gravar. Título do filme vem do TMDB, nunca do navegador.
 - **Próximas, na ordem aprovada:** Comunidade (camada pública — comentários, perfis, moderação). Roteiro em `docs/superpowers/roteiro-proximas-fases.md`.
 - **Prêmios — concluída.** Seção com abas na página do filme (Oscar, BAFTA, Globo de Ouro, Cannes, Veneza, Berlim), dados do Wikidata.
   - Spec: `docs/superpowers/specs/2026-10-01-cineteca-premios-design.md`
@@ -100,6 +104,7 @@ Catálogo de filmes em pt-BR, com dados do TMDB, contas de usuário e visual esc
 - `lib/lista/` — Favoritos e Salvos atrás da interface `ListaStore`; `supabase.ts` é a implementação em uso, `local.ts` só serve à importação das listas antigas.
 - `lib/sessao-dupla/` — tipos, validação, banco e Server Actions da Sessão dupla.
 - `lib/diario/` — tipos, validação, banco, Server Actions e `numeros.ts` (função pura do dashboard) do Assisti.
+- `lib/moodboard/` — tipos, validação, banco e Server Actions do Moodboard de cenas.
 - `app/api/filmes/route.ts` — rota interna da rolagem infinita e da busca.
 - `app/(conta)/` — entrar, cadastro, conta, recuperar-senha, redefinir-senha.
 - `app/auth/callback` e `app/auth/confirmar` — retorno do Google e do link de senha.
