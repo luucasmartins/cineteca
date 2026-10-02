@@ -121,11 +121,18 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
               <BotaoFureBolha className="flex items-center gap-1.5 text-white/80 transition-colors hover:text-white" />
             </li>
             {usuario && (
-              <li>
-                <LinkNav href="/diario" ativo={pathname === '/diario'}>
-                  <IconeDiario className="inline h-4 w-4" /> Meu diário
-                </LinkNav>
-              </li>
+              <>
+                <li>
+                  <LinkNav href="/moodboards" ativo={pathname === '/moodboards'}>
+                    Moodboards
+                  </LinkNav>
+                </li>
+                <li>
+                  <LinkNav href="/diario" ativo={pathname === '/diario'}>
+                    <IconeDiario className="inline h-4 w-4" /> Meu diário
+                  </LinkNav>
+                </li>
+              </>
             )}
           </ul>
 
@@ -179,6 +186,11 @@ export function Navbar({ generos, usuario }: { generos: Genero[]; usuario: Usuar
                   <li>
                     <Link href="/sessoes" onClick={fecharMenu} className="block py-3">
                       Sessões duplas
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/moodboards" onClick={fecharMenu} className="block py-3">
+                      Moodboards
                     </Link>
                   </li>
                   <li>
