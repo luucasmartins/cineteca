@@ -19,6 +19,7 @@ export const dynamic = 'force-dynamic'
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope', display: 'swap' })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cineteca-gules.vercel.app'),
   title: { default: 'CineTeca', template: '%s · CineTeca' },
   description: 'Descubra filmes, veja onde assistir e monte suas listas.',
 }
