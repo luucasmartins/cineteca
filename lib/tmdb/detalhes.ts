@@ -3,7 +3,7 @@ import { tmdbFetch, TmdbError } from './client'
 import { CACHE_LISTAS_SEGUNDOS, REGIAO } from './config'
 import { normalizarEquipe, type MembroEquipeBruto } from './equipe'
 import { getGenres } from './filmes'
-import { imageUrl } from './imagens'
+import { imageUrl, imagemFilme } from './imagens'
 import { normalizarResumo } from './normalizar'
 import type { CastMember, Genero, ImagemFilme, MovieDetails, Provider, TmdbFilmeBruto, TmdbPaginaBruta, WatchProviders } from './tipos'
 
@@ -91,7 +91,7 @@ function normalizarImagens(cenas: ImagemBruta[]): ImagemFilme[] {
   return cenas
     .filter((c): c is ImagemBruta & { file_path: string } => !c.iso_639_1 && Boolean(c.file_path))
     .slice(0, MAX_IMAGENS)
-    .map((c) => ({ pequena: imageUrl(c.file_path, 'w300')!, media: imageUrl(c.file_path, 'w780')!, grande: imageUrl(c.file_path, 'w1280')! }))
+    .map((c) => imagemFilme(c.file_path))
 }
 
 function normalizarProvedores(ofertas?: OfertasBrutas): WatchProviders | null {

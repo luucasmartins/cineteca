@@ -4,9 +4,10 @@ import { useEffect, type RefObject } from 'react'
 
 const FOCAVEIS = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-// Enquanto a janela está montada, Tab e Shift+Tab circulam só pelos controles dela.
-export function usePrenderFoco(ref: RefObject<HTMLElement | null>): void {
+// Enquanto a janela está montada (e ativa), Tab e Shift+Tab circulam só pelos controles dela.
+export function usePrenderFoco(ref: RefObject<HTMLElement | null>, ativo = true): void {
   useEffect(() => {
+    if (!ativo) return
     const aoTeclar = (e: KeyboardEvent) => {
       if (e.key !== 'Tab' || !ref.current) return
       const focaveis = [...ref.current.querySelectorAll<HTMLElement>(FOCAVEIS)]
@@ -26,5 +27,5 @@ export function usePrenderFoco(ref: RefObject<HTMLElement | null>): void {
     return () => {
       document.removeEventListener('keydown', aoTeclar)
     }
-  }, [ref])
+  }, [ref, ativo])
 }

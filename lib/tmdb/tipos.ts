@@ -21,7 +21,7 @@ export type CastMember = { id: number; name: string; character: string | null; p
 
 export type MembroEquipe = { id: number; name: string; profileUrl: string | null; funcoes: string[] }
 
-export type ImagemFilme = { pequena: string; media: string; grande: string }
+export type ImagemFilme = { caminho: string; pequena: string; media: string; grande: string }
 
 export type FilmeHarmonia = { id: number; title: string; year: string | null; cenas: string[] }
 
